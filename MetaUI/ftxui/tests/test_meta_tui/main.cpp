@@ -9,7 +9,7 @@
 using namespace ftxui;
 
 #include "meta.hpp"
-#include "meta_ftxui.hpp"
+#include "meta_tui.hpp"
 
 int main()
 {

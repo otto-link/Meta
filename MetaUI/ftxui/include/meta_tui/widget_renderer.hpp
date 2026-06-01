@@ -79,5 +79,5 @@ template <> struct WidgetRenderer<float>
 } // namespace meta::tui
 
 #ifdef META_ENABLE_STD_TYPES
-#include "meta_ftxui/widget_renderer_stl.inl"
+#include "meta_tui/widget_renderer_stl.inl"
 #endif

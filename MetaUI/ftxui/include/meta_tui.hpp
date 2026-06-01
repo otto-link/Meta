@@ -3,4 +3,4 @@
    this software. */
 #pragma once
 
-#include "meta_ftxui/widget_renderer.hpp"
+#include "meta_tui/widget_renderer.hpp"
