@@ -20,13 +20,12 @@ option(META_ENABLE_FTXUI_UI "Enable FTXUI UI backend" OFF)
 # Status output
 # -----------------------------------------------------------------------------
 
-message(STATUS "----------------------------------------")
-message(STATUS "Meta configuration")
-message(STATUS "  STL types:     ${META_ENABLE_STD_TYPES}")
-message(STATUS "  GLM types:     ${META_ENABLE_GLM_TYPES}")
-message(STATUS "  FTXUI UI:      ${META_ENABLE_FTXUI_UI}")
-message(STATUS "  Tests:         ${META_ENABLE_TESTS}")
-message(STATUS "----------------------------------------")
+message(STATUS "┌─ Meta configuration ────────────────")
+message(STATUS "│ STL types:     ${META_ENABLE_STD_TYPES}")
+message(STATUS "│ GLM types:     ${META_ENABLE_GLM_TYPES}")
+message(STATUS "│ FTXUI UI:      ${META_ENABLE_FTXUI_UI}")
+message(STATUS "│ Tests:         ${META_ENABLE_TESTS}")
+message(STATUS "└─────────────────────────────────────")
 
 # -----------------------------------------------------------------------------
 # C++ standard
