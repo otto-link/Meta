@@ -2,41 +2,6 @@
 
 #include "meta.hpp"
 
-struct Vec2
-{
-  float x;
-  float y;
-};
-
-namespace meta
-{
-
-// -----------------------------------------------------------------------------
-// Custom type traits
-// -----------------------------------------------------------------------------
-
-template <> struct AttributeTraits<Vec2>
-{
-  static std::string to_string(const Vec2 &v)
-  {
-    return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
-  }
-
-  static nlohmann::json json_to(const Vec2 &v)
-  {
-    return {{"x", v.x}, {"y", v.y}};
-  }
-
-  static Vec2 json_from(const nlohmann::json &j)
-  {
-    return {j.at("x").get<float>(), j.at("y").get<float>()};
-  }
-};
-
-META_DEFINE_TYPE_NAME(Vec2);
-
-} // namespace meta
-
 // -----------------------------------------------------------------------------
 // Main
 // -----------------------------------------------------------------------------
@@ -49,8 +14,6 @@ int main()
 
   // --- Basic attributes
   container.add("attr_float", 1.f);
-  container.add("attr_vec2", Vec2{1.f, 0.f});
-  container.add("comment", std::string("some text"));
 
   // --- Metadata example
   {
@@ -59,7 +22,6 @@ int main()
     auto &meta = attr->metadata();
     meta.add("vmin", -10.f);
     meta.add("vmax", 10.f);
-    meta.add("scale", std::string("linear"));
   }
 
   // --- Print attributes
@@ -78,7 +40,6 @@ int main()
   AttributeContainer container2;
 
   meta::register_default_types();
-  register_attribute_type<Vec2>("Vec2");
 
   container2.json_from(container.json_to());
 

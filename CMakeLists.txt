@@ -3,6 +3,13 @@ cmake_minimum_required(VERSION 3.22)
 project(meta-root)
 
 option(META_ENABLE_TESTS "" ON)
+option(META_ENABLE_STD_TYPES "Enable built-in STL type registrations" ON)
+
+if(META_ENABLE_STD_TYPES)
+  message(STATUS "[Meta] STL type support: ENABLED")
+else()
+  message(STATUS "[Meta] STL type support: DISABLED")
+endif()
 
 set(CMAKE_CXX_STANDARD 26)
 
@@ -18,7 +25,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 # --- dependencies
 
-# none
+find_package(nlohmann_json REQUIRED)
 
 # --- library
 

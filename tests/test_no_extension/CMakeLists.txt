@@ -1,0 +1,2 @@
+add_executable(test_no_extension main.cpp)
+target_link_libraries(test_no_extension meta)

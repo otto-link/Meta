@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # directories to be formatted (recursive search)
-DIRS="meta/include meta/src tests"
+DIRS="Meta/include Meta/src tests"
 FORMAT_CMD="clang-format -style=file:scripts/clang_style -i {}"
 
 for D in ${DIRS}; do
-    find ${D}/. -type f \( -iname \*.hpp -o -iname \*.cpp \) -exec ${FORMAT_CMD} \;
+    find ${D}/. -type f \( -iname \*.hpp -o -iname \*.inl -o -iname \*.cpp \) -exec ${FORMAT_CMD} \;
 done
 
 # format cmake files
-cmake-format -i CMakeLists.txt meta/CMakeLists.txt
+cmake-format -i CMakeLists.txt Meta/CMakeLists.txt
