@@ -14,9 +14,9 @@
 
 #include <nlohmann/json.hpp>
 
-#include "meta/abstract_attribute.hpp"
-#include "meta/attribute_traits.hpp"
-#include "meta/type_name.hpp"
+#include "meta/core/abstract_attribute.hpp"
+#include "meta/type/attribute_traits.hpp"
+#include "meta/type/type_name.hpp"
 
 namespace meta
 {

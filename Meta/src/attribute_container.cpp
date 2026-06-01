@@ -7,8 +7,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "meta/attribute_container.hpp"
-#include "meta/attribute_factory.hpp"
+#include "meta/core/attribute_container.hpp"
+#include "meta/serialization/attribute_factory.hpp"
 
 namespace meta
 {

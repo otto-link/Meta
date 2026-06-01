@@ -13,8 +13,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "meta/abstract_attribute.hpp"
-#include "meta/attribute.hpp"
+#include "meta/core/abstract_attribute.hpp"
+#include "meta/core/attribute.hpp"
 
 namespace meta
 {

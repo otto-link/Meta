@@ -98,5 +98,5 @@ META_DEFINE_TYPE_NAME(bool);
 } // namespace meta
 
 #ifdef META_ENABLE_STD_TYPES
-#include "meta/type_name_stl.inl"
+#include "meta/type/type_name_stl.inl"
 #endif

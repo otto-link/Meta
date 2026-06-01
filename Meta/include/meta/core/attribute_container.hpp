@@ -17,7 +17,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "meta/attribute.hpp"
+#include "meta/core/attribute.hpp"
 
 namespace meta
 {

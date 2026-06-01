@@ -3,9 +3,10 @@
    this software. */
 #pragma once
 
-#include "meta/abstract_attribute.hpp"
-#include "meta/attribute.hpp"
-#include "meta/attribute_container.hpp"
-#include "meta/attribute_factory.hpp"
-#include "meta/attribute_traits.hpp"
-#include "meta/meta_object.hpp"
+#include "meta/core/abstract_attribute.hpp"
+#include "meta/core/attribute.hpp"
+#include "meta/core/attribute_container.hpp"
+#include "meta/core/meta_object.hpp"
+#include "meta/serialization/attribute_factory.hpp"
+#include "meta/type/attribute_traits.hpp"
+#include "meta/type/type_name.hpp"

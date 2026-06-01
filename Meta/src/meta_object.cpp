@@ -1,8 +1,8 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
-#include "meta/meta_object.hpp"
-#include "meta/attribute_container.hpp"
+#include "meta/core/meta_object.hpp"
+#include "meta/core/attribute_container.hpp"
 
 namespace meta
 {
