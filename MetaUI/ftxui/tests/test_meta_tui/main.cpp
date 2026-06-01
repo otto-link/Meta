@@ -13,7 +13,6 @@ using namespace ftxui;
 
 int main()
 {
-
   auto attr = meta::Attribute("download", false);
   attr.metadata().add("ui.label", std::string("Download Label"));
   // attr.metadata().add("ui.widget_type", std::string("Checkbox"));
