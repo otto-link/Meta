@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # directories to be formatted (recursive search)
-DIRS="Meta/include Meta/src tests"
+DIRS="Meta/include Meta/src tests MetaUI"
 FORMAT_CMD="clang-format -style=file:scripts/clang_style -i {}"
 
 for D in ${DIRS}; do

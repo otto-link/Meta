@@ -7,6 +7,7 @@
  * @copyright Copyright (c) 2026
  */
 #pragma once
+#include <format>
 #include <string>
 
 #include <nlohmann/json.hpp>
@@ -23,6 +24,30 @@ template <> struct AttributeTraits<std::string>
   static std::string json_from(const nlohmann::json &j)
   {
     return j.get<std::string>();
+  }
+};
+
+template <> struct AttributeTraits<std::vector<std::string>>
+{
+  static std::string to_string(const std::vector<std::string> &v)
+  {
+    std::string result;
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+      result += v[i];
+      if (i + 1 < v.size()) result += ", ";
+    }
+    return result;
+  }
+
+  static nlohmann::json json_to(const std::vector<std::string> &v)
+  {
+    return nlohmann::json(v);
+  }
+
+  static std::vector<std::string> json_from(const nlohmann::json &j)
+  {
+    return j.get<std::vector<std::string>>();
   }
 };
 

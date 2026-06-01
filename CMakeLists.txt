@@ -2,37 +2,82 @@ cmake_minimum_required(VERSION 3.22)
 
 project(meta-root)
 
+# -----------------------------------------------------------------------------
+# Core options
+# -----------------------------------------------------------------------------
+
 option(META_ENABLE_TESTS "" ON)
 option(META_ENABLE_STD_TYPES "Enable built-in STL type registrations" ON)
 
-if(META_ENABLE_STD_TYPES)
-  message(STATUS "[Meta] STL type support: ENABLED")
-else()
-  message(STATUS "[Meta] STL type support: DISABLED")
-endif()
+# -----------------------------------------------------------------------------
+# UI backends (new)
+# -----------------------------------------------------------------------------
 
-set(CMAKE_CXX_STANDARD 26)
+option(META_ENABLE_QT_UI "Enable Qt UI backend" OFF)
+option(META_ENABLE_FTXUI_UI "Enable FTXUI UI backend" OFF)
+
+# -----------------------------------------------------------------------------
+# Status output
+# -----------------------------------------------------------------------------
+
+message(STATUS "----------------------------------------")
+message(STATUS "Meta configuration")
+message(STATUS "  STL types:     ${META_ENABLE_STD_TYPES}")
+message(STATUS "  FTXUI UI:      ${META_ENABLE_FTXUI_UI}")
+message(STATUS "  Tests:         ${META_ENABLE_TESTS}")
+message(STATUS "----------------------------------------")
+
+# -----------------------------------------------------------------------------
+# C++ standard
+# -----------------------------------------------------------------------------
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# -----------------------------------------------------------------------------
+# Compiler flags
+# -----------------------------------------------------------------------------
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  # MSVC compiler options
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 else()
-  # GNU compiler options
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif()
 
+# -----------------------------------------------------------------------------
+# Output directory
+# -----------------------------------------------------------------------------
+
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-# --- dependencies
+# -----------------------------------------------------------------------------
+# Dependencies
+# -----------------------------------------------------------------------------
 
 find_package(nlohmann_json REQUIRED)
 
-# --- library
+# -----------------------------------------------------------------------------
+# Core library
+# -----------------------------------------------------------------------------
 
 add_subdirectory(Meta)
 
-# --- everything else...
+# -----------------------------------------------------------------------------
+# Optional UI backends
+# -----------------------------------------------------------------------------
+
+if(META_ENABLE_FTXUI_UI)
+  add_subdirectory(MetaUI/common)
+endif()
+
+if(META_ENABLE_FTXUI_UI)
+  add_subdirectory(MetaUI/ftxui)
+endif()
+
+# -----------------------------------------------------------------------------
+# Tests
+# -----------------------------------------------------------------------------
 
 if(META_ENABLE_TESTS)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
-endif(META_ENABLE_TESTS)
+  add_subdirectory(tests)
+endif()

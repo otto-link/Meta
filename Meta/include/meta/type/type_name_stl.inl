@@ -7,10 +7,13 @@
  * @copyright Copyright (c) 2026
  */
 #pragma once
+#include <string>
+#include <vector>
 
 namespace meta
 {
 
 META_DEFINE_TYPE_NAME(std::string);
+META_DEFINE_TYPE_NAME(std::vector<std::string>);
 
-}
+} // namespace meta
