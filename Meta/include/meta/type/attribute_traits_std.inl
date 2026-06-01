@@ -3,18 +3,23 @@
    this software. */
 
 /**
- * @file attribute_traits.inl
+ * @file attribute_traits_std.inl
+ * @brief AttributeTraits specializations for standard library string types.
  * @copyright Copyright (c) 2026
  */
 #pragma once
-#include <format>
+
 #include <string>
+#include <vector>
 
 #include <nlohmann/json.hpp>
 
 namespace meta
 {
 
+/**
+ * @brief Traits specialization for std::string serialization and formatting.
+ */
 template <> struct AttributeTraits<std::string>
 {
   static std::string to_string(const std::string &v) { return v; }
@@ -27,16 +32,22 @@ template <> struct AttributeTraits<std::string>
   }
 };
 
+/**
+ * @brief Traits specialization for std::vector<std::string> serialization and
+ * formatting.
+ */
 template <> struct AttributeTraits<std::vector<std::string>>
 {
   static std::string to_string(const std::vector<std::string> &v)
   {
     std::string result;
+
     for (size_t i = 0; i < v.size(); ++i)
     {
       result += v[i];
       if (i + 1 < v.size()) result += ", ";
     }
+
     return result;
   }
 

@@ -8,12 +8,12 @@ project(meta-root)
 
 option(META_ENABLE_TESTS "" ON)
 option(META_ENABLE_STD_TYPES "Enable built-in STL type registrations" ON)
+option(META_ENABLE_GLM_TYPES "Enable built-in GLM type registrations" ON)
 
 # -----------------------------------------------------------------------------
-# UI backends (new)
+# UI backends
 # -----------------------------------------------------------------------------
 
-option(META_ENABLE_QT_UI "Enable Qt UI backend" OFF)
 option(META_ENABLE_FTXUI_UI "Enable FTXUI UI backend" OFF)
 
 # -----------------------------------------------------------------------------
@@ -23,6 +23,7 @@ option(META_ENABLE_FTXUI_UI "Enable FTXUI UI backend" OFF)
 message(STATUS "----------------------------------------")
 message(STATUS "Meta configuration")
 message(STATUS "  STL types:     ${META_ENABLE_STD_TYPES}")
+message(STATUS "  GLM types:     ${META_ENABLE_GLM_TYPES}")
 message(STATUS "  FTXUI UI:      ${META_ENABLE_FTXUI_UI}")
 message(STATUS "  Tests:         ${META_ENABLE_TESTS}")
 message(STATUS "----------------------------------------")
@@ -55,6 +56,10 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 # -----------------------------------------------------------------------------
 
 find_package(nlohmann_json REQUIRED)
+
+if(META_ENABLE_GLM_TYPES)
+  find_package(glm REQUIRED)
+endif()
 
 # -----------------------------------------------------------------------------
 # Core library
