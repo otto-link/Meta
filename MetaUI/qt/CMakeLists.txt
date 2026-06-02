@@ -1,25 +1,32 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(meta_tui LANGUAGES CXX)
+project(meta_qt LANGUAGES CXX)
+
+set(CMAKE_AUTOMOC ON)
 
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
 
-add_library(meta_tui)
+add_library(meta_qt)
+
+# --- sources GUI headers need to be added in add_executable, otherwise the moc
+# won't parse them
+file(GLOB_RECURSE INCLUDES
+     ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
 
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
-target_sources(meta_tui
+target_sources(meta_qt
   PRIVATE
-    ${SOURCES}
+    ${SOURCES} ${INCLUDES}
 )
 
 # -----------------------------------------------------------------------------
 # Include directories
 # -----------------------------------------------------------------------------
 
-target_include_directories(meta_tui
+target_include_directories(meta_qt
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
@@ -29,31 +36,22 @@ target_include_directories(meta_tui
 # -----------------------------------------------------------------------------
 
 # Meta core dependency
-target_link_libraries(meta_tui
+target_link_libraries(meta_qt
   PUBLIC meta
 )
 
 # -----------------------------------------------------------------------------
-# FTXUI dependency
+# Qt dependency
 # -----------------------------------------------------------------------------
 
-include(FetchContent)
-
-FetchContent_Declare(
-  ftxui
-  GIT_REPOSITORY https://github.com/ArthurSonzogni/FTXUI.git
-  GIT_TAG v6.1.9
-)
-
-FetchContent_MakeAvailable(ftxui)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
 # Link required FTXUI components
-target_link_libraries(meta_tui
+target_link_libraries(meta_qt
   PUBLIC
     meta_common
-    ftxui::screen
-    ftxui::dom
-    ftxui::component
+    Qt6::Core
+    Qt6::Widgets
 )
 
 # -----------------------------------------------------------------------------

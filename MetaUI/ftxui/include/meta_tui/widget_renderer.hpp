@@ -24,7 +24,8 @@ template <typename T> ftxui::Component render(Attribute<T> &attr)
 {
   return WidgetRenderer<T>::render(attr);
 }
-// ---
+
+// --- Specialization
 
 template <> struct WidgetRenderer<bool>
 {

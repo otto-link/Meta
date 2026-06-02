@@ -15,6 +15,7 @@ option(META_ENABLE_GLM_TYPES "Enable built-in GLM type registrations" ON)
 # -----------------------------------------------------------------------------
 
 option(META_ENABLE_FTXUI_UI "Enable FTXUI UI backend" OFF)
+option(META_ENABLE_QT_UI "Enable QT UI backend" OFF)
 
 # -----------------------------------------------------------------------------
 # Status output
@@ -24,6 +25,7 @@ message(STATUS "┌─ Meta configuration ────────────�
 message(STATUS "│ STL types:     ${META_ENABLE_STD_TYPES}")
 message(STATUS "│ GLM types:     ${META_ENABLE_GLM_TYPES}")
 message(STATUS "│ FTXUI UI:      ${META_ENABLE_FTXUI_UI}")
+message(STATUS "│ QT UI:         ${META_ENABLE_QT_UI}")
 message(STATUS "│ Tests:         ${META_ENABLE_TESTS}")
 message(STATUS "└─────────────────────────────────────")
 
@@ -70,12 +72,16 @@ add_subdirectory(Meta)
 # Optional UI backends
 # -----------------------------------------------------------------------------
 
-if(META_ENABLE_FTXUI_UI)
+if(META_ENABLE_FTXUI_UI OR META_ENABLE_QT_UI)
   add_subdirectory(MetaUI/common)
 endif()
 
 if(META_ENABLE_FTXUI_UI)
   add_subdirectory(MetaUI/ftxui)
+endif()
+
+if(META_ENABLE_QT_UI)
+  add_subdirectory(MetaUI/qt)
 endif()
 
 # -----------------------------------------------------------------------------
