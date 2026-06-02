@@ -1,0 +1,2 @@
+add_executable(test_meta_undo_redo main.cpp)
+target_link_libraries(test_meta_undo_redo meta)

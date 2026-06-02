@@ -10,3 +10,7 @@
 #include "meta/serialization/attribute_factory.hpp"
 #include "meta/type/attribute_traits.hpp"
 #include "meta/type/type_name.hpp"
+#include "meta/undo_redo/command.hpp"
+#include "meta/undo_redo/command_group.hpp"
+#include "meta/undo_redo/command_stack.hpp"
+#include "meta/undo_redo/set_attribute_command.hpp"
