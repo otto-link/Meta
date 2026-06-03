@@ -6,9 +6,24 @@
 #include <string>
 
 #include "meta/core/attribute.hpp"
+#include "meta/core/attribute_container.hpp"
 
 namespace meta::common
 {
+
+// --- Generic
+
+template <typename T>
+std::string try_get_string(const Attribute<T> &attr,
+                           const std::string  &key,
+                           const std::string  &default_value = "")
+{
+  auto *m = attr.metadata().find(key);
+  if (!m) return default_value;
+  return std::any_cast<std::string>(m->to_any());
+}
+
+// --- Specialized
 
 template <typename T> std::string label(const Attribute<T> &attr)
 {

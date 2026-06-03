@@ -3,4 +3,5 @@
    this software. */
 #pragma once
 
+#include "meta_qt/meta_widget.hpp"
 #include "meta_qt/widget_renderer.hpp"

@@ -61,8 +61,8 @@ public:
 
 private:
   Attribute<T> &_attribute;
-  T _old_value;
-  T _new_value;
+  T             _old_value;
+  T             _new_value;
 };
 
 } // namespace meta
