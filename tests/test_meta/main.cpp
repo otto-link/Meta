@@ -48,11 +48,17 @@ int main()
   AttributeContainer container;
 
   // --- Basic attributes
+
   container.add("attr_float", 1.f);
   container.add("attr_vec2", Vec2{1.f, 0.f});
   container.add("comment", "some text");
 
+#ifdef META_ENABLE_STD_TYPES
+  container.add("path", std::filesystem::path("toto"));
+#endif
+
   // --- Metadata example
+
   {
     auto *attr = container.add("float_with_metadata", -1.f);
 
@@ -63,6 +69,7 @@ int main()
   }
 
   // --- Print attributes
+
   for (const auto &[name, attr] : container)
   {
     std::cout << name << " : " << attr->to_string() << '\n';

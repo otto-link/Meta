@@ -22,11 +22,11 @@ option(META_ENABLE_QT_UI "Enable QT UI backend" OFF)
 # -----------------------------------------------------------------------------
 
 message(STATUS "┌─ Meta configuration ────────────────")
-message(STATUS "│ STL types:     ${META_ENABLE_STD_TYPES}")
-message(STATUS "│ GLM types:     ${META_ENABLE_GLM_TYPES}")
-message(STATUS "│ FTXUI UI:      ${META_ENABLE_FTXUI_UI}")
-message(STATUS "│ QT UI:         ${META_ENABLE_QT_UI}")
-message(STATUS "│ Tests:         ${META_ENABLE_TESTS}")
+message(STATUS "│ META_ENABLE_STD_TYPES: ${META_ENABLE_STD_TYPES}")
+message(STATUS "│ META_ENABLE_GLM_TYPES: ${META_ENABLE_GLM_TYPES}")
+message(STATUS "│ META_ENABLE_FTXUI_UI:  ${META_ENABLE_FTXUI_UI}")
+message(STATUS "│ META_ENABLE_QT_UI:     ${META_ENABLE_QT_UI}")
+message(STATUS "│ META_ENABLE_TESTS:     ${META_ENABLE_TESTS}")
 message(STATUS "└─────────────────────────────────────")
 
 # -----------------------------------------------------------------------------

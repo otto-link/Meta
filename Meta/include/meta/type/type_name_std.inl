@@ -7,12 +7,14 @@
  * @copyright Copyright (c) 2026
  */
 #pragma once
+#include <filesystem>
 #include <string>
 #include <vector>
 
 namespace meta
 {
 
+META_DEFINE_TYPE_NAME(std::filesystem::path);
 META_DEFINE_TYPE_NAME(std::vector<std::string>);
 
 } // namespace meta

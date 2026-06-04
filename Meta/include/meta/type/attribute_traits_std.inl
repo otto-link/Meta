@@ -17,6 +17,25 @@ namespace meta
 {
 
 /**
+ * @brief Traits specialization for std::filesystem::path serialization and
+ * formatting.
+ */
+template <> struct AttributeTraits<std::filesystem::path>
+{
+  static std::filesystem::path to_string(const std::filesystem::path &v)
+  {
+    return v.string();
+  }
+
+  static nlohmann::json json_to(const std::filesystem::path &v) { return v; }
+
+  static std::filesystem::path json_from(const nlohmann::json &j)
+  {
+    return j.get<std::filesystem::path>();
+  }
+};
+
+/**
  * @brief Traits specialization for std::vector<std::string> serialization and
  * formatting.
  */

@@ -19,6 +19,8 @@
 
 #include "meta/core/attribute.hpp"
 
+#include <iostream>
+
 namespace meta
 {
 
@@ -39,6 +41,12 @@ using AttrIterator = AttrContainerType::iterator;
  * @brief Const iterator over attributes.
  */
 using ConstAttrIterator = AttrContainerType::const_iterator;
+
+template <typename T>
+concept StringLike = std::is_same_v<std::decay_t<T>, std::string> ||
+                     std::is_same_v<std::decay_t<T>, const char *> ||
+                     std::is_same_v<std::decay_t<T>, char *> ||
+                     std::is_same_v<std::decay_t<T>, std::string_view>;
 
 /**
  * @brief Runtime container of named attributes.
@@ -65,7 +73,7 @@ public:
    * @throws std::runtime_error if an attribute with the same name exists.
    */
   template <typename T>
-    requires(!std::is_convertible_v<T, std::string>)
+    requires(!StringLike<T>)
   Attribute<std::decay_t<T>> *add(const std::string &name, T &&value)
   {
     using ValueType = std::decay_t<T>;
