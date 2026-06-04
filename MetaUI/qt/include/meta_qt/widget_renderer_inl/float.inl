@@ -6,6 +6,7 @@
 
 #include <QDoubleSpinBox>
 #include <QLabel>
+#include <QSlider>
 #include <QWidget>
 
 #include "meta/type/type_name.hpp"
@@ -33,6 +34,8 @@ template <> struct WidgetRenderer<float>
 
     if (widget_type == "Input")
     {
+      // --- INPUT
+
       QLabel *label = new QLabel(label_txt.c_str(), widget);
       layout->addWidget(label);
 
@@ -52,7 +55,42 @@ template <> struct WidgetRenderer<float>
                        [&value, widget, min, max](double v)
                        {
                          value = std::clamp(static_cast<float>(v), min, max);
+                         Q_EMIT widget->value_changed();
+                       });
+    }
+    else if (widget_type == "Slider")
+    {
+      // --- SLIDER
 
+      QLabel *label = new QLabel(label_txt.c_str(), widget);
+      layout->addWidget(label);
+
+      // slider works with ints, so we map float -> int
+      const int slider_min = 0;
+      const int slider_max = 1000; // resolution
+
+      auto *slider = new QSlider(Qt::Horizontal, widget);
+      slider->setMinimum(slider_min);
+      slider->setMaximum(slider_max);
+
+      // clamp + normalize initial value
+      value = std::clamp(value, min, max);
+      auto to_slider = [min, max, slider_max](float v) -> int
+      { return static_cast<int>((v - min) / (max - min) * slider_max); };
+
+      auto from_slider = [min, max, slider_max](int v) -> float
+      { return min + (static_cast<float>(v) / slider_max) * (max - min); };
+
+      slider->setValue(to_slider(value));
+
+      layout->addWidget(slider);
+
+      QObject::connect(slider,
+                       &QSlider::valueChanged,
+                       widget,
+                       [&value, widget, from_slider, min, max](int v)
+                       {
+                         value = std::clamp(from_slider(v), min, max);
                          Q_EMIT widget->value_changed();
                        });
     }

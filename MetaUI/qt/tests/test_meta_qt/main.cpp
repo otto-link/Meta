@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
   // --- Bool
 
-  if (true)
+  if (false)
   {
     {
       auto *a = container.add("bool_toggle", true);
@@ -74,15 +74,22 @@ int main(int argc, char *argv[])
 
   // --- Float
 
-  if (false)
+  if (true)
   {
+    // {
+    //   auto *a = container.add("float_input", 0.f);
+    //   a->metadata().add("ui.widget_type", "Input");
+    //   a->metadata().add("ui.min", -1.f);
+    //   a->metadata().add("ui.format", "{:.3f}");
+    // }
+
     {
-      auto *a = container.add("float_input", 0.f);
-      a->metadata().add("ui.widget_type", "Input");
+      auto *a = container.add("float_slider", 0.f);
+      a->metadata().add("ui.widget_type", "Slider");
       a->metadata().add("ui.min", -1.f);
-      a->metadata().add("ui.format", "{:.3f}");
-      // a->metadata().add("ui.max", 3.f);
-      // a->metadata().add("ui.step", 0.2f);
+      a->metadata().add("ui.max", 3.f);
+      a->metadata().add("ui.step", 0.2f);
+      a->metadata().add("ui.format", "{:.2f}");
     }
   }
 
