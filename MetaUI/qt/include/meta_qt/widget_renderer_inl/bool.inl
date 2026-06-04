@@ -129,9 +129,10 @@ template <> struct WidgetRenderer<bool>
     }
     else
     {
-      const std::string msg = "Unsupported widget type: " + widget_type;
-      QLabel           *label = new QLabel(msg.c_str(), widget);
-      layout->addWidget(label, 0, 0);
+      layout->addWidget(
+          make_error_widget(&attr, "unsupported widget type", widget),
+          0,
+          0);
     }
 
     return widget;

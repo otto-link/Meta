@@ -145,6 +145,8 @@ public:
   /// Returns true if an attribute exists.
   bool contains(const std::string &name) const;
 
+  bool contains_all_keys(const std::vector<std::string> &keys);
+
   // -------------------------------------------------------------------------
   // Modification
   // -------------------------------------------------------------------------

@@ -3,14 +3,15 @@
    this software. */
 #pragma once
 #include <cfloat>
+#include <limits>
 #include <string>
 
 #include "meta/core/attribute.hpp"
 #include "meta/core/attribute_container.hpp"
 
 #define META_DEFAULT_FORMAT "{}"
-#define META_DEFAULT_MIN -FLT_MAX
-#define META_DEFAULT_MAX FLT_MAX
+#define META_DEFAULT_MIN std::numeric_limits<float>::lowest()
+#define META_DEFAULT_MAX std::numeric_limits<float>::max()
 #define META_DEFAULT_STEP 0.1f
 
 namespace meta::common

@@ -37,6 +37,14 @@ bool AttributeContainer::contains(const std::string &name) const
   return _attributes.contains(name);
 }
 
+bool AttributeContainer::contains_all_keys(const std::vector<std::string> &keys)
+{
+  for (const auto &key : keys)
+    if (_attributes.find(key) == _attributes.end()) return false;
+
+  return true;
+}
+
 bool AttributeContainer::empty() const noexcept { return _attributes.empty(); }
 
 AttrIterator AttributeContainer::end() { return _attributes.end(); }

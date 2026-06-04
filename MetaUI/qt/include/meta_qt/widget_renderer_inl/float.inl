@@ -4,8 +4,10 @@
 #pragma once
 #include <format>
 
+#include <QDial>
 #include <QDoubleSpinBox>
 #include <QLabel>
+#include <QScrollBar>
 #include <QSlider>
 #include <QWidget>
 
@@ -58,48 +60,89 @@ template <> struct WidgetRenderer<float>
                          Q_EMIT widget->value_changed();
                        });
     }
-    else if (widget_type == "Slider")
+    else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
+             widget_type == "Dial")
     {
-      // --- SLIDER
+      if (!attr.metadata().contains_all_keys({"ui.min", "ui.max"}))
+      {
+        layout->addWidget(make_error_widget(&attr, "missing metadata", widget));
+        return widget;
+      }
 
       QLabel *label = new QLabel(label_txt.c_str(), widget);
       layout->addWidget(label);
 
-      // slider works with ints, so we map float -> int
-      const int slider_min = 0;
-      const int slider_max = 1000; // resolution
+      constexpr int range_min = 0;
+      constexpr int range_max = 1000;
 
-      auto *slider = new QSlider(Qt::Horizontal, widget);
-      slider->setMinimum(slider_min);
-      slider->setMaximum(slider_max);
+      auto to_int = [min, max](float v) -> int
+      { return static_cast<int>(((v - min) / (max - min)) * range_max); };
 
-      // clamp + normalize initial value
+      auto from_int = [min, max](int v) -> float
+      { return min + (static_cast<float>(v) / range_max) * (max - min); };
+
       value = std::clamp(value, min, max);
-      auto to_slider = [min, max, slider_max](float v) -> int
-      { return static_cast<int>((v - min) / (max - min) * slider_max); };
 
-      auto from_slider = [min, max, slider_max](int v) -> float
-      { return min + (static_cast<float>(v) / slider_max) * (max - min); };
+      QWidget *control = nullptr;
 
-      slider->setValue(to_slider(value));
+      if (widget_type == "Slider")
+      {
+        auto *slider = new QSlider(Qt::Horizontal, widget);
+        slider->setRange(range_min, range_max);
+        slider->setValue(to_int(value));
 
-      layout->addWidget(slider);
+        QObject::connect(slider,
+                         &QSlider::valueChanged,
+                         widget,
+                         [&value, widget, from_int, min, max](int v)
+                         {
+                           value = std::clamp(from_int(v), min, max);
+                           Q_EMIT widget->value_changed();
+                         });
 
-      QObject::connect(slider,
-                       &QSlider::valueChanged,
-                       widget,
-                       [&value, widget, from_slider, min, max](int v)
-                       {
-                         value = std::clamp(from_slider(v), min, max);
-                         Q_EMIT widget->value_changed();
-                       });
+        control = slider;
+      }
+      else if (widget_type == "ScrollBar")
+      {
+        auto *scrollbar = new QScrollBar(Qt::Horizontal, widget);
+        scrollbar->setRange(range_min, range_max);
+        scrollbar->setValue(to_int(value));
+
+        QObject::connect(scrollbar,
+                         &QScrollBar::valueChanged,
+                         widget,
+                         [&value, widget, from_int, min, max](int v)
+                         {
+                           value = std::clamp(from_int(v), min, max);
+                           Q_EMIT widget->value_changed();
+                         });
+
+        control = scrollbar;
+      }
+      else if (widget_type == "Dial")
+      {
+        auto *dial = new QDial(widget);
+        dial->setRange(range_min, range_max);
+        dial->setValue(to_int(value));
+
+        QObject::connect(dial,
+                         &QDial::valueChanged,
+                         widget,
+                         [&value, widget, from_int, min, max](int v)
+                         {
+                           value = std::clamp(from_int(v), min, max);
+                           Q_EMIT widget->value_changed();
+                         });
+
+        control = dial;
+      }
+
+      layout->addWidget(control);
     }
     else
     {
-      const std::string msg = "Unsupported widget type: " + label_txt + "/" +
-                              widget_type;
-      QLabel *label = new QLabel(msg.c_str(), widget);
-      layout->addWidget(label);
+      layout->addWidget(
+          make_error_widget(&attr, "unsupported widget type", widget));
     }
 
     return widget;

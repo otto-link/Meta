@@ -10,6 +10,15 @@
 namespace meta::qt
 {
 
+QLabel *make_error_widget(const AbstractAttribute *p_attr,
+                          const std::string       &msg,
+                          QWidget                 *parent)
+{
+  std::string full_msg = "[ERROR] " + p_attr->name();
+  if (!msg.empty()) full_msg += ", what: " + msg;
+  return new QLabel(full_msg.c_str(), parent);
+}
+
 MetaWidget *make_meta_widget_grid(QWidget *parent)
 {
   auto *widget = new MetaWidget(parent);

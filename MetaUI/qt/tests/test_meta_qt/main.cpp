@@ -76,12 +76,12 @@ int main(int argc, char *argv[])
 
   if (true)
   {
-    // {
-    //   auto *a = container.add("float_input", 0.f);
-    //   a->metadata().add("ui.widget_type", "Input");
-    //   a->metadata().add("ui.min", -1.f);
-    //   a->metadata().add("ui.format", "{:.3f}");
-    // }
+    {
+      auto *a = container.add("float_input", 0.f);
+      a->metadata().add("ui.widget_type", "Input");
+      a->metadata().add("ui.min", -1.f);
+      a->metadata().add("ui.format", "{:.3f}");
+    }
 
     {
       auto *a = container.add("float_slider", 0.f);
@@ -90,6 +90,21 @@ int main(int argc, char *argv[])
       a->metadata().add("ui.max", 3.f);
       a->metadata().add("ui.step", 0.2f);
       a->metadata().add("ui.format", "{:.2f}");
+    }
+
+    {
+      auto *a = container.add("float_scrollbar", 0.f);
+      a->metadata().add("ui.widget_type", "ScrollBar");
+      a->metadata().add("ui.min", -1.f);
+      a->metadata().add("ui.max", 3.f);
+      a->metadata().add("ui.step", 0.2f);
+    }
+
+    {
+      auto *a = container.add("float_dial", 0.f);
+      a->metadata().add("ui.widget_type", "Dial");
+      a->metadata().add("ui.min", -1.f);
+      a->metadata().add("ui.max", 3.f);
     }
   }
 
