@@ -3,6 +3,7 @@
    this software. */
 #pragma once
 #include <QLabel>
+#include <QLayout>
 #include <QWidget>
 
 #include "meta/type/type_name.hpp"
@@ -24,7 +25,7 @@ template <typename T> struct WidgetRenderer
     msg += ", ";
     msg += attr.name();
 
-    MetaWidget *widget = make_meta_widget(parent);
+    MetaWidget *widget = make_meta_widget_hbox(parent);
     auto       *layout = widget->layout();
 
     QLabel *label = new QLabel(msg.c_str(), widget);
@@ -46,3 +47,4 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 } // namespace meta::qt
 
 #include "widget_renderer_inl/bool.inl"
+#include "widget_renderer_inl/float.inl"

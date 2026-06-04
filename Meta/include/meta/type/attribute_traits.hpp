@@ -51,6 +51,8 @@ template <typename T> struct AttributeTraits
 // Specializations / extensions
 // -----------------------------------------------------------------------------
 
+#include "meta/type/attribute_traits_base.inl"
+
 #ifdef META_ENABLE_STD_TYPES
 #include "meta/type/attribute_traits_std.inl"
 #endif

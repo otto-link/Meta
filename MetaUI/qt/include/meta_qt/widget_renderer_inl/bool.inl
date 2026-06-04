@@ -19,30 +19,52 @@ template <> struct WidgetRenderer<bool>
 {
   static MetaWidget *render(Attribute<bool> &attr, QWidget *parent)
   {
-    bool             &value = attr.value();
     const std::string widget_type = meta::common::widget_type(attr);
+    const std::string label_txt = meta::common::label(attr);
+    bool             &value = attr.value();
 
-    MetaWidget *widget = make_meta_widget(parent);
-    auto       *layout = widget->layout();
+    MetaWidget *widget = make_meta_widget_grid(parent);
+    auto       *layout = dynamic_cast<QGridLayout *>(widget->layout());
 
-    if (widget_type == "BinaryButtons")
+    if (widget_type == "Toggle")
     {
       // --- TOGGLE
 
-      const std::string &label_true = meta::common::try_get_string(
+      auto *button = new QPushButton(label_txt.c_str(), widget);
+      layout->addWidget(button, 0, 0);
+
+      button->setCheckable(true);
+      button->setChecked(value);
+
+      widget->connect(button,
+                      &QPushButton::toggled,
+                      widget,
+                      [widget, &value](bool checked)
+                      {
+                        value = checked;
+                        Q_EMIT widget->value_changed();
+                      });
+    }
+    else if (widget_type == "BinaryButtons")
+    {
+      // --- BINARY BUTTONS
+
+      const std::string label_true = meta::common::try_get_string(
           attr,
           "ui.label_true",
           "True");
-      const std::string &label_false = meta::common::try_get_string(
+      const std::string label_false = meta::common::try_get_string(
           attr,
           "ui.label_false",
           "False");
 
+      auto *label = new QLabel(label_txt.c_str(), widget);
       auto *button_true = new QPushButton(label_true.c_str(), widget);
       auto *button_false = new QPushButton(label_false.c_str(), widget);
 
-      layout->addWidget(button_true);
-      layout->addWidget(button_false);
+      layout->addWidget(label, 0, 0, 1, 2);
+      layout->addWidget(button_true, 1, 0);
+      layout->addWidget(button_false, 1, 1);
 
       // make the buttons checkable
       button_true->setCheckable(true);
@@ -88,13 +110,12 @@ template <> struct WidgetRenderer<bool>
                         }
                       });
     }
-    else
+    else if (widget_type == "Checkbox")
     {
-      // --- default: CHECKBOX
+      // --- CHECKBOX
 
-      QCheckBox *checkbox = new QCheckBox(meta::common::label(attr).c_str(),
-                                          widget);
-      layout->addWidget(checkbox);
+      QCheckBox *checkbox = new QCheckBox(label_txt.c_str(), widget);
+      layout->addWidget(checkbox, 0, 0);
 
       checkbox->setChecked(value);
       checkbox->connect(checkbox,
@@ -105,6 +126,12 @@ template <> struct WidgetRenderer<bool>
                           value = checked;
                           Q_EMIT widget->value_changed();
                         });
+    }
+    else
+    {
+      const std::string msg = "Unsupported widget type: " + widget_type;
+      QLabel           *label = new QLabel(msg.c_str(), widget);
+      layout->addWidget(label, 0, 0);
     }
 
     return widget;

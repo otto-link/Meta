@@ -2,7 +2,6 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
-#include <QHBoxLayout>
 #include <QWidget>
 
 namespace meta::qt
@@ -19,13 +18,8 @@ signals:
   void value_changed();
 };
 
-inline MetaWidget *make_meta_widget(QWidget *parent = nullptr)
-{
-  auto *widget = new MetaWidget(parent);
-  auto *layout = new QHBoxLayout(widget);
-  layout->setSpacing(1);
-  layout->setContentsMargins(0, 0, 0, 0);
-  return widget;
-}
+MetaWidget *make_meta_widget_grid(QWidget *parent = nullptr);
+MetaWidget *make_meta_widget_hbox(QWidget *parent = nullptr);
+MetaWidget *make_meta_widget_vbox(QWidget *parent = nullptr);
 
 } // namespace meta::qt

@@ -65,12 +65,33 @@ public:
    * @throws std::runtime_error if an attribute with the same name exists.
    */
   template <typename T>
+    requires(!std::is_convertible_v<T, std::string>)
   Attribute<std::decay_t<T>> *add(const std::string &name, T &&value)
   {
     using ValueType = std::decay_t<T>;
 
     auto attr = std::make_unique<Attribute<ValueType>>(name,
                                                        std::forward<T>(value));
+
+    auto *ptr = attr.get();
+
+    auto [it, inserted] = _attributes.try_emplace(name, std::move(attr));
+
+    if (!inserted)
+      throw std::runtime_error("Attribute already exists: " + name);
+
+    return ptr;
+  }
+
+  // to avoid issues with "char const*"
+  Attribute<std::decay_t<std::string>> *add(const std::string &name,
+                                            std::string      &&value)
+  {
+    using ValueType = std::decay_t<std::string>;
+
+    auto attr = std::make_unique<Attribute<ValueType>>(
+        name,
+        std::forward<std::string>(value));
 
     auto *ptr = attr.get();
 

@@ -95,6 +95,8 @@ META_DEFINE_TYPE_NAME(double);
 META_DEFINE_TYPE_NAME(int);
 META_DEFINE_TYPE_NAME(bool);
 
+META_DEFINE_TYPE_NAME(std::string); // basic need...
+
 } // namespace meta
 
 #ifdef META_ENABLE_STD_TYPES

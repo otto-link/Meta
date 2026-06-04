@@ -47,24 +47,43 @@ int main(int argc, char *argv[])
 
   meta::AttributeContainer container;
 
+  // --- Bool
+
+  if (true)
   {
-    auto *a = container.add("download_checkbox", true);
-    a->metadata().add("ui.label", std::string("Download Label"));
-    a->metadata().add("ui.widget_type", std::string("Checkbox"));
+    {
+      auto *a = container.add("bool_toggle", true);
+      a->metadata().add("ui.label", "Button Label");
+      a->metadata().add("ui.widget_type", "Toggle");
+    }
+
+    {
+      auto *a = container.add("bool_checkbox", true);
+      a->metadata().add("ui.label", "Button Label");
+      a->metadata().add("ui.widget_type", "Checkbox");
+    }
+
+    {
+      auto *a = container.add("bool_binary_buttons", true);
+      a->metadata().add("ui.widget_type", "BinaryButtons");
+      a->metadata().add("ui.label", "Button Label");
+      a->metadata().add("ui.label_true", "True V");
+      a->metadata().add("ui.label_false", "False V");
+    }
   }
 
-  {
-    auto *a = container.add("download_toggle", true);
-    a->metadata().add("ui.widget_type", std::string("BinaryButtons"));
-    a->metadata().add("ui.label_true", std::string("True V"));
-    a->metadata().add("ui.label_false", std::string("False V"));
-  }
+  // --- Float
 
+  if (false)
   {
-    auto *a = container.add("value", 0.f);
-    a->metadata().add("ui.min", -1.f);
-    a->metadata().add("ui.max", 3.f);
-    a->metadata().add("ui.step", 0.2f);
+    {
+      auto *a = container.add("float_input", 0.f);
+      a->metadata().add("ui.widget_type", "Input");
+      a->metadata().add("ui.min", -1.f);
+      a->metadata().add("ui.format", "{:.3f}");
+      // a->metadata().add("ui.max", 3.f);
+      // a->metadata().add("ui.step", 0.2f);
+    }
   }
 
   // --- GUI

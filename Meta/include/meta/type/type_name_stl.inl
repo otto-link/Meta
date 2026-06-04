@@ -13,7 +13,6 @@
 namespace meta
 {
 
-META_DEFINE_TYPE_NAME(std::string);
 META_DEFINE_TYPE_NAME(std::vector<std::string>);
 
 } // namespace meta

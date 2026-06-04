@@ -50,7 +50,7 @@ int main()
   // --- Basic attributes
   container.add("attr_float", 1.f);
   container.add("attr_vec2", Vec2{1.f, 0.f});
-  container.add("comment", std::string("some text"));
+  container.add("comment", "some text");
 
   // --- Metadata example
   {
@@ -59,7 +59,7 @@ int main()
     auto &meta = attr->metadata();
     meta.add("vmin", -10.f);
     meta.add("vmax", 10.f);
-    meta.add("scale", std::string("linear"));
+    meta.add("scale", "linear");
   }
 
   // --- Print attributes

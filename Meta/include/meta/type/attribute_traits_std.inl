@@ -8,7 +8,6 @@
  * @copyright Copyright (c) 2026
  */
 #pragma once
-
 #include <string>
 #include <vector>
 
@@ -16,21 +15,6 @@
 
 namespace meta
 {
-
-/**
- * @brief Traits specialization for std::string serialization and formatting.
- */
-template <> struct AttributeTraits<std::string>
-{
-  static std::string to_string(const std::string &v) { return v; }
-
-  static nlohmann::json json_to(const std::string &v) { return v; }
-
-  static std::string json_from(const nlohmann::json &j)
-  {
-    return j.get<std::string>();
-  }
-};
 
 /**
  * @brief Traits specialization for std::vector<std::string> serialization and
