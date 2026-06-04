@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include "meta/core/attribute_container.hpp"
+#include "meta/macrologger.h"
 #include "meta/serialization/attribute_factory.hpp"
 
 namespace meta
@@ -75,7 +76,8 @@ void AttributeContainer::json_from(const nlohmann::json &j)
 
       if (!new_attr)
       {
-        std::cerr << "Unknown attribute type: " << value["type"] << "\n";
+        LOG_ERROR("Unknown attribute type: %s",
+                  value.at("type").get<std::string>().c_str());
         continue;
       }
 

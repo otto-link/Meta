@@ -5,6 +5,8 @@
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute_container.hpp"
 
+#define META_REGISTER_ATTRIBUTE_TYPE(T) register_attribute_type<T>(#T)
+
 namespace meta
 {
 
@@ -14,19 +16,30 @@ std::unique_ptr<AbstractAttribute> AttributeFactory::create(
 {
   auto it = _registry.find(name);
   if (it == _registry.end()) return nullptr;
-
   return it->second(attr_name);
 }
 
 void register_default_types()
 {
-  register_attribute_type<int>("int");
-  register_attribute_type<float>("float");
-  register_attribute_type<double>("double");
-  register_attribute_type<bool>("bool");
+  META_REGISTER_ATTRIBUTE_TYPE(int);
+  META_REGISTER_ATTRIBUTE_TYPE(float);
+  META_REGISTER_ATTRIBUTE_TYPE(double);
+  META_REGISTER_ATTRIBUTE_TYPE(bool);
+  META_REGISTER_ATTRIBUTE_TYPE(std::string);
 
 #ifdef META_ENABLE_STD_TYPES
-  register_attribute_type<std::string>("std::string");
+  META_REGISTER_ATTRIBUTE_TYPE(std::filesystem::path);
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::string>);
+#endif
+
+#ifdef META_ENABLE_GLM_TYPES
+  META_REGISTER_ATTRIBUTE_TYPE(glm::vec2);
+  META_REGISTER_ATTRIBUTE_TYPE(glm::vec3);
+  META_REGISTER_ATTRIBUTE_TYPE(glm::vec4);
+
+  META_REGISTER_ATTRIBUTE_TYPE(glm::ivec2);
+  META_REGISTER_ATTRIBUTE_TYPE(glm::ivec3);
+  META_REGISTER_ATTRIBUTE_TYPE(glm::ivec4);
 #endif
 }
 

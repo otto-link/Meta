@@ -90,6 +90,8 @@ template <typename T> struct TypeName
 // Built-in types
 // -----------------------------------------------------------------------------
 
+// /!\ also need to be registered in attribute_factory.cpp for deserialization
+
 META_DEFINE_TYPE_NAME(float);
 META_DEFINE_TYPE_NAME(double);
 META_DEFINE_TYPE_NAME(int);
