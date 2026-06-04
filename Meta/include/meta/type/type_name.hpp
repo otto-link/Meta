@@ -100,7 +100,7 @@ META_DEFINE_TYPE_NAME(std::string); // basic need...
 } // namespace meta
 
 #ifdef META_ENABLE_STD_TYPES
-#include "meta/type/type_name_stl.inl"
+#include "meta/type/type_name_std.inl"
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES
