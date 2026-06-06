@@ -65,4 +65,72 @@ template <typename T> struct AttributeTraits<std::vector<T>>
   }
 };
 
+// ---------------------------
+//  Generic map trait
+// ---------------------------
+
+template <typename K, typename V> struct AttributeTraits<std::map<K, V>>
+{
+  static std::string to_string(const std::map<K, V> &m)
+  {
+    std::string result;
+
+    for (auto it = m.begin(); it != m.end(); ++it)
+    {
+      result += AttributeTraits<K>::to_string(it->first);
+      result += ": ";
+      result += AttributeTraits<V>::to_string(it->second);
+
+      auto next = it;
+      ++next;
+      if (next != m.end()) result += ", ";
+    }
+
+    return result;
+  }
+
+  static nlohmann::json json_to(const std::map<K, V> &m)
+  {
+    return m; // nlohmann supports map directly
+  }
+
+  static std::map<K, V> json_from(const nlohmann::json &j)
+  {
+    return j.get<std::map<K, V>>();
+  }
+};
+
+// ---------------------------
+//  Generic map trait
+// ---------------------------
+
+template <typename K, typename V>
+struct AttributeTraits<std::unordered_map<K, V>>
+{
+  static std::string to_string(const std::unordered_map<K, V> &m)
+  {
+    std::string result;
+
+    for (auto it = m.begin(); it != m.end(); ++it)
+    {
+      result += AttributeTraits<K>::to_string(it->first);
+      result += ": ";
+      result += AttributeTraits<V>::to_string(it->second);
+
+      auto next = it;
+      ++next;
+      if (next != m.end()) result += ", ";
+    }
+
+    return result;
+  }
+
+  static nlohmann::json json_to(const std::unordered_map<K, V> &m) { return m; }
+
+  static std::unordered_map<K, V> json_from(const nlohmann::json &j)
+  {
+    return j.get<std::unordered_map<K, V>>();
+  }
+};
+
 } // namespace meta

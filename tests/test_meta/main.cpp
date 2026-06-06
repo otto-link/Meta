@@ -106,7 +106,11 @@ int main()
 
   AttributeContainer container2;
 
+  // "basic" types
   meta::register_default_types();
+
+  // any specific class needs to be registered to the attribute
+  // factory to allow deserialization
   register_attribute_type<Vec2>("Vec2");
 
   container2.json_from(container.json_to());

@@ -5,8 +5,6 @@
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute_container.hpp"
 
-#define META_REGISTER_ATTRIBUTE_TYPE(T) register_attribute_type<T>(#T)
-
 namespace meta
 {
 
