@@ -72,12 +72,12 @@ void AttributeContainer::json_from(const nlohmann::json &j)
 
     if (it == _attributes.end())
     {
-      auto new_attr = AttributeFactory::instance().create(value["type"], name);
+      const std::string attr_type = value.at("type");
+      auto new_attr = AttributeFactory::instance().create(attr_type, name);
 
       if (!new_attr)
       {
-        LOG_ERROR("Unknown attribute type: %s",
-                  value.at("type").get<std::string>().c_str());
+        LOG_ERROR("Unknown attribute type: %s", attr_type.c_str());
         continue;
       }
 
