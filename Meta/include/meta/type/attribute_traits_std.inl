@@ -22,7 +22,7 @@ namespace meta
  */
 template <> struct AttributeTraits<std::filesystem::path>
 {
-  static std::filesystem::path to_string(const std::filesystem::path &v)
+  static std::string to_string(const std::filesystem::path &v)
   {
     return v.string();
   }
@@ -35,33 +35,33 @@ template <> struct AttributeTraits<std::filesystem::path>
   }
 };
 
-/**
- * @brief Traits specialization for std::vector<std::string> serialization and
- * formatting.
- */
-template <> struct AttributeTraits<std::vector<std::string>>
+// ---------------------------
+//  Generic vector trait
+// ---------------------------
+
+template <typename T> struct AttributeTraits<std::vector<T>>
 {
-  static std::string to_string(const std::vector<std::string> &v)
+  static std::string to_string(const std::vector<T> &v)
   {
-    std::string result;
+    std::ostringstream oss;
 
     for (size_t i = 0; i < v.size(); ++i)
     {
-      result += v[i];
-      if (i + 1 < v.size()) result += ", ";
+      oss << AttributeTraits<T>::to_string(v[i]);
+      if (i + 1 < v.size()) oss << ", ";
     }
 
-    return result;
+    return oss.str();
   }
 
-  static nlohmann::json json_to(const std::vector<std::string> &v)
+  static nlohmann::json json_to(const std::vector<T> &v)
   {
     return nlohmann::json(v);
   }
 
-  static std::vector<std::string> json_from(const nlohmann::json &j)
+  static std::vector<T> json_from(const nlohmann::json &j)
   {
-    return j.get<std::vector<std::string>>();
+    return j.get<std::vector<T>>();
   }
 };
 

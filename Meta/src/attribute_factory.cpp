@@ -34,6 +34,12 @@ void register_default_types()
 
 #ifdef META_ENABLE_STD_TYPES
   META_REGISTER_ATTRIBUTE_TYPE(std::filesystem::path);
+
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<float>);
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<double>);
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<int>);
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<bool>);
+
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::string>);
 #endif
 

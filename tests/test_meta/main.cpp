@@ -64,6 +64,9 @@ int main()
 
 #ifdef META_ENABLE_STD_TYPES
   container.add("std::filesystem::path", std::filesystem::path("some_path"));
+
+  container.add("std::vector<std::string>", std::vector<std::string>{"a", "b"});
+  container.add("std::vector<bool>", std::vector<bool>{true, false});
 #endif
 
 #ifdef META_ENABLE_STD_TYPES
