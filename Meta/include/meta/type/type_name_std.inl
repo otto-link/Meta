@@ -11,9 +11,6 @@
 #include <string>
 #include <vector>
 
-namespace meta
-{
-
 META_DEFINE_TYPE_NAME(std::filesystem::path);
 
 META_DEFINE_TYPE_NAME(std::vector<float>);
@@ -22,5 +19,3 @@ META_DEFINE_TYPE_NAME(std::vector<int>);
 META_DEFINE_TYPE_NAME(std::vector<bool>);
 
 META_DEFINE_TYPE_NAME(std::vector<std::string>);
-
-} // namespace meta

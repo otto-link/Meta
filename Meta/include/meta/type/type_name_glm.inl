@@ -9,9 +9,6 @@
 #pragma once
 #include <glm/glm.hpp>
 
-namespace meta
-{
-
 META_DEFINE_TYPE_NAME(glm::vec2);
 META_DEFINE_TYPE_NAME(glm::vec3);
 META_DEFINE_TYPE_NAME(glm::vec4);
@@ -19,5 +16,3 @@ META_DEFINE_TYPE_NAME(glm::vec4);
 META_DEFINE_TYPE_NAME(glm::ivec2);
 META_DEFINE_TYPE_NAME(glm::ivec3);
 META_DEFINE_TYPE_NAME(glm::ivec4);
-
-} // namespace meta

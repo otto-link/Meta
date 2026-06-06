@@ -22,6 +22,22 @@
 #include <string_view>
 #include <type_traits>
 
+/**
+ * @brief Define a TypeName specialization for a given type.
+ *
+ * Creates a compile-time mapping between a C++ type and its string name.
+ *
+ * @param TYPE C++ type to register.
+ */
+#define META_DEFINE_TYPE_NAME(...)                                             \
+  namespace meta                                                               \
+  {                                                                            \
+  template <> struct TypeName<__VA_ARGS__>                                     \
+  {                                                                            \
+    static constexpr std::string_view name = #__VA_ARGS__;                     \
+  };                                                                           \
+  }
+
 namespace meta
 {
 
@@ -69,22 +85,7 @@ template <typename T> struct TypeName
                 "TypeName<T> is not specialized for this type.");
 };
 
-// -----------------------------------------------------------------------------
-// Helper macro
-// -----------------------------------------------------------------------------
-
-/**
- * @brief Define a TypeName specialization for a given type.
- *
- * Creates a compile-time mapping between a C++ type and its string name.
- *
- * @param TYPE C++ type to register.
- */
-#define META_DEFINE_TYPE_NAME(TYPE)                                            \
-  template <> struct TypeName<TYPE>                                            \
-  {                                                                            \
-    static constexpr std::string_view name = #TYPE;                            \
-  }
+} // namespace meta
 
 // -----------------------------------------------------------------------------
 // Built-in types
@@ -103,8 +104,6 @@ META_DEFINE_TYPE_NAME(uint32_t);
 META_DEFINE_TYPE_NAME(uint64_t);
 
 META_DEFINE_TYPE_NAME(std::string); // basic need...
-
-} // namespace meta
 
 #ifdef META_ENABLE_STD_TYPES
 #include "meta/type/type_name_std.inl"

@@ -33,9 +33,9 @@ template <> struct AttributeTraits<Vec2>
   }
 };
 
-META_DEFINE_TYPE_NAME(Vec2);
-
 } // namespace meta
+
+META_DEFINE_TYPE_NAME(Vec2);
 
 // -----------------------------------------------------------------------------
 // Main

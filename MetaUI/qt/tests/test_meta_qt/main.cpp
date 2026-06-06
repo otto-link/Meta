@@ -7,6 +7,8 @@
 #include "meta.hpp"
 #include "meta_qt.hpp"
 
+// --- Qt helper
+
 QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
                          bool                     add_border = false)
 {
