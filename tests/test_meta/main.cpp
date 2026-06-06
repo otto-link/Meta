@@ -49,12 +49,21 @@ int main()
 
   // --- Basic attributes
 
-  container.add("attr_float", 1.f);
-  container.add("attr_vec2", Vec2{1.f, 0.f});
-  container.add("comment", "some text");
+  container.add("vec2", Vec2{1.f, 0.f}); // custom
+
+  container.add("float", 1.f);
+  container.add("double", 1.0);
+  container.add("int", 1);
+  container.add("bool", true);
+  container.add("std::string", "some text");
+
+  container.add("uint8_t", (uint8_t)8);
+  container.add("uint16_t", (uint16_t)16);
+  container.add("uint32_t", (uint32_t)32);
+  container.add("uint64_t", (uint64_t)64);
 
 #ifdef META_ENABLE_STD_TYPES
-  container.add("path", std::filesystem::path("toto"));
+  container.add("std::filesystem::path", std::filesystem::path("some_path"));
 #endif
 
 #ifdef META_ENABLE_STD_TYPES

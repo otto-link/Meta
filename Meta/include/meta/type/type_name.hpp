@@ -97,6 +97,11 @@ META_DEFINE_TYPE_NAME(double);
 META_DEFINE_TYPE_NAME(int);
 META_DEFINE_TYPE_NAME(bool);
 
+META_DEFINE_TYPE_NAME(uint8_t);
+META_DEFINE_TYPE_NAME(uint16_t);
+META_DEFINE_TYPE_NAME(uint32_t);
+META_DEFINE_TYPE_NAME(uint64_t);
+
 META_DEFINE_TYPE_NAME(std::string); // basic need...
 
 } // namespace meta
