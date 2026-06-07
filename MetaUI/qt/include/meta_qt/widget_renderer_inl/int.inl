@@ -45,12 +45,6 @@ template <> struct WidgetRenderer<int>
       auto *combo = new QComboBox(widget);
       layout->addWidget(combo);
 
-      const auto *m = attr.metadata().find(meta::keys::constraints::enum_items);
-
-      std::vector<std::pair<int, std::string>> items;
-
-      if (m) items = std::any_cast<decltype(items)>(m->to_any());
-
       int current_index = 0;
       int index = 0;
 
