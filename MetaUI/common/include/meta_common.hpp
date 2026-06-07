@@ -40,14 +40,14 @@ namespace meta::common
 
 // --- Generic
 
-template <typename T>
-std::string try_get_string(const Attribute<T> &attr,
-                           const std::string  &key,
-                           const std::string  &default_value = "")
+template <typename T, typename V>
+T try_get(const Attribute<V> &attr,
+          const std::string  &key,
+          const T            &default_value)
 {
   auto *m = attr.metadata().find(key);
   if (!m) return default_value;
-  return std::any_cast<std::string>(m->to_any());
+  return std::any_cast<T>(m->to_any());
 }
 
 int try_get_format_decimals(const std::string &format,
@@ -57,52 +57,43 @@ int try_get_format_decimals(const std::string &format,
 
 template <typename T> T min(const Attribute<T> &attr)
 {
-  auto *m = attr.metadata().find(meta::keys::constraints::min);
-  if (!m) return META_DEFAULT_MIN;
-  return std::any_cast<T>(m->to_any());
+  return try_get<T>(attr, meta::keys::constraints::min, META_DEFAULT_MIN);
 }
 
-template <typename T> std::vector<T> allowed_values(const Attribute<T> &attr)
-{
-  auto *m = attr.metadata().find(meta::keys::constraints::allowed_values);
-  if (!m) return {};
-  return std::any_cast<std::vector<T>>(m->to_any());
-}
 template <typename T> T max(const Attribute<T> &attr)
 {
-  auto *m = attr.metadata().find(meta::keys::constraints::max);
-  if (!m) return META_DEFAULT_MAX;
-  return std::any_cast<T>(m->to_any());
+  return try_get<T>(attr, meta::keys::constraints::max, META_DEFAULT_MAX);
 }
 
 template <typename T> T step(const Attribute<T> &attr)
 {
-  auto *m = attr.metadata().find(meta::keys::constraints::step);
-  if (!m) return META_DEFAULT_STEP;
-  return std::any_cast<T>(m->to_any());
+  return try_get<T>(attr, meta::keys::constraints::step, META_DEFAULT_STEP);
+}
+
+template <typename T> std::vector<T> allowed_values(const Attribute<T> &attr)
+{
+  return try_get<std::vector<T>>(attr,
+                                 meta::keys::constraints::allowed_values,
+                                 {});
 }
 
 // --- UI
 
 template <typename T> std::string label(const Attribute<T> &attr)
 {
-  auto *m = attr.metadata().find(meta::keys::ui::label);
-  if (!m) return attr.name();
-  return std::any_cast<std::string>(m->to_any());
+  return try_get<std::string>(attr, meta::keys::ui::label, attr.name());
 }
 
 template <typename T> std::string format(const Attribute<T> &attr)
 {
-  auto *m = attr.metadata().find(meta::keys::ui::format);
-  if (!m) return META_DEFAULT_FORMAT;
-  return std::any_cast<std::string>(m->to_any());
+  return try_get<std::string>(attr,
+                              meta::keys::ui::format,
+                              META_DEFAULT_FORMAT);
 }
 
 template <typename T> std::string widget_type(const Attribute<T> &attr)
 {
-  auto *m = attr.metadata().find(meta::keys::ui::widget_type);
-  if (!m) return "UNDEFINED";
-  return std::any_cast<std::string>(m->to_any());
+  return try_get<std::string>(attr, meta::keys::ui::widget_type, "UNDEFINED");
 }
 
 } // namespace meta::common

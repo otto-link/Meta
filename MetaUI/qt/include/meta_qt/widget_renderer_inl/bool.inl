@@ -58,11 +58,11 @@ template <> struct WidgetRenderer<bool>
         row++;
       }
 
-      const std::string label_true = meta::common::try_get_string(
+      const std::string label_true = meta::common::try_get<std::string>(
           attr,
           meta::keys::ui::label_true,
           "True");
-      const std::string label_false = meta::common::try_get_string(
+      const std::string label_false = meta::common::try_get<std::string>(
           attr,
           meta::keys::ui::label_false,
           "False");
