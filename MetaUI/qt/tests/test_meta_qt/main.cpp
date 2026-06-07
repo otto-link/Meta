@@ -248,10 +248,22 @@ int main(int argc, char *argv[])
       make_debug_view(sp_attr.get(), add_border);
   }
 
-  QWidget *widget = meta::qt::render(
-      container,
-      meta::qt::ContainerGroupPolicy::CGP_MERGED);
-  widget->show();
+  if (true)
+  {
+    meta::qt::MetaWidget *widget = meta::qt::render(
+        container,
+        meta::qt::ContainerGroupPolicy::CGP_MERGED);
+
+    QObject::connect(widget,
+                     &meta::qt::MetaWidget::value_changed,
+                     []() { std::cout << "value_changed\n"; });
+
+    QObject::connect(widget,
+                     &meta::qt::MetaWidget::edit_ended,
+                     []() { std::cout << "  > edit_changed\n"; });
+
+    widget->show();
+  }
 
   return app.exec();
 }

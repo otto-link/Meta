@@ -34,11 +34,17 @@ void insert_attribute(GroupNode               &root,
 
 std::string compute_flattened_path(GroupNode *node);
 
-void render_flat(GroupNode &node, QVBoxLayout *layout);
+void render_flat(GroupNode                 &node,
+                 QVBoxLayout               *layout,
+                 std::vector<MetaWidget *> &collected_widgets);
 
-void render_group(GroupNode &node, QVBoxLayout *parent_layout);
+void render_group(GroupNode                 &node,
+                  QVBoxLayout               *parent_layout,
+                  std::vector<MetaWidget *> &collected_widgets);
 
-void render_group_merged(GroupNode &node, QVBoxLayout *parent_layout);
+void render_group_merged(GroupNode                 &node,
+                         QVBoxLayout               *parent_layout,
+                         std::vector<MetaWidget *> &collected_widgets);
 
 MetaWidget *render(
     meta::AttributeContainer &container,
