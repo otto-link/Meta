@@ -60,11 +60,11 @@ template <> struct WidgetRenderer<bool>
 
       const std::string label_true = meta::common::try_get_string(
           attr,
-          "ui.label_true",
+          meta::keys::ui::label_true,
           "True");
       const std::string label_false = meta::common::try_get_string(
           attr,
-          "ui.label_false",
+          meta::keys::ui::label_false,
           "False");
 
       auto *button_true = new QPushButton(label_true.c_str(), widget);

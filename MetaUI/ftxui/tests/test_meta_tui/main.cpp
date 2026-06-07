@@ -14,14 +14,14 @@ using namespace ftxui;
 int main()
 {
   auto attr = meta::Attribute("download", false);
-  attr.metadata().add("ui.label", std::string("Download Label"));
-  // attr.metadata().add("ui.widget_type", std::string("Checkbox"));
-  attr.metadata().add("ui.widget_type", std::string("Toggle"));
+  attr.metadata().add(meta::keys::ui::label, std::string("Download Label"));
+  // attr.metadata().add(meta::keys::ui::widget_type, std::string("Checkbox"));
+  attr.metadata().add(meta::keys::ui::widget_type, std::string("Toggle"));
 
   auto attr_float = meta::Attribute("value", 0.f);
-  attr_float.metadata().add("contraints.min", -1.f);
-  attr_float.metadata().add("contraints.max", 3.f);
-  attr_float.metadata().add("contraints.step", 0.2f);
+  attr_float.metadata().add(meta::keys::constraints::min, -1.f);
+  attr_float.metadata().add(meta::keys::constraints::max, 3.f);
+  attr_float.metadata().add(meta::keys::constraints::step, 0.2f);
 
   auto attr_str = meta::Attribute("Text", std::string("Some Text"));
 

@@ -67,7 +67,7 @@ template <> struct WidgetRenderer<float>
              widget_type == "Dial")
     {
       if (!attr.metadata().contains_all_keys(
-              {"contraints.min", "contraints.max"}))
+              {meta::keys::constraints::min, meta::keys::constraints::max}))
       {
         layout->addWidget(make_error_widget(&attr, "missing metadata", widget));
         return widget;

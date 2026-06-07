@@ -55,22 +55,22 @@ int main(int argc, char *argv[])
   {
     {
       auto *a = container.add("bool_toggle", true);
-      a->metadata().add("ui.label", "Button Label");
-      a->metadata().add("ui.widget_type", "Toggle");
+      a->metadata().add(meta::keys::ui::label, "Button Label");
+      a->metadata().add(meta::keys::ui::widget_type, "Toggle");
     }
 
     {
       auto *a = container.add("bool_checkbox", true);
-      a->metadata().add("ui.label", "Button Label");
-      a->metadata().add("ui.widget_type", "Checkbox");
+      a->metadata().add(meta::keys::ui::label, "Button Label");
+      a->metadata().add(meta::keys::ui::widget_type, "Checkbox");
     }
 
     {
       auto *a = container.add("bool_binary_buttons", true);
-      a->metadata().add("ui.widget_type", "BinaryButtons");
-      a->metadata().add("ui.label", "Button Label");
-      a->metadata().add("ui.label_true", "True V");
-      a->metadata().add("ui.label_false", "False V");
+      a->metadata().add(meta::keys::ui::widget_type, "BinaryButtons");
+      a->metadata().add(meta::keys::ui::label, "Button Label");
+      a->metadata().add(meta::keys::ui::label_true, "True V");
+      a->metadata().add(meta::keys::ui::label_false, "False V");
     }
   }
 
@@ -80,33 +80,33 @@ int main(int argc, char *argv[])
   {
     {
       auto *a = container.add("float_input", 0.f);
-      a->metadata().add("ui.widget_type", "Input");
-      a->metadata().add("contraints.min", -1.f);
-      a->metadata().add("ui.format", "{:.3f}");
+      a->metadata().add(meta::keys::ui::widget_type, "Input");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::ui::format, "{:.3f}");
     }
 
     {
       auto *a = container.add("float_slider", 0.f);
-      a->metadata().add("ui.widget_type", "Slider");
-      a->metadata().add("contraints.min", -1.f);
-      a->metadata().add("contraints.max", 3.f);
-      a->metadata().add("contraints.step", 0.2f);
-      a->metadata().add("ui.format", "{:.2f}");
+      a->metadata().add(meta::keys::ui::widget_type, "Slider");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 3.f);
+      a->metadata().add(meta::keys::constraints::step, 0.2f);
+      a->metadata().add(meta::keys::ui::format, "{:.2f}");
     }
 
     {
       auto *a = container.add("float_scrollbar", 0.f);
-      a->metadata().add("ui.widget_type", "ScrollBar");
-      a->metadata().add("contraints.min", -1.f);
-      a->metadata().add("contraints.max", 3.f);
-      a->metadata().add("contraints.step", 0.2f);
+      a->metadata().add(meta::keys::ui::widget_type, "ScrollBar");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 3.f);
+      a->metadata().add(meta::keys::constraints::step, 0.2f);
     }
 
     {
       auto *a = container.add("float_dial", 0.f);
-      a->metadata().add("ui.widget_type", "Dial");
-      a->metadata().add("contraints.min", -1.f);
-      a->metadata().add("contraints.max", 3.f);
+      a->metadata().add(meta::keys::ui::widget_type, "Dial");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 3.f);
     }
   }
 
@@ -121,14 +121,14 @@ int main(int argc, char *argv[])
 
     {
       auto *a = container.add("string_combobox", "Option B");
-      a->metadata().add("ui.widget_type", "ComboBox");
-      a->metadata().add("constraints.allowed_values", options);
+      a->metadata().add(meta::keys::ui::widget_type, "ComboBox");
+      a->metadata().add(meta::keys::constraints::allowed_values, options);
     }
 
     {
       auto *a = container.add("string_buttongrid", "Option B");
-      a->metadata().add("ui.widget_type", "ButtonGrid");
-      a->metadata().add("constraints.allowed_values", options);
+      a->metadata().add(meta::keys::ui::widget_type, "ButtonGrid");
+      a->metadata().add(meta::keys::constraints::allowed_values, options);
     }
   }
 
