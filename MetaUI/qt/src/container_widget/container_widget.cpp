@@ -169,11 +169,17 @@ MetaWidget *render(AttributeContainer  &container,
 
   switch (group_policy)
   {
-  case ContainerGroupPolicy::CGP_TREE: render_group(root, layout); break;
+  case ContainerGroupPolicy::CGP_TREE:
+  {
+    render_group(root, layout);
+  }
+  break;
 
   case ContainerGroupPolicy::CGP_MERGED:
+  {
     render_group_merged(root, layout);
-    break;
+  }
+  break;
 
   case ContainerGroupPolicy::CGP_SMART:
   {
@@ -186,7 +192,10 @@ MetaWidget *render(AttributeContainer  &container,
   break;
 
   case ContainerGroupPolicy::CGP_FLAT:
-  default: render_flat(root, layout);
+  default:
+  {
+    render_flat(root, layout);
+  }
   }
 
   return widget;
