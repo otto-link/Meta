@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
   // --- Bool
 
-  if (false)
+  if (true)
   {
     {
       auto *a = container.add("bool_toggle", true);
@@ -76,37 +76,59 @@ int main(int argc, char *argv[])
 
   // --- Float
 
-  if (true)
+  if (false)
   {
     {
       auto *a = container.add("float_input", 0.f);
       a->metadata().add("ui.widget_type", "Input");
-      a->metadata().add("ui.min", -1.f);
+      a->metadata().add("contraints.min", -1.f);
       a->metadata().add("ui.format", "{:.3f}");
     }
 
     {
       auto *a = container.add("float_slider", 0.f);
       a->metadata().add("ui.widget_type", "Slider");
-      a->metadata().add("ui.min", -1.f);
-      a->metadata().add("ui.max", 3.f);
-      a->metadata().add("ui.step", 0.2f);
+      a->metadata().add("contraints.min", -1.f);
+      a->metadata().add("contraints.max", 3.f);
+      a->metadata().add("contraints.step", 0.2f);
       a->metadata().add("ui.format", "{:.2f}");
     }
 
     {
       auto *a = container.add("float_scrollbar", 0.f);
       a->metadata().add("ui.widget_type", "ScrollBar");
-      a->metadata().add("ui.min", -1.f);
-      a->metadata().add("ui.max", 3.f);
-      a->metadata().add("ui.step", 0.2f);
+      a->metadata().add("contraints.min", -1.f);
+      a->metadata().add("contraints.max", 3.f);
+      a->metadata().add("contraints.step", 0.2f);
     }
 
     {
       auto *a = container.add("float_dial", 0.f);
       a->metadata().add("ui.widget_type", "Dial");
-      a->metadata().add("ui.min", -1.f);
-      a->metadata().add("ui.max", 3.f);
+      a->metadata().add("contraints.min", -1.f);
+      a->metadata().add("contraints.max", 3.f);
+    }
+  }
+
+  // --- String
+
+  if (true)
+  {
+    auto options = std::vector<std::string>{"Option A",
+                                            "Option B",
+                                            "Option C",
+                                            "Option D"};
+
+    {
+      auto *a = container.add("string_combobox", "Option B");
+      a->metadata().add("ui.widget_type", "ComboBox");
+      a->metadata().add("constraints.allowed_values", options);
+    }
+
+    {
+      auto *a = container.add("string_buttongrid", "Option B");
+      a->metadata().add("ui.widget_type", "ButtonGrid");
+      a->metadata().add("constraints.allowed_values", options);
     }
   }
 

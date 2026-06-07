@@ -12,7 +12,7 @@
 #define META_DEFAULT_FORMAT "{}"
 #define META_DEFAULT_MIN std::numeric_limits<float>::lowest()
 #define META_DEFAULT_MAX std::numeric_limits<float>::max()
-#define META_DEFAULT_STEP 0.1f
+#define META_DEFAULT_STEP 0.1
 
 namespace meta::common
 {
@@ -34,6 +34,36 @@ int try_get_format_decimals(const std::string &format,
 
 // --- Specialized
 
+template <typename T> T min(const Attribute<T> &attr)
+{
+  auto *m = attr.metadata().find("contraints.min");
+  if (!m) return META_DEFAULT_MIN;
+  return std::any_cast<T>(m->to_any());
+}
+
+template <typename T> T max(const Attribute<T> &attr)
+{
+  auto *m = attr.metadata().find("contraints.max");
+  if (!m) return META_DEFAULT_MAX;
+  return std::any_cast<T>(m->to_any());
+}
+
+template <typename T> T step(const Attribute<T> &attr)
+{
+  auto *m = attr.metadata().find("contraints.step");
+  if (!m) return META_DEFAULT_STEP;
+  return std::any_cast<T>(m->to_any());
+}
+
+template <typename T> std::vector<T> allowed_values(const Attribute<T> &attr)
+{
+  auto *m = attr.metadata().find("constraints.allowed_values");
+  if (!m) return {};
+  return std::any_cast<std::vector<T>>(m->to_any());
+}
+
+// --- UI
+
 template <typename T> std::string label(const Attribute<T> &attr)
 {
   auto *m = attr.metadata().find("ui.label");
@@ -46,27 +76,6 @@ template <typename T> std::string format(const Attribute<T> &attr)
   auto *m = attr.metadata().find("ui.format");
   if (!m) return META_DEFAULT_FORMAT;
   return std::any_cast<std::string>(m->to_any());
-}
-
-template <typename T> float min(const Attribute<T> &attr)
-{
-  auto *m = attr.metadata().find("ui.min");
-  if (!m) return META_DEFAULT_MIN;
-  return std::any_cast<float>(m->to_any());
-}
-
-template <typename T> float max(const Attribute<T> &attr)
-{
-  auto *m = attr.metadata().find("ui.max");
-  if (!m) return META_DEFAULT_MAX;
-  return std::any_cast<float>(m->to_any());
-}
-
-template <typename T> float step(const Attribute<T> &attr)
-{
-  auto *m = attr.metadata().find("ui.step");
-  if (!m) return META_DEFAULT_STEP;
-  return std::any_cast<float>(m->to_any());
 }
 
 template <typename T> std::string widget_type(const Attribute<T> &attr)

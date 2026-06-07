@@ -22,6 +22,12 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     return WidgetRenderer<float>::render(attr, parent);
   }
 
+  if (p_attr->type() == typeid(std::string))
+  {
+    auto &attr = static_cast<Attribute<std::string> &>(*p_attr);
+    return WidgetRenderer<std::string>::render(attr, parent);
+  }
+
   return nullptr;
 }
 

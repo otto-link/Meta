@@ -31,15 +31,18 @@ template <> struct WidgetRenderer<float>
     const float       step = meta::common::step(attr);
     float            &value = attr.value();
 
-    MetaWidget *widget = make_meta_widget_hbox(parent);
-    auto       *layout = widget->layout();
+    MetaWidget *widget = make_meta_widget_vbox(parent);
+    auto       *layout = static_cast<QVBoxLayout *>(widget->layout());
+
+    if (!label_txt.empty())
+    {
+      QLabel *label = new QLabel(label_txt.c_str(), widget);
+      layout->addWidget(label);
+    }
 
     if (widget_type == "Input")
     {
       // --- INPUT
-
-      QLabel *label = new QLabel(label_txt.c_str(), widget);
-      layout->addWidget(label);
 
       auto *spinbox = new QDoubleSpinBox(widget);
 
@@ -63,14 +66,12 @@ template <> struct WidgetRenderer<float>
     else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
              widget_type == "Dial")
     {
-      if (!attr.metadata().contains_all_keys({"ui.min", "ui.max"}))
+      if (!attr.metadata().contains_all_keys(
+              {"contraints.min", "contraints.max"}))
       {
         layout->addWidget(make_error_widget(&attr, "missing metadata", widget));
         return widget;
       }
-
-      QLabel *label = new QLabel(label_txt.c_str(), widget);
-      layout->addWidget(label);
 
       constexpr int range_min = 0;
       constexpr int range_max = 1000;

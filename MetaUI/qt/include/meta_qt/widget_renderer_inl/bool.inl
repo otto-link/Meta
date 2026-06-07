@@ -49,6 +49,15 @@ template <> struct WidgetRenderer<bool>
     {
       // --- BINARY BUTTONS
 
+      int row = 0;
+
+      if (!label_txt.empty())
+      {
+        QLabel *label = new QLabel(label_txt.c_str(), widget);
+        layout->addWidget(label, row, 0, 1, 2);
+        row++;
+      }
+
       const std::string label_true = meta::common::try_get_string(
           attr,
           "ui.label_true",
@@ -58,13 +67,11 @@ template <> struct WidgetRenderer<bool>
           "ui.label_false",
           "False");
 
-      auto *label = new QLabel(label_txt.c_str(), widget);
       auto *button_true = new QPushButton(label_true.c_str(), widget);
       auto *button_false = new QPushButton(label_false.c_str(), widget);
 
-      layout->addWidget(label, 0, 0, 1, 2);
-      layout->addWidget(button_true, 1, 0);
-      layout->addWidget(button_false, 1, 1);
+      layout->addWidget(button_true, row, 0);
+      layout->addWidget(button_false, row, 1);
 
       // make the buttons checkable
       button_true->setCheckable(true);
