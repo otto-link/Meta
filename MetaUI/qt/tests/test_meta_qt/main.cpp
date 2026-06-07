@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
   // --- Bool
 
-  if (true)
+  if (false)
   {
     {
       auto *a = container.add("bool_toggle", true);
@@ -110,9 +110,25 @@ int main(int argc, char *argv[])
     }
   }
 
-  // --- String
+  // --- Int
 
   if (true)
+  {
+    {
+      auto *a = container.add("int_enumcombobox", 0);
+
+      a->metadata().add(meta::keys::ui::widget_type, "EnumComboBox");
+
+      std::vector<std::pair<int, std::string>> options = {{0, "Linear"},
+                                                          {1, "Cubic"},
+                                                          {2, "Bezier"}};
+      a->metadata().add(meta::keys::constraints::enum_items, options);
+    }
+  }
+
+  // --- String
+
+  if (false)
   {
     auto options = std::vector<std::string>{"Option A",
                                             "Option B",

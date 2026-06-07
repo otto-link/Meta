@@ -48,4 +48,5 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 
 #include "widget_renderer_inl/bool.inl"
 #include "widget_renderer_inl/float.inl"
+#include "widget_renderer_inl/int.inl"
 #include "widget_renderer_inl/std_string.inl"

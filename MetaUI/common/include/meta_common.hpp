@@ -10,14 +10,12 @@
 #include "meta/core/attribute_container.hpp"
 
 #define META_DEFAULT_FORMAT "{}"
-#define META_DEFAULT_MIN std::numeric_limits<float>::lowest()
-#define META_DEFAULT_MAX std::numeric_limits<float>::max()
-#define META_DEFAULT_STEP 0.1
 
 namespace meta::keys::constraints
 {
 
 inline constexpr char allowed_values[] = "constraints.allowed_values";
+inline constexpr char enum_items[] = "constraints.enum_items";
 inline constexpr char min[] = "constraints.min";
 inline constexpr char max[] = "constraints.max";
 inline constexpr char step[] = "constraints.step";
@@ -55,26 +53,39 @@ int try_get_format_decimals(const std::string &format,
 
 // --- Contraints
 
-template <typename T> T min(const Attribute<T> &attr)
-{
-  return try_get<T>(attr, meta::keys::constraints::min, META_DEFAULT_MIN);
-}
-
-template <typename T> T max(const Attribute<T> &attr)
-{
-  return try_get<T>(attr, meta::keys::constraints::max, META_DEFAULT_MAX);
-}
-
-template <typename T> T step(const Attribute<T> &attr)
-{
-  return try_get<T>(attr, meta::keys::constraints::step, META_DEFAULT_STEP);
-}
-
 template <typename T> std::vector<T> allowed_values(const Attribute<T> &attr)
 {
   return try_get<std::vector<T>>(attr,
                                  meta::keys::constraints::allowed_values,
                                  {});
+}
+
+template <typename T, typename V>
+std::vector<std::pair<T, std::string>> enum_items(const Attribute<V> &attr)
+{
+  auto *m = attr.metadata().find(meta::keys::constraints::enum_items);
+  if (!m) return {};
+
+  return std::any_cast<std::vector<std::pair<T, std::string>>>(m->to_any());
+}
+
+template <typename T> T min(const Attribute<T> &attr)
+{
+  return try_get<T>(attr,
+                    meta::keys::constraints::min,
+                    std::numeric_limits<T>::lowest());
+}
+
+template <typename T> T max(const Attribute<T> &attr)
+{
+  return try_get<T>(attr,
+                    meta::keys::constraints::max,
+                    std::numeric_limits<T>::max());
+}
+
+template <typename T> T step(const Attribute<T> &attr)
+{
+  return try_get<T>(attr, meta::keys::constraints::step, 0);
 }
 
 // --- UI

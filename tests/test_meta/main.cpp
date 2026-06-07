@@ -70,8 +70,8 @@ int main()
 
   {
     std::vector<std::pair<int, std::string>> options = {{0, "Linear"},
-							{1, "Cubic"},
-							{2, "Bezier"}};
+                                                        {1, "Cubic"},
+                                                        {2, "Bezier"}};
     container.add("std::vector<std::pair<int, std::string>>", options);
   }
 #endif
