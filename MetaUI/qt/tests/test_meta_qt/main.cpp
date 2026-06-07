@@ -60,9 +60,16 @@ int main(int argc, char *argv[])
 
   meta::AttributeContainer container;
 
+  const bool base_bool = false;
+  const bool base_float = false;
+  const bool base_int = false;
+  const bool base_string = false;
+
+  const bool base_groups = true;
+
   // --- Bool
 
-  if (false)
+  if (base_bool)
   {
     {
       auto *a = container.add("bool_toggle", true);
@@ -87,7 +94,7 @@ int main(int argc, char *argv[])
 
   // --- Float
 
-  if (true)
+  if (base_float)
   {
     {
       auto *a = container.add("float_input", 0.f);
@@ -123,7 +130,7 @@ int main(int argc, char *argv[])
 
   // --- Int
 
-  if (true)
+  if (base_int)
   {
     {
       auto *a = container.add("int_enumcombobox", 0);
@@ -165,7 +172,7 @@ int main(int argc, char *argv[])
 
   // --- String
 
-  if (false)
+  if (base_string)
   {
     auto options = std::vector<std::string>{"Option A",
                                             "Option B",
@@ -185,15 +192,44 @@ int main(int argc, char *argv[])
     }
   }
 
+  // --- Groups
+
+  if (base_groups)
+  {
+    {
+      auto *a = container.add("a", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "Input");
+      a->metadata().add(meta::keys::ui::group, "Base/Other");
+    }
+
+    {
+      auto *a = container.add("b", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "Input");
+      // a->metadata().add(meta::keys::ui::group, "Base");
+    }
+
+    {
+      auto *a = container.add("c", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "Input");
+      a->metadata().add(meta::keys::ui::group, "Base/Other");
+    }
+  }
+
   // --- GUI
 
   QApplication app(argc, argv);
 
-  // UI
-  bool add_border = false;
+  if (false)
+  {
+    // UI
+    bool add_border = false;
 
-  for (const auto &[name, sp_attr] : container)
-    make_debug_view(sp_attr.get(), add_border);
+    for (const auto &[name, sp_attr] : container)
+      make_debug_view(sp_attr.get(), add_border);
+  }
+
+  QWidget *widget = meta::qt::render(container);
+  widget->show();
 
   return app.exec();
 }
