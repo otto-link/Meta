@@ -4,11 +4,8 @@
 #pragma once
 #include <format>
 
-#include <QDial>
-#include <QDoubleSpinBox>
+#include <QComboBox>
 #include <QLabel>
-#include <QScrollBar>
-#include <QSlider>
 #include <QWidget>
 
 #include "meta/type/type_name.hpp"
@@ -19,17 +16,18 @@
 namespace meta::qt
 {
 
-template <> struct WidgetRenderer<float>
+template <> struct WidgetRenderer<int>
 {
-  static MetaWidget *render(Attribute<float> &attr, QWidget *parent)
+  static MetaWidget *render(Attribute<int> &attr, QWidget *parent)
   {
     const std::string widget_type = meta::common::widget_type(attr);
     const std::string label_txt = meta::common::label(attr);
     const std::string format = meta::common::format(attr);
-    const float       min = meta::common::min(attr);
-    const float       max = meta::common::max(attr);
-    const float       step = meta::common::step(attr);
-    float            &value = attr.value();
+    const int         min = meta::common::min(attr);
+    const int         max = meta::common::max(attr);
+    const auto        items = meta::common::enum_items<int>(attr);
+
+    int &value = attr.value();
 
     MetaWidget *widget = make_meta_widget_vbox(parent);
     auto       *layout = static_cast<QVBoxLayout *>(widget->layout());
@@ -40,28 +38,41 @@ template <> struct WidgetRenderer<float>
       layout->addWidget(label);
     }
 
-    if (widget_type == "Input")
+    if (widget_type == "EnumComboBox")
     {
-      // --- INPUT
+      // --- ENUM COMBO BOX
 
-      auto *spinbox = new QDoubleSpinBox(widget);
+      auto *combo = new QComboBox(widget);
+      layout->addWidget(combo);
 
-      spinbox->setMinimum(min);
-      spinbox->setMaximum(max);
-      spinbox->setSingleStep(step);
-      spinbox->setValue(std::clamp(value, min, max));
-      spinbox->setDecimals(meta::common::try_get_format_decimals(format));
+      const auto *m = attr.metadata().find(meta::keys::constraints::enum_items);
 
-      layout->addWidget(spinbox);
+      std::vector<std::pair<int, std::string>> items;
 
-      QObject::connect(spinbox,
-                       &QDoubleSpinBox::valueChanged,
-                       spinbox,
-                       [&value, widget, min, max](double v)
-                       {
-                         value = std::clamp(static_cast<float>(v), min, max);
-                         Q_EMIT widget->value_changed();
-                       });
+      if (m) items = std::any_cast<decltype(items)>(m->to_any());
+
+      int current_index = 0;
+      int index = 0;
+
+      for (const auto &[val, name] : items)
+      {
+        combo->addItem(QString::fromStdString(name), QVariant::fromValue(val));
+
+        if (val == value) current_index = index;
+
+        ++index;
+      }
+
+      combo->setCurrentIndex(current_index);
+
+      widget->connect(combo,
+                      QOverload<int>::of(&QComboBox::currentIndexChanged),
+                      widget,
+                      [&value, widget, combo](int)
+                      {
+                        value = combo->currentData().toInt();
+                        Q_EMIT widget->value_changed();
+                      });
     }
     else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
              widget_type == "Dial")
@@ -73,15 +84,6 @@ template <> struct WidgetRenderer<float>
         return widget;
       }
 
-      constexpr int range_min = 0;
-      constexpr int range_max = 1000;
-
-      auto to_int = [min, max](float v) -> int
-      { return static_cast<int>(((v - min) / (max - min)) * range_max); };
-
-      auto from_int = [min, max](int v) -> float
-      { return min + (static_cast<float>(v) / range_max) * (max - min); };
-
       value = std::clamp(value, min, max);
 
       QWidget *control = nullptr;
@@ -89,15 +91,15 @@ template <> struct WidgetRenderer<float>
       if (widget_type == "Slider")
       {
         auto *slider = new QSlider(Qt::Horizontal, widget);
-        slider->setRange(range_min, range_max);
-        slider->setValue(to_int(value));
+        slider->setRange(min, max);
+        slider->setValue(value);
 
         QObject::connect(slider,
                          &QSlider::valueChanged,
                          widget,
-                         [&value, widget, from_int, min, max](int v)
+                         [&value, widget, min, max](int v)
                          {
-                           value = std::clamp(from_int(v), min, max);
+                           value = std::clamp(v, min, max);
                            Q_EMIT widget->value_changed();
                          });
 
@@ -106,15 +108,15 @@ template <> struct WidgetRenderer<float>
       else if (widget_type == "ScrollBar")
       {
         auto *scrollbar = new QScrollBar(Qt::Horizontal, widget);
-        scrollbar->setRange(range_min, range_max);
-        scrollbar->setValue(to_int(value));
+        scrollbar->setRange(min, max);
+        scrollbar->setValue(value);
 
         QObject::connect(scrollbar,
                          &QScrollBar::valueChanged,
                          widget,
-                         [&value, widget, from_int, min, max](int v)
+                         [&value, widget, min, max](int v)
                          {
-                           value = std::clamp(from_int(v), min, max);
+                           value = std::clamp(v, min, max);
                            Q_EMIT widget->value_changed();
                          });
 
@@ -123,15 +125,15 @@ template <> struct WidgetRenderer<float>
       else if (widget_type == "Dial")
       {
         auto *dial = new QDial(widget);
-        dial->setRange(range_min, range_max);
-        dial->setValue(to_int(value));
+        dial->setRange(min, max);
+        dial->setValue(value);
 
         QObject::connect(dial,
                          &QDial::valueChanged,
                          widget,
-                         [&value, widget, from_int, min, max](int v)
+                         [&value, widget, min, max](int v)
                          {
-                           value = std::clamp(from_int(v), min, max);
+                           value = std::clamp(v, min, max);
                            Q_EMIT widget->value_changed();
                          });
 

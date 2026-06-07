@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
   // --- Float
 
-  if (false)
+  if (true)
   {
     {
       auto *a = container.add("float_input", 0.f);
@@ -123,6 +123,27 @@ int main(int argc, char *argv[])
                                                           {1, "Cubic"},
                                                           {2, "Bezier"}};
       a->metadata().add(meta::keys::constraints::enum_items, options);
+    }
+
+    {
+      auto *a = container.add("int_slider", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "Slider");
+      a->metadata().add(meta::keys::constraints::min, -1);
+      a->metadata().add(meta::keys::constraints::max, 3);
+    }
+
+    {
+      auto *a = container.add("int_scrollbar", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "ScrollBar");
+      a->metadata().add(meta::keys::constraints::min, -1);
+      a->metadata().add(meta::keys::constraints::max, 3);
+    }
+
+    {
+      auto *a = container.add("int_dial", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "Dial");
+      a->metadata().add(meta::keys::constraints::min, -1);
+      a->metadata().add(meta::keys::constraints::max, 3);
     }
   }
 
