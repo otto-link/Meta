@@ -205,13 +205,33 @@ int main(int argc, char *argv[])
     {
       auto *a = container.add("b", 0);
       a->metadata().add(meta::keys::ui::widget_type, "Input");
-      // a->metadata().add(meta::keys::ui::group, "Base");
+      a->metadata().add(meta::keys::ui::group, "Base");
     }
 
     {
-      auto *a = container.add("c", 0);
+      auto *a = container.add("c", 0.1f);
+      a->metadata().add(meta::keys::ui::widget_type, "Slider");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 3.f);
+      a->metadata().add(meta::keys::ui::group, "Base/Other/SubTitle");
+    }
+
+    {
+      auto *a = container.add("d", 0);
       a->metadata().add(meta::keys::ui::widget_type, "Input");
-      a->metadata().add(meta::keys::ui::group, "Base/Other");
+      a->metadata().add(meta::keys::ui::group, "Base/Something/Category");
+    }
+
+    {
+      auto options = std::vector<std::string>{"Option A",
+                                              "Option B",
+                                              "Option C",
+                                              "Option D"};
+
+      auto *a = container.add("string_combobox", "Option B");
+      a->metadata().add(meta::keys::ui::widget_type, "ButtonGrid");
+      a->metadata().add(meta::keys::constraints::allowed_values, options);
+      a->metadata().add(meta::keys::ui::group, "Base/Something/Category 2");
     }
   }
 
@@ -228,7 +248,9 @@ int main(int argc, char *argv[])
       make_debug_view(sp_attr.get(), add_border);
   }
 
-  QWidget *widget = meta::qt::render(container);
+  QWidget *widget = meta::qt::render(
+      container,
+      meta::qt::ContainerGroupPolicy::CGP_MERGED);
   widget->show();
 
   return app.exec();

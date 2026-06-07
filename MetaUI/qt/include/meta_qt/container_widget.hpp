@@ -11,6 +11,14 @@
 namespace meta::qt
 {
 
+enum ContainerGroupPolicy
+{
+  CGP_FLAT,
+  CGP_TREE,
+  CGP_MERGED,
+  CGP_SMART
+};
+
 struct GroupNode
 {
   std::string name;
@@ -24,10 +32,18 @@ void insert_attribute(GroupNode               &root,
                       const std::string       &path,
                       meta::AbstractAttribute *p_attr);
 
+std::string compute_flattened_path(GroupNode *node);
+
+void render_flat(GroupNode &node, QVBoxLayout *layout);
+
 void render_group(GroupNode &node, QVBoxLayout *parent_layout);
 
-MetaWidget *render(meta::AttributeContainer &container,
-                   QWidget                  *parent = nullptr,
-                   const std::string        &root_group_name = "");
+void render_group_merged(GroupNode &node, QVBoxLayout *parent_layout);
+
+MetaWidget *render(
+    meta::AttributeContainer &container,
+    ContainerGroupPolicy      group_policy = ContainerGroupPolicy::CGP_SMART,
+    const std::string        &root_group_name = "",
+    QWidget                  *parent = nullptr);
 
 } // namespace meta::qt

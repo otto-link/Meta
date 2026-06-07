@@ -11,6 +11,27 @@
 namespace meta::qt
 {
 
+std::string compute_flattened_path(GroupNode *node)
+{
+  std::string path;
+
+  while (node)
+  {
+    if (!path.empty() && !node->name.empty()) path += "/";
+
+    path += node->name;
+
+    // stop if not a pure chain
+    if (node->attributes.size() > 0) break;
+
+    if (node->children.size() != 1) break;
+
+    node = node->children.begin()->second.get();
+  }
+
+  return path;
+}
+
 void insert_attribute(GroupNode         &root,
                       const std::string &path,
                       AbstractAttribute *attr)
@@ -34,6 +55,20 @@ void insert_attribute(GroupNode         &root,
   }
 
   node->attributes.push_back(attr);
+}
+
+void render_flat(GroupNode &node, QVBoxLayout *layout)
+{
+  // Render attributes from this node
+  for (auto *p_attr : node.attributes)
+  {
+    QWidget *w = meta::qt::render(p_attr);
+    layout->addWidget(w);
+  }
+
+  // Recurse into children
+  for (auto &[name, child] : node.children)
+    render_flat(*child, layout);
 }
 
 void render_group(GroupNode &node, QVBoxLayout *parent_layout)
@@ -62,9 +97,53 @@ void render_group(GroupNode &node, QVBoxLayout *parent_layout)
     render_group(*child, current_layout);
 }
 
-MetaWidget *render(AttributeContainer &container,
-                   QWidget            *parent,
-                   const std::string  &root_group_name)
+void render_group_merged(GroupNode &node, QVBoxLayout *parent_layout)
+{
+  GroupNode               *current = &node;
+  std::vector<GroupNode *> chain;
+
+  // --- build flatten chain correctly
+  while (current)
+  {
+    chain.push_back(current);
+
+    if (current->children.size() != 1) break;
+
+    current = current->children.begin()->second.get();
+  }
+
+  // --- build title
+  std::string title;
+  for (auto *n : chain)
+  {
+    if (!n->name.empty())
+    {
+      if (!title.empty()) title += "/";
+      title += n->name;
+    }
+  }
+
+  auto *section = new CollapsibleSection(title.c_str());
+  parent_layout->addWidget(section);
+
+  QVBoxLayout *layout = section->content_layout;
+
+  // --- render attributes
+  for (auto *n : chain)
+    for (auto *p_attr : n->attributes)
+      layout->addWidget(meta::qt::render(p_attr));
+
+  // --- recurse ONLY from last node
+  GroupNode *last = chain.back();
+
+  for (auto &[name, child] : last->children)
+    render_group_merged(*child, layout);
+}
+
+MetaWidget *render(AttributeContainer  &container,
+                   ContainerGroupPolicy group_policy,
+                   const std::string   &root_group_name,
+                   QWidget             *parent)
 {
   // --- Build node tree
 
@@ -72,12 +151,15 @@ MetaWidget *render(AttributeContainer &container,
 
   if (root_group_name.empty()) root.name = META_ROOT_GROUP;
 
+  bool has_no_groups = true;
+
   for (const auto &[name, sp_attr] : container)
   {
     auto             *attr = sp_attr.get();
     const std::string group = meta::common::group(*sp_attr);
-
     insert_attribute(root, group, attr);
+
+    has_no_groups &= group.empty();
   }
 
   // --- Render
@@ -85,7 +167,28 @@ MetaWidget *render(AttributeContainer &container,
   MetaWidget *widget = make_meta_widget_vbox(parent);
   auto       *layout = static_cast<QVBoxLayout *>(widget->layout());
 
-  render_group(root, layout);
+  switch (group_policy)
+  {
+  case ContainerGroupPolicy::CGP_TREE: render_group(root, layout); break;
+
+  case ContainerGroupPolicy::CGP_MERGED:
+    render_group_merged(root, layout);
+    break;
+
+  case ContainerGroupPolicy::CGP_SMART:
+  {
+    // switch to flat view if no group is defined
+    if (has_no_groups)
+      render_flat(root, layout);
+    else
+      render_group_merged(root, layout);
+  }
+  break;
+
+  case ContainerGroupPolicy::CGP_FLAT:
+  default: render_flat(root, layout);
+  }
+
   return widget;
 }
 

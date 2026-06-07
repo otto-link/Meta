@@ -10,8 +10,9 @@
 #include "meta/core/attribute_container.hpp"
 
 #define META_DEFAULT_FORMAT "{}"
-#define META_DEFAULT_GROUP "General"
+#define META_DEFAULT_GROUP ""
 #define META_ROOT_GROUP "Settings"
+#define META_DEFAULT_GROUP_POLICY "flat"
 
 namespace meta::keys::constraints
 {
@@ -101,7 +102,7 @@ template <typename T> T step(const Attribute<T> &attr)
   return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));
 }
 
-// --- UI
+// --- UI / Base widgets
 
 template <typename T> std::string label(const Attribute<T> &attr)
 {
