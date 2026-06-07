@@ -15,20 +15,31 @@ QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
   auto *base = new QWidget();
 
   auto *widget = meta::qt::render(p_attr);
-  auto *label = new QLabel(
+  auto *label1 = new QLabel(
       QString::fromStdString("Value = " + p_attr->to_string()));
+  auto *label2 = new QLabel(
+      QString::fromStdString("Ended = " + p_attr->to_string()));
 
   auto *layout = new QVBoxLayout();
   layout->addWidget(widget);
-  layout->addWidget(label);
+  layout->addWidget(label1);
+  layout->addWidget(label2);
   base->setLayout(layout);
 
   QObject::connect(widget,
                    &meta::qt::MetaWidget::value_changed,
                    base,
-                   [widget, label, p_attr]() {
-                     label->setText(QString::fromStdString(
+                   [widget, label1, p_attr]() {
+                     label1->setText(QString::fromStdString(
                          "Value = " + p_attr->to_string()));
+                   });
+
+  QObject::connect(widget,
+                   &meta::qt::MetaWidget::edit_ended,
+                   base,
+                   [widget, label2, p_attr]() {
+                     label2->setText(QString::fromStdString(
+                         "Ended = " + p_attr->to_string()));
                    });
 
   if (add_border)
@@ -76,7 +87,7 @@ int main(int argc, char *argv[])
 
   // --- Float
 
-  if (false)
+  if (true)
   {
     {
       auto *a = container.add("float_input", 0.f);

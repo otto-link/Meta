@@ -85,7 +85,7 @@ template <typename T> T max(const Attribute<T> &attr)
 
 template <typename T> T step(const Attribute<T> &attr)
 {
-  return try_get<T>(attr, meta::keys::constraints::step, 0);
+  return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));
 }
 
 // --- UI

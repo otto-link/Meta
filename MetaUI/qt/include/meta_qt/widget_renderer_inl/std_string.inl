@@ -56,6 +56,7 @@ template <> struct WidgetRenderer<std::string>
                        {
                          value = text.toStdString();
                          Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
                        });
     }
     else if (widget_type == "ButtonGrid")
@@ -110,6 +111,7 @@ template <> struct WidgetRenderer<std::string>
           {
             value = button->text().toStdString();
             Q_EMIT widget->value_changed();
+            Q_EMIT widget->edit_ended();
           });
 
       layout->addLayout(grid);

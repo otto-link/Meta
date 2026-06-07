@@ -61,6 +61,7 @@ template <> struct WidgetRenderer<float>
                        {
                          value = std::clamp(static_cast<float>(v), min, max);
                          Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
                        });
     }
     else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
@@ -84,23 +85,13 @@ template <> struct WidgetRenderer<float>
 
       value = std::clamp(value, min, max);
 
-      QWidget *control = nullptr;
+      QAbstractSlider *control = nullptr;
 
       if (widget_type == "Slider")
       {
         auto *slider = new QSlider(Qt::Horizontal, widget);
         slider->setRange(range_min, range_max);
         slider->setValue(to_int(value));
-
-        QObject::connect(slider,
-                         &QSlider::valueChanged,
-                         widget,
-                         [&value, widget, from_int, min, max](int v)
-                         {
-                           value = std::clamp(from_int(v), min, max);
-                           Q_EMIT widget->value_changed();
-                         });
-
         control = slider;
       }
       else if (widget_type == "ScrollBar")
@@ -108,16 +99,6 @@ template <> struct WidgetRenderer<float>
         auto *scrollbar = new QScrollBar(Qt::Horizontal, widget);
         scrollbar->setRange(range_min, range_max);
         scrollbar->setValue(to_int(value));
-
-        QObject::connect(scrollbar,
-                         &QScrollBar::valueChanged,
-                         widget,
-                         [&value, widget, from_int, min, max](int v)
-                         {
-                           value = std::clamp(from_int(v), min, max);
-                           Q_EMIT widget->value_changed();
-                         });
-
         control = scrollbar;
       }
       else if (widget_type == "Dial")
@@ -125,18 +106,22 @@ template <> struct WidgetRenderer<float>
         auto *dial = new QDial(widget);
         dial->setRange(range_min, range_max);
         dial->setValue(to_int(value));
-
-        QObject::connect(dial,
-                         &QDial::valueChanged,
-                         widget,
-                         [&value, widget, from_int, min, max](int v)
-                         {
-                           value = std::clamp(from_int(v), min, max);
-                           Q_EMIT widget->value_changed();
-                         });
-
         control = dial;
       }
+
+      QObject::connect(control,
+                       &QAbstractSlider::valueChanged,
+                       widget,
+                       [&value, widget, from_int, min, max](int v)
+                       {
+                         value = std::clamp(from_int(v), min, max);
+                         Q_EMIT widget->value_changed();
+                       });
+
+      QObject::connect(control,
+                       &QAbstractSlider::sliderReleased,
+                       widget,
+                       [widget]() { Q_EMIT widget->edit_ended(); });
 
       layout->addWidget(control);
     }

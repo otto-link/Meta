@@ -59,6 +59,7 @@ template <> struct WidgetRenderer<int>
                        {
                          value = std::clamp(v, min, max);
                          Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
                        });
     }
     else if (widget_type == "EnumComboBox")
@@ -89,6 +90,7 @@ template <> struct WidgetRenderer<int>
                        {
                          value = combo->currentData().toInt();
                          Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
                        });
     }
     else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
@@ -103,23 +105,13 @@ template <> struct WidgetRenderer<int>
 
       value = std::clamp(value, min, max);
 
-      QWidget *control = nullptr;
+      QAbstractSlider *control = nullptr;
 
       if (widget_type == "Slider")
       {
         auto *slider = new QSlider(Qt::Horizontal, widget);
         slider->setRange(min, max);
         slider->setValue(value);
-
-        QObject::connect(slider,
-                         &QSlider::valueChanged,
-                         widget,
-                         [&value, widget, min, max](int v)
-                         {
-                           value = std::clamp(v, min, max);
-                           Q_EMIT widget->value_changed();
-                         });
-
         control = slider;
       }
       else if (widget_type == "ScrollBar")
@@ -127,16 +119,6 @@ template <> struct WidgetRenderer<int>
         auto *scrollbar = new QScrollBar(Qt::Horizontal, widget);
         scrollbar->setRange(min, max);
         scrollbar->setValue(value);
-
-        QObject::connect(scrollbar,
-                         &QScrollBar::valueChanged,
-                         widget,
-                         [&value, widget, min, max](int v)
-                         {
-                           value = std::clamp(v, min, max);
-                           Q_EMIT widget->value_changed();
-                         });
-
         control = scrollbar;
       }
       else if (widget_type == "Dial")
@@ -144,18 +126,22 @@ template <> struct WidgetRenderer<int>
         auto *dial = new QDial(widget);
         dial->setRange(min, max);
         dial->setValue(value);
-
-        QObject::connect(dial,
-                         &QDial::valueChanged,
-                         widget,
-                         [&value, widget, min, max](int v)
-                         {
-                           value = std::clamp(v, min, max);
-                           Q_EMIT widget->value_changed();
-                         });
-
         control = dial;
       }
+
+      QObject::connect(control,
+                       &QAbstractSlider::valueChanged,
+                       widget,
+                       [&value, widget, min, max](int v)
+                       {
+                         value = std::clamp(v, min, max);
+                         Q_EMIT widget->value_changed();
+                       });
+
+      QObject::connect(control,
+                       &QAbstractSlider::sliderReleased,
+                       widget,
+                       [widget]() { Q_EMIT widget->edit_ended(); });
 
       layout->addWidget(control);
     }

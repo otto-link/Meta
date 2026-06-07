@@ -43,6 +43,7 @@ template <> struct WidgetRenderer<bool>
                        {
                          value = checked;
                          Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
                        });
     }
     else if (widget_type == "BinaryButtons")
@@ -92,6 +93,7 @@ template <> struct WidgetRenderer<bool>
                            button_false->setChecked(false);
                            value = true;
                            Q_EMIT widget->value_changed();
+                           Q_EMIT widget->edit_ended();
                          }
                          else
                          {
@@ -110,6 +112,7 @@ template <> struct WidgetRenderer<bool>
                            button_true->setChecked(false);
                            value = false;
                            Q_EMIT widget->value_changed();
+                           Q_EMIT widget->edit_ended();
                          }
                          else
                          {
@@ -132,6 +135,7 @@ template <> struct WidgetRenderer<bool>
                         {
                           value = checked;
                           Q_EMIT widget->value_changed();
+                          Q_EMIT widget->edit_ended();
                         });
     }
     else
