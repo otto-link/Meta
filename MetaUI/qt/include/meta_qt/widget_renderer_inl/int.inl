@@ -38,7 +38,30 @@ template <> struct WidgetRenderer<int>
       layout->addWidget(label);
     }
 
-    if (widget_type == "EnumComboBox")
+    if (widget_type == "Input")
+    {
+      // --- INPUT
+
+      auto *spinbox = new QDoubleSpinBox(widget);
+
+      spinbox->setMinimum(min);
+      spinbox->setMaximum(max);
+      spinbox->setSingleStep(1);
+      spinbox->setValue(std::clamp(value, min, max));
+      spinbox->setDecimals(0);
+
+      layout->addWidget(spinbox);
+
+      QObject::connect(spinbox,
+                       &QDoubleSpinBox::valueChanged,
+                       spinbox,
+                       [&value, widget, min, max](int v)
+                       {
+                         value = std::clamp(v, min, max);
+                         Q_EMIT widget->value_changed();
+                       });
+    }
+    else if (widget_type == "EnumComboBox")
     {
       // --- ENUM COMBO BOX
 
@@ -59,14 +82,14 @@ template <> struct WidgetRenderer<int>
 
       combo->setCurrentIndex(current_index);
 
-      widget->connect(combo,
-                      QOverload<int>::of(&QComboBox::currentIndexChanged),
-                      widget,
-                      [&value, widget, combo](int)
-                      {
-                        value = combo->currentData().toInt();
-                        Q_EMIT widget->value_changed();
-                      });
+      QObject::connect(combo,
+                       QOverload<int>::of(&QComboBox::currentIndexChanged),
+                       widget,
+                       [&value, widget, combo](int)
+                       {
+                         value = combo->currentData().toInt();
+                         Q_EMIT widget->value_changed();
+                       });
     }
     else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
              widget_type == "Dial")

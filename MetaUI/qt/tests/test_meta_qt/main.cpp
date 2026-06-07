@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
   // --- Float
 
-  if (true)
+  if (false)
   {
     {
       auto *a = container.add("float_input", 0.f);
@@ -123,6 +123,11 @@ int main(int argc, char *argv[])
                                                           {1, "Cubic"},
                                                           {2, "Bezier"}};
       a->metadata().add(meta::keys::constraints::enum_items, options);
+    }
+
+    {
+      auto *a = container.add("int_input", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "Input");
     }
 
     {

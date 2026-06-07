@@ -36,14 +36,14 @@ template <> struct WidgetRenderer<bool>
       button->setCheckable(true);
       button->setChecked(value);
 
-      widget->connect(button,
-                      &QPushButton::toggled,
-                      widget,
-                      [widget, &value](bool checked)
-                      {
-                        value = checked;
-                        Q_EMIT widget->value_changed();
-                      });
+      QObject::connect(button,
+                       &QPushButton::toggled,
+                       widget,
+                       [widget, &value](bool checked)
+                       {
+                         value = checked;
+                         Q_EMIT widget->value_changed();
+                       });
     }
     else if (widget_type == "BinaryButtons")
     {
@@ -82,40 +82,40 @@ template <> struct WidgetRenderer<bool>
       button_false->setChecked(!value);
 
       // connect the buttons' clicked signals to update the state
-      widget->connect(button_true,
-                      &QPushButton::clicked,
-                      widget,
-                      [widget, button_true, button_false, &value]()
-                      {
-                        if (button_true->isChecked())
-                        {
-                          button_false->setChecked(false);
-                          value = true;
-                          Q_EMIT widget->value_changed();
-                        }
-                        else
-                        {
-                          // ensure at least one button is always checked
-                          button_true->setChecked(true);
-                        }
-                      });
+      QObject::connect(button_true,
+                       &QPushButton::clicked,
+                       widget,
+                       [widget, button_true, button_false, &value]()
+                       {
+                         if (button_true->isChecked())
+                         {
+                           button_false->setChecked(false);
+                           value = true;
+                           Q_EMIT widget->value_changed();
+                         }
+                         else
+                         {
+                           // ensure at least one button is always checked
+                           button_true->setChecked(true);
+                         }
+                       });
 
-      widget->connect(button_false,
-                      &QPushButton::clicked,
-                      widget,
-                      [widget, button_true, button_false, &value]()
-                      {
-                        if (button_false->isChecked())
-                        {
-                          button_true->setChecked(false);
-                          value = false;
-                          Q_EMIT widget->value_changed();
-                        }
-                        else
-                        {
-                          button_false->setChecked(true);
-                        }
-                      });
+      QObject::connect(button_false,
+                       &QPushButton::clicked,
+                       widget,
+                       [widget, button_true, button_false, &value]()
+                       {
+                         if (button_false->isChecked())
+                         {
+                           button_true->setChecked(false);
+                           value = false;
+                           Q_EMIT widget->value_changed();
+                         }
+                         else
+                         {
+                           button_false->setChecked(true);
+                         }
+                       });
     }
     else if (widget_type == "Checkbox")
     {
