@@ -67,9 +67,16 @@ int main()
 
   container.add("std::vector<std::string>", std::vector<std::string>{"a", "b"});
   container.add("std::vector<bool>", std::vector<bool>{true, false});
+
+  {
+    std::vector<std::pair<int, std::string>> options = {{0, "Linear"},
+							{1, "Cubic"},
+							{2, "Bezier"}};
+    container.add("std::vector<std::pair<int, std::string>>", options);
+  }
 #endif
 
-#ifdef META_ENABLE_STD_TYPES
+#ifdef META_ENABLE_GLM_TYPES
   container.add("glm::vec2", glm::vec2(0.f, 1.f));
   container.add("glm::vec3", glm::vec3(0.f, 1.f, 2.f));
   container.add("glm::vec4", glm::vec4(0.f, 1.f, 2.f, 3.f));

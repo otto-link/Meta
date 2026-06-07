@@ -36,7 +36,7 @@ template <> struct AttributeTraits<std::filesystem::path>
 };
 
 // ---------------------------
-//  Generic vector trait
+//  Generic vector traits
 // ---------------------------
 
 template <typename T> struct AttributeTraits<std::vector<T>>
@@ -62,6 +62,55 @@ template <typename T> struct AttributeTraits<std::vector<T>>
   static std::vector<T> json_from(const nlohmann::json &j)
   {
     return j.get<std::vector<T>>();
+  }
+};
+
+template <typename T, typename U>
+struct AttributeTraits<std::vector<std::pair<T, U>>>
+{
+  using value_type = std::vector<std::pair<T, U>>;
+
+  static std::string to_string(const value_type &v)
+  {
+    std::ostringstream oss;
+
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+      oss << "(" << AttributeTraits<T>::to_string(v[i].first) << ": "
+          << AttributeTraits<U>::to_string(v[i].second) << ")";
+
+      if (i + 1 < v.size()) oss << ", ";
+    }
+
+    return oss.str();
+  }
+
+  static nlohmann::json json_to(const value_type &v)
+  {
+    nlohmann::json j = nlohmann::json::array();
+
+    for (const auto &p : v)
+    {
+      j.push_back({{"value", p.first}, {"label", p.second}});
+    }
+
+    return j;
+  }
+
+  static value_type json_from(const nlohmann::json &j)
+  {
+    value_type result;
+
+    if (!j.is_array()) return result;
+
+    for (const auto &el : j)
+    {
+      if (!el.contains("value") || !el.contains("label")) continue;
+
+      result.emplace_back(el["value"].get<T>(), el["label"].get<U>());
+    }
+
+    return result;
   }
 };
 

@@ -19,3 +19,4 @@ META_DEFINE_TYPE_NAME(std::vector<int>);
 META_DEFINE_TYPE_NAME(std::vector<bool>);
 
 META_DEFINE_TYPE_NAME(std::vector<std::string>);
+META_DEFINE_TYPE_NAME(std::vector<std::pair<int, std::string>>); // for enums

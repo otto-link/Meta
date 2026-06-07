@@ -16,7 +16,8 @@
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute.hpp"
 
-#define META_REGISTER_ATTRIBUTE_TYPE(T) register_attribute_type<T>(#T)
+#define META_REGISTER_ATTRIBUTE_TYPE(...)                                      \
+  register_attribute_type<__VA_ARGS__>(#__VA_ARGS__)
 
 namespace meta
 {

@@ -39,6 +39,7 @@ void register_default_types()
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<bool>);
 
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::string>);
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::pair<int, std::string>>);
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES
