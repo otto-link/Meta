@@ -15,6 +15,7 @@
 #include <nlohmann/json.hpp>
 
 #include "meta/core/meta_object.hpp"
+#include "meta/macrologger.h"
 
 namespace meta
 {
@@ -80,6 +81,48 @@ public:
    * @brief Deserializes the attribute from JSON.
    */
   virtual void json_from(const nlohmann::json &j) = 0;
+
+  /**
+   * @brief Attempts to cast this attribute to the specified derived type.
+   * @return Pointer to the requested type, or nullptr if the cast fails.
+   */
+  template <class T = void> T *try_cast()
+  {
+    T *ptr = dynamic_cast<T *>(this);
+    if (ptr)
+      return ptr;
+    else
+    {
+      LOG_ERROR("in AbstractAttribute::get_ref, trying to get an attribute "
+                "type which is not "
+                "compatible with the current instance. Get type is: %s, "
+                "current type is: %s",
+                typeid(T).name(),
+                type().name());
+      return nullptr;
+    }
+  }
+
+  /**
+   * @brief Attempts to cast this attribute to the specified derived type.
+   * @return Pointer to the requested type, or nullptr if the cast fails.
+   */
+  template <class T = void> const T *try_cast() const
+  {
+    T *ptr = dynamic_cast<T *>(this);
+    if (ptr)
+      return ptr;
+    else
+    {
+      LOG_ERROR("in AbstractAttribute::get_ref, trying to get an attribute "
+                "type which is not "
+                "compatible with the current instance. Get type is: %s, "
+                "current type is: %s",
+                typeid(T).name(),
+                type().name());
+      return nullptr;
+    }
+  }
 };
 
 } // namespace meta
