@@ -93,10 +93,8 @@ public:
       return ptr;
     else
     {
-      LOG_ERROR("in AbstractAttribute::get_ref, trying to get an attribute "
-                "type which is not "
-                "compatible with the current instance. Get type is: %s, "
-                "current type is: %s",
+      LOG_ERROR("trying to get an attribute type which is not compatible with "
+                "the current instance. Get type is: %s, current type is: %s",
                 typeid(T).name(),
                 type().name());
       return nullptr;
@@ -114,10 +112,8 @@ public:
       return ptr;
     else
     {
-      LOG_ERROR("in AbstractAttribute::get_ref, trying to get an attribute "
-                "type which is not "
-                "compatible with the current instance. Get type is: %s, "
-                "current type is: %s",
+      LOG_ERROR("trying to get an attribute type which is not compatible with "
+                "the current instance. Get type is: %s, current type is: %s",
                 typeid(T).name(),
                 type().name());
       return nullptr;
