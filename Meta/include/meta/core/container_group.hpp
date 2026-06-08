@@ -43,6 +43,12 @@ public:
   AttributeContainer &add(const std::string &key);
 
   /**
+   * @brief Get all registered containers.
+   * @return Constant reference to the internal container map.
+   */
+  const ContainerMap &containers() const;
+
+  /**
    * @brief Check whether a container exists.
    */
   bool contains(const std::string &key) const;
@@ -74,6 +80,13 @@ public:
    * @return Pointer to container or nullptr.
    */
   const AttributeContainer *find(const std::string &key) const;
+
+  /**
+   * @brief Get the name of the active container.
+   * @return The current container name if one is selected, otherwise
+   * std::nullopt.
+   */
+  std::optional<std::string> current_container_name() const;
 
   /**
    * @brief Set the active container.

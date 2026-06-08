@@ -19,12 +19,14 @@ template <> struct WidgetRenderer<bool>
 {
   static MetaWidget *render(Attribute<bool> &attr, QWidget *parent)
   {
-    const std::string widget_type = meta::common::widget_type(attr);
+    std::string       widget_type = meta::common::widget_type(attr);
     const std::string label_txt = meta::common::label(attr);
     bool             &value = attr.value();
 
     MetaWidget *widget = make_meta_widget_grid(parent);
     auto       *layout = dynamic_cast<QGridLayout *>(widget->layout());
+
+    if (widget_type.empty()) widget_type = "Toggle";
 
     if (widget_type == "Toggle")
     {

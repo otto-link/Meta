@@ -265,5 +265,36 @@ int main(int argc, char *argv[])
     widget->show();
   }
 
+  meta::ContainerGroup group; // watch for lifetime...
+
+  if (true)
+  {
+    // Create multiple "views" / contexts
+    auto &node_settings = group.add("node_settings");
+    auto &ui_settings = group.add("ui_settings");
+    auto &debug_settings = group.add("debug_settings");
+
+    // Fill node settings
+    node_settings.add("threshold", 0.5f);
+    node_settings.add("iterations", 8);
+    node_settings.add("active", true);
+
+    // Fill UI settings
+    ui_settings.add("theme", std::string("dark"));
+    ui_settings.add("font_size", 14.f);
+    ui_settings.add("show_grid", true);
+
+    // Fill debug settings
+    debug_settings.add("log_level", 2);
+    debug_settings.add("wireframe", false);
+    debug_settings.add("draw_bounds", true);
+
+    meta::qt::MetaWidget *widget = meta::qt::render(
+        group,
+        meta::qt::CategoryPolicy::CP_MERGED);
+
+    widget->show();
+  }
+
   return app.exec();
 }

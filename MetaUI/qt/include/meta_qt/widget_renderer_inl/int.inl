@@ -20,7 +20,7 @@ template <> struct WidgetRenderer<int>
 {
   static MetaWidget *render(Attribute<int> &attr, QWidget *parent)
   {
-    const std::string widget_type = meta::common::widget_type(attr);
+    std::string       widget_type = meta::common::widget_type(attr);
     const std::string label_txt = meta::common::label(attr);
     const std::string format = meta::common::format(attr);
     const int         min = meta::common::min(attr);
@@ -37,6 +37,8 @@ template <> struct WidgetRenderer<int>
       QLabel *label = new QLabel(label_txt.c_str(), widget);
       layout->addWidget(label);
     }
+
+    if (widget_type.empty()) widget_type = "Input";
 
     if (widget_type == "Input")
     {

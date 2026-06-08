@@ -132,7 +132,7 @@ inline std::string category(const AbstractAttribute &attr)
 
 template <typename T> std::string widget_type(const Attribute<T> &attr)
 {
-  return try_get<std::string>(attr, meta::keys::ui::widget_type, "UNDEFINED");
+  return try_get<std::string>(attr, meta::keys::ui::widget_type, std::string{});
 }
 
 } // namespace meta::common

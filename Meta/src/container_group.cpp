@@ -19,6 +19,12 @@ AttributeContainer &ContainerGroup::add(const std::string &key)
   return *it->second;
 }
 
+const std::unordered_map<std::string, std::unique_ptr<AttributeContainer>> &
+ContainerGroup::containers() const
+{
+  return _containers;
+}
+
 bool ContainerGroup::contains(const std::string &key) const
 {
   return _containers.contains(key);
@@ -36,6 +42,16 @@ const AttributeContainer &ContainerGroup::current() const
   if (!_current) throw std::runtime_error("No current container selected");
 
   return *_current;
+}
+
+std::optional<std::string> ContainerGroup::current_container_name() const
+{
+  if (!_current) return std::nullopt;
+
+  for (const auto &[key, container] : _containers)
+    if (container.get() == _current) return key;
+
+  return std::nullopt;
 }
 
 bool ContainerGroup::erase(const std::string &key)

@@ -18,7 +18,7 @@ template <> struct WidgetRenderer<std::string>
 {
   static MetaWidget *render(Attribute<std::string> &attr, QWidget *parent)
   {
-    const std::string widget_type = meta::common::widget_type(attr);
+    std::string       widget_type = meta::common::widget_type(attr);
     const std::string label_txt = meta::common::label(attr);
     const std::vector<std::string> options = meta::common::allowed_values(attr);
 
@@ -32,6 +32,8 @@ template <> struct WidgetRenderer<std::string>
       QLabel *label = new QLabel(label_txt.c_str(), widget);
       layout->addWidget(label);
     }
+
+    if (widget_type.empty()) widget_type = "ComboBox"; // TODO Input
 
     if (widget_type == "ComboBox")
     {
