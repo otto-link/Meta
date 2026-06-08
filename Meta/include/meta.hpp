@@ -6,6 +6,7 @@
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute.hpp"
 #include "meta/core/attribute_container.hpp"
+#include "meta/core/container_group.hpp"
 #include "meta/core/meta_object.hpp"
 #include "meta/serialization/attribute_factory.hpp"
 #include "meta/type/attribute_traits.hpp"

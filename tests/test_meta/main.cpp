@@ -130,5 +130,73 @@ int main()
   std::cout << "\nDeserialized container:\n";
   std::cout << container2.json_to().dump(4) << "\n";
 
+  // ---------------------------------------------------------------------------
+  // Groups
+  // ---------------------------------------------------------------------------
+
+  ContainerGroup group;
+
+  // Create multiple "views" / contexts
+  auto &node_settings = group.add("node_settings");
+  auto &ui_settings = group.add("ui_settings");
+  auto &debug_settings = group.add("debug_settings");
+
+  // Fill node settings
+  node_settings.add("threshold", 0.5f);
+  node_settings.add("iterations", 8);
+  node_settings.add("active", true);
+
+  // Fill UI settings
+  ui_settings.add("theme", std::string("dark"));
+  ui_settings.add("font_size", 14.f);
+  ui_settings.add("show_grid", true);
+
+  // Fill debug settings
+  debug_settings.add("log_level", 2);
+  debug_settings.add("wireframe", false);
+  debug_settings.add("draw_bounds", true);
+
+  // ---------------------------------------------------------------------------
+  // Switch active container (runtime UI context change)
+  // ---------------------------------------------------------------------------
+
+  group.set_current("node_settings");
+
+  std::cout << "\nCurrent (node_settings):\n";
+  std::cout << "threshold = " << group.current().value<float>("threshold")
+            << "\n";
+  std::cout << "iterations = " << group.current().value<int>("iterations")
+            << "\n";
+
+  // Now switch to UI settings (same GUI, different model)
+  group.set_current("ui_settings");
+
+  std::cout << "\nCurrent (ui_settings):\n";
+  std::cout << "theme = " << group.current().value<std::string>("theme")
+            << "\n";
+  std::cout << "font_size = " << group.current().value<float>("font_size")
+            << "\n";
+
+  // Switch again to debug context
+  group.set_current("debug_settings");
+
+  std::cout << "\nCurrent (debug_settings):\n";
+  std::cout << "log_level = " << group.current().value<int>("log_level")
+            << "\n";
+  std::cout << "wireframe = " << group.current().value<bool>("wireframe")
+            << "\n";
+
+  // ---------------------------------------------------------------------------
+  // UI-facing usage pattern (important part)
+  // ---------------------------------------------------------------------------
+  //
+  // This is what your widget system would actually use:
+  // it only sees "group.current()" as the active model.
+
+  AttributeContainer &ui = group.current();
+
+  std::cout << "\nUI-facing access:\n";
+  std::cout << "draw_bounds = " << ui.value<bool>("draw_bounds") << "\n";
+
   return 0;
 }
