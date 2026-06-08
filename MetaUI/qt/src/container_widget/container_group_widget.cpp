@@ -57,12 +57,26 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup &group,
 
 QWidget *ContainerGroupWidget::build_container_widget(const std::string &key)
 {
-  auto *container_widget = new QWidget();
-
   auto *container = group.find(key);
-  if (!container) return container_widget;
 
-  return meta::qt::render(*container, group_policy, root_group_name);
+  if (!container) return new QWidget(); // dummy
+
+  MetaWidget *container_widget = meta::qt::render(*container,
+                                                  group_policy,
+                                                  root_group_name);
+
+  // pass-through signals
+  connect(container_widget,
+          &MetaWidget::value_changed,
+          this,
+          &MetaWidget::value_changed);
+
+  connect(container_widget,
+          &MetaWidget::edit_ended,
+          this,
+          &MetaWidget::edit_ended);
+
+  return container_widget;
 }
 
 void ContainerGroupWidget::sync_stack()

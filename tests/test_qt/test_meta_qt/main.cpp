@@ -293,6 +293,14 @@ int main(int argc, char *argv[])
         group,
         meta::qt::CategoryPolicy::CP_MERGED);
 
+    QObject::connect(widget,
+                     &meta::qt::MetaWidget::value_changed,
+                     []() { std::cout << "value_changed\n"; });
+
+    QObject::connect(widget,
+                     &meta::qt::MetaWidget::edit_ended,
+                     []() { std::cout << "  > edit_changed\n"; });
+
     widget->show();
   }
 
