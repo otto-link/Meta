@@ -92,13 +92,7 @@ public:
     if (ptr)
       return ptr;
     else
-    {
-      LOG_ERROR("trying to get an attribute type which is not compatible with "
-                "the current instance. Get type is: %s, current type is: %s",
-                typeid(T).name(),
-                type().name());
       return nullptr;
-    }
   }
 
   /**
@@ -111,13 +105,7 @@ public:
     if (ptr)
       return ptr;
     else
-    {
-      LOG_ERROR("trying to get an attribute type which is not compatible with "
-                "the current instance. Get type is: %s, current type is: %s",
-                typeid(T).name(),
-                type().name());
       return nullptr;
-    }
   }
 };
 

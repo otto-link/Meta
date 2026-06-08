@@ -123,6 +123,76 @@ public:
    */
   const AbstractAttribute *find(const std::string &name) const;
 
+  /**
+   * @brief Returns a pointer to the attribute value if it exists and has the
+   * requested type.
+   * @return Pointer to the value, or nullptr if the attribute is missing or has
+   * an incompatible type.
+   */
+  template <typename T> T *try_value(const std::string &name)
+  {
+    auto *attr = find(name);
+
+    if (!attr) return nullptr;
+
+    auto *typed = attr->try_cast<Attribute<T>>();
+    return typed ? &typed->value() : nullptr;
+  }
+
+  /**
+   * @brief Returns a pointer to the attribute value if it exists and has the
+   * requested type.
+   * @return Pointer to the value, or nullptr if the attribute is missing or has
+   * an incompatible type.
+   */
+  template <typename T> const T *try_value(const std::string &name) const
+  {
+    auto *attr = find(name);
+
+    if (!attr) return nullptr;
+
+    auto *typed = attr->try_cast<Attribute<T>>();
+    return typed ? &typed->value() : nullptr;
+  }
+
+  /**
+   * @brief Returns the attribute value.
+   * @throws std::out_of_range if the attribute does not exist.
+   * @throws std::runtime_error if the attribute type is incompatible.
+   */
+  template <typename T> T &value(const std::string &name)
+  {
+    if (auto *ptr = try_value<T>(name)) return *ptr;
+
+    auto *attr = find(name);
+
+    if (!attr) throw std::out_of_range("Attribute does not exist: " + name);
+
+    throw std::runtime_error("Attribute '" + name + "' has type '" +
+                             std::string(attr->type().name()) +
+                             "', expected '" + std::string(typeid(T).name()) +
+                             "'");
+  }
+
+  /**
+   * @brief Returns the attribute value.
+   * @throws std::out_of_range if the attribute does not exist.
+   * @throws std::runtime_error if the attribute type is incompatible.
+   */
+  template <typename T> const T &value(const std::string &name) const
+  {
+    if (auto *ptr = try_value<T>(name)) return *ptr;
+
+    auto *attr = find(name);
+
+    if (!attr) throw std::out_of_range("Attribute does not exist: " + name);
+
+    throw std::runtime_error("Attribute '" + name + "' has type '" +
+                             std::string(attr->type().name()) +
+                             "', expected '" + std::string(typeid(T).name()) +
+                             "'");
+  }
+
   // -------------------------------------------------------------------------
   // Iteration
   // -------------------------------------------------------------------------

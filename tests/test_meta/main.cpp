@@ -107,6 +107,11 @@ int main()
   std::cout << "\nSerialized container:\n";
   std::cout << container.json_to().dump(4) << "\n";
 
+  // --- Pass-through
+
+  std::cout << "\nPass through, container level accessor(s):\n";
+  std::cout << "float value: " << container.value<float>("float") << "\n";
+
   // ---------------------------------------------------------------------------
   // Deserialization test
   // ---------------------------------------------------------------------------
