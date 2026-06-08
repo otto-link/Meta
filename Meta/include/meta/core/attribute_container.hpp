@@ -49,28 +49,105 @@ concept StringLike = std::is_same_v<std::decay_t<T>, std::string> ||
                      std::is_same_v<std::decay_t<T>, std::string_view>;
 
 /**
- * @brief Runtime container of named attributes.
+ * @brief Container of named runtime attributes.
  *
  * Provides:
  * - ownership of attributes
  * - fast lookup by name
+ * - type-safe access
  * - iteration support
- * - JSON serialization / deserialization
+ * - JSON serialization/deserialization
  */
 class AttributeContainer
 {
 public:
+  // -------------------------------------------------------------------------
+  // Capacity
+  // -------------------------------------------------------------------------
+
   /**
-   * @brief Create and insert a new attribute.
+   * @brief Returns true if no attributes are stored.
+   */
+  bool empty() const noexcept;
+
+  /**
+   * @brief Returns number of stored attributes.
+   */
+  std::size_t size() const noexcept;
+
+  // -------------------------------------------------------------------------
+  // Iteration
+  // -------------------------------------------------------------------------
+
+  /**
+   * @brief Iterator to first attribute.
+   */
+  AttrIterator begin();
+
+  /**
+   * @brief Iterator to end.
+   */
+  AttrIterator end();
+
+  /**
+   * @brief Const iterator to first attribute.
+   */
+  ConstAttrIterator begin() const;
+
+  /**
+   * @brief Const iterator to end.
+   */
+  ConstAttrIterator end() const;
+
+  /**
+   * @brief Const iterator to first attribute (explicit).
+   */
+  ConstAttrIterator cbegin() const;
+
+  /**
+   * @brief Const iterator to end (explicit).
+   */
+  ConstAttrIterator cend() const;
+
+  // -------------------------------------------------------------------------
+  // Lookup
+  // -------------------------------------------------------------------------
+
+  /**
+   * @brief Returns true if an attribute exists.
+   */
+  bool contains(const std::string &name) const;
+
+  /**
+   * @brief Returns true if all keys exist in the container.
+   */
+  bool contains_all_keys(const std::vector<std::string> &keys);
+
+  /**
+   * @brief Finds an attribute by name.
+   */
+  AbstractAttribute *find(const std::string &name);
+
+  /**
+   * @brief Finds an attribute by name (const).
+   */
+  const AbstractAttribute *find(const std::string &name) const;
+
+  // -------------------------------------------------------------------------
+  // Modification
+  // -------------------------------------------------------------------------
+
+  /**
+   * @brief Removes all attributes.
+   */
+  void clear();
+
+  /**
+   * @brief Creates and inserts a new attribute.
    *
-   * The value is forwarded and stored as `Attribute<std::decay_t<T>>`.
+   * Stores value as Attribute<std::decay_t<T>>.
    *
-   * @tparam T Input value type.
-   * @param name Attribute identifier (must be unique).
-   * @param value Initial value.
-   * @return Pointer to the created attribute.
-   *
-   * @throws std::runtime_error if an attribute with the same name exists.
+   * @throws std::runtime_error if the attribute already exists.
    */
   template <typename T>
     requires(!StringLike<T>)
@@ -91,7 +168,9 @@ public:
     return ptr;
   }
 
-  // to avoid issues with "char const*"
+  /**
+   * @brief Creates and inserts a std::string attribute.
+   */
   Attribute<std::decay_t<std::string>> *add(const std::string &name,
                                             std::string      &&value)
   {
@@ -111,17 +190,9 @@ public:
     return ptr;
   }
 
-  /**
-   * @brief Find attribute by name.
-   * @param name Attribute identifier.
-   * @return Pointer to attribute or nullptr if not found.
-   */
-  AbstractAttribute *find(const std::string &name);
-
-  /**
-   * @brief Find attribute by name (const version).
-   */
-  const AbstractAttribute *find(const std::string &name) const;
+  // -------------------------------------------------------------------------
+  // Accessors
+  // -------------------------------------------------------------------------
 
   /**
    * @brief Returns a pointer to the attribute value if it exists and has the
@@ -194,56 +265,18 @@ public:
   }
 
   // -------------------------------------------------------------------------
-  // Iteration
-  // -------------------------------------------------------------------------
-
-  AttrIterator begin();
-  AttrIterator end();
-
-  ConstAttrIterator begin() const;
-  ConstAttrIterator end() const;
-
-  ConstAttrIterator cbegin() const;
-  ConstAttrIterator cend() const;
-
-  // -------------------------------------------------------------------------
-  // Capacity
-  // -------------------------------------------------------------------------
-
-  /// Number of stored attributes.
-  std::size_t size() const noexcept;
-
-  /// Returns true if no attributes are stored.
-  bool empty() const noexcept;
-
-  // -------------------------------------------------------------------------
-  // Lookup
-  // -------------------------------------------------------------------------
-
-  /// Returns true if an attribute exists.
-  bool contains(const std::string &name) const;
-
-  bool contains_all_keys(const std::vector<std::string> &keys);
-
-  // -------------------------------------------------------------------------
-  // Modification
-  // -------------------------------------------------------------------------
-
-  /// Removes all attributes.
-  void clear();
-
-  // -------------------------------------------------------------------------
   // Serialization
   // -------------------------------------------------------------------------
 
-  /// Serialize all attributes to JSON.
+  /**
+   * @brief Serializes container to JSON.
+   */
   nlohmann::json json_to() const;
 
   /**
-   * @brief Deserialize attributes from JSON.
+   * @brief Deserializes container from JSON.
    *
-   * Existing attributes are updated; missing ones are created
-   * using the attribute factory.
+   * Existing attributes are updated; missing ones are created via factory.
    */
   void json_from(const nlohmann::json &j);
 
