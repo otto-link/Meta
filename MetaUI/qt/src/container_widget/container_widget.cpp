@@ -13,7 +13,7 @@
 namespace meta::qt
 {
 
-std::string compute_flattened_path(GroupNode *node)
+std::string compute_flattened_path(CategoryNode *node)
 {
   std::string path;
 
@@ -34,11 +34,11 @@ std::string compute_flattened_path(GroupNode *node)
   return path;
 }
 
-void insert_attribute(GroupNode         &root,
+void insert_attribute(CategoryNode      &root,
                       const std::string &path,
                       AbstractAttribute *attr)
 {
-  GroupNode *node = &root;
+  CategoryNode *node = &root;
 
   std::stringstream ss(path);
   std::string       part;
@@ -49,7 +49,7 @@ void insert_attribute(GroupNode         &root,
 
     if (!child)
     {
-      child = std::make_unique<GroupNode>();
+      child = std::make_unique<CategoryNode>();
       child->name = part;
     }
 
@@ -59,7 +59,7 @@ void insert_attribute(GroupNode         &root,
   node->attributes.push_back(attr);
 }
 
-void render_flat(GroupNode                 &node,
+void render_flat(CategoryNode              &node,
                  QVBoxLayout               *layout,
                  std::vector<MetaWidget *> &collected_widgets)
 {
@@ -76,9 +76,9 @@ void render_flat(GroupNode                 &node,
     render_flat(*child, layout, collected_widgets);
 }
 
-void render_group(GroupNode                 &node,
-                  QVBoxLayout               *parent_layout,
-                  std::vector<MetaWidget *> &collected_widgets)
+void render_category(CategoryNode              &node,
+                     QVBoxLayout               *parent_layout,
+                     std::vector<MetaWidget *> &collected_widgets)
 {
   QVBoxLayout *current_layout = parent_layout;
 
@@ -90,7 +90,7 @@ void render_group(GroupNode                 &node,
     current_layout = section->content_layout;
   }
 
-  // --- render attributes in this group
+  // --- render attributes in this category
   for (auto *p_attr : node.attributes)
   {
     MetaWidget *w = meta::qt::render(p_attr);
@@ -98,17 +98,17 @@ void render_group(GroupNode                 &node,
     collected_widgets.push_back(w);
   }
 
-  // --- render children groups
+  // --- render children categorys
   for (auto &[name, child] : node.children)
-    render_group(*child, current_layout, collected_widgets);
+    render_category(*child, current_layout, collected_widgets);
 }
 
-void render_group_merged(GroupNode                 &node,
-                         QVBoxLayout               *parent_layout,
-                         std::vector<MetaWidget *> &collected_widgets)
+void render_category_merged(CategoryNode              &node,
+                            QVBoxLayout               *parent_layout,
+                            std::vector<MetaWidget *> &collected_widgets)
 {
-  GroupNode               *current = &node;
-  std::vector<GroupNode *> chain;
+  CategoryNode               *current = &node;
+  std::vector<CategoryNode *> chain;
 
   // build flatten chain correctly
   while (current)
@@ -145,32 +145,32 @@ void render_group_merged(GroupNode                 &node,
     }
 
   // recurse ONLY from last node
-  GroupNode *last = chain.back();
+  CategoryNode *last = chain.back();
 
   for (auto &[name, child] : last->children)
-    render_group_merged(*child, layout, collected_widgets);
+    render_category_merged(*child, layout, collected_widgets);
 }
 
-MetaWidget *render(AttributeContainer  &container,
-                   ContainerGroupPolicy group_policy,
-                   const std::string   &root_group_name,
-                   QWidget             *parent)
+MetaWidget *render(AttributeContainer &container,
+                   CategoryPolicy      category_policy,
+                   const std::string  &root_category_name,
+                   QWidget            *parent)
 {
   // --- Build node tree
 
-  GroupNode root;
+  CategoryNode root;
 
-  if (root_group_name.empty()) root.name = META_ROOT_GROUP;
+  if (root_category_name.empty()) root.name = META_ROOT_CATEGORY;
 
-  bool has_no_groups = true;
+  bool has_no_categorys = true;
 
   for (const auto &[name, sp_attr] : container)
   {
     auto             *attr = sp_attr.get();
-    const std::string group = meta::common::group(*sp_attr);
-    insert_attribute(root, group, attr);
+    const std::string category = meta::common::category(*sp_attr);
+    insert_attribute(root, category, attr);
 
-    has_no_groups &= group.empty();
+    has_no_categorys &= category.empty();
   }
 
   // --- Render
@@ -180,31 +180,31 @@ MetaWidget *render(AttributeContainer  &container,
 
   std::vector<MetaWidget *> collected_widgets;
 
-  switch (group_policy)
+  switch (category_policy)
   {
-  case ContainerGroupPolicy::CGP_TREE:
+  case CategoryPolicy::CP_TREE:
   {
-    render_group(root, layout, collected_widgets);
+    render_category(root, layout, collected_widgets);
   }
   break;
 
-  case ContainerGroupPolicy::CGP_MERGED:
+  case CategoryPolicy::CP_MERGED:
   {
-    render_group_merged(root, layout, collected_widgets);
+    render_category_merged(root, layout, collected_widgets);
   }
   break;
 
-  case ContainerGroupPolicy::CGP_SMART:
+  case CategoryPolicy::CP_SMART:
   {
-    // switch to flat view if no group is defined
-    if (has_no_groups)
+    // switch to flat view if no category is defined
+    if (has_no_categorys)
       render_flat(root, layout, collected_widgets);
     else
-      render_group_merged(root, layout, collected_widgets);
+      render_category_merged(root, layout, collected_widgets);
   }
   break;
 
-  case ContainerGroupPolicy::CGP_FLAT:
+  case CategoryPolicy::CP_FLAT:
   default:
   {
     render_flat(root, layout, collected_widgets);

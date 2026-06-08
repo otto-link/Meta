@@ -10,9 +10,9 @@
 #include "meta/core/attribute_container.hpp"
 
 #define META_DEFAULT_FORMAT "{}"
-#define META_DEFAULT_GROUP ""
-#define META_ROOT_GROUP "Settings"
-#define META_DEFAULT_GROUP_POLICY "flat"
+#define META_DEFAULT_CATEGORY ""
+#define META_ROOT_CATEGORY "Settings"
+#define META_DEFAULT_CATEGORY_POLICY "flat"
 
 namespace meta::keys::constraints
 {
@@ -29,7 +29,7 @@ namespace meta::keys::ui
 {
 
 inline constexpr char format[] = "ui.format";
-inline constexpr char group[] = "ui.group";
+inline constexpr char category[] = "ui.category";
 inline constexpr char label[] = "ui.label";
 inline constexpr char label_true[] = "ui.label_true";
 inline constexpr char label_false[] = "ui.label_false";
@@ -116,14 +116,18 @@ template <typename T> std::string format(const Attribute<T> &attr)
                               META_DEFAULT_FORMAT);
 }
 
-template <typename T> std::string group(const Attribute<T> &attr)
+template <typename T> std::string category(const Attribute<T> &attr)
 {
-  return try_get<std::string>(attr, meta::keys::ui::group, META_DEFAULT_GROUP);
+  return try_get<std::string>(attr,
+                              meta::keys::ui::category,
+                              META_DEFAULT_CATEGORY);
 }
 
-inline std::string group(const AbstractAttribute &attr)
+inline std::string category(const AbstractAttribute &attr)
 {
-  return try_get<std::string>(attr, meta::keys::ui::group, META_DEFAULT_GROUP);
+  return try_get<std::string>(attr,
+                              meta::keys::ui::category,
+                              META_DEFAULT_CATEGORY);
 }
 
 template <typename T> std::string widget_type(const Attribute<T> &attr)

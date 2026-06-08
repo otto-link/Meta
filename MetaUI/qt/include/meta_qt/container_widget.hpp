@@ -11,45 +11,44 @@
 namespace meta::qt
 {
 
-enum ContainerGroupPolicy
+enum CategoryPolicy
 {
-  CGP_FLAT,
-  CGP_TREE,
-  CGP_MERGED,
-  CGP_SMART
+  CP_FLAT,
+  CP_TREE,
+  CP_MERGED,
+  CP_SMART
 };
 
-struct GroupNode
+struct CategoryNode
 {
   std::string name;
 
   std::vector<meta::AbstractAttribute *> attributes;
 
-  std::map<std::string, std::unique_ptr<GroupNode>> children;
+  std::map<std::string, std::unique_ptr<CategoryNode>> children;
 };
 
-void insert_attribute(GroupNode               &root,
+void insert_attribute(CategoryNode            &root,
                       const std::string       &path,
                       meta::AbstractAttribute *p_attr);
 
-std::string compute_flattened_path(GroupNode *node);
+std::string compute_flattened_path(CategoryNode *node);
 
-void render_flat(GroupNode                 &node,
+void render_flat(CategoryNode              &node,
                  QVBoxLayout               *layout,
                  std::vector<MetaWidget *> &collected_widgets);
 
-void render_group(GroupNode                 &node,
+void render_group(CategoryNode              &node,
                   QVBoxLayout               *parent_layout,
                   std::vector<MetaWidget *> &collected_widgets);
 
-void render_group_merged(GroupNode                 &node,
+void render_group_merged(CategoryNode              &node,
                          QVBoxLayout               *parent_layout,
                          std::vector<MetaWidget *> &collected_widgets);
 
-MetaWidget *render(
-    meta::AttributeContainer &container,
-    ContainerGroupPolicy      group_policy = ContainerGroupPolicy::CGP_SMART,
-    const std::string        &root_group_name = "",
-    QWidget                  *parent = nullptr);
+MetaWidget *render(meta::AttributeContainer &container,
+                   CategoryPolicy     group_policy = CategoryPolicy::CP_SMART,
+                   const std::string &root_group_name = "",
+                   QWidget           *parent = nullptr);
 
 } // namespace meta::qt
