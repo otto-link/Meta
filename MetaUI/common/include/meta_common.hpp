@@ -8,34 +8,12 @@
 
 #include "meta/core/attribute.hpp"
 #include "meta/core/attribute_container.hpp"
+#include "meta/metadata/keys.hpp"
 
 #define META_DEFAULT_FORMAT "{}"
 #define META_DEFAULT_CATEGORY ""
 #define META_ROOT_CATEGORY "Settings"
 #define META_DEFAULT_CATEGORY_POLICY "flat"
-
-namespace meta::keys::constraints
-{
-
-inline constexpr char allowed_values[] = "constraints.allowed_values";
-inline constexpr char enum_items[] = "constraints.enum_items";
-inline constexpr char min[] = "constraints.min";
-inline constexpr char max[] = "constraints.max";
-inline constexpr char step[] = "constraints.step";
-
-} // namespace meta::keys::constraints
-
-namespace meta::keys::ui
-{
-
-inline constexpr char format[] = "ui.format";
-inline constexpr char category[] = "ui.category";
-inline constexpr char label[] = "ui.label";
-inline constexpr char label_true[] = "ui.label_true";
-inline constexpr char label_false[] = "ui.label_false";
-inline constexpr char widget_type[] = "ui.widget_type";
-
-} // namespace meta::keys::ui
 
 namespace meta::common
 {
