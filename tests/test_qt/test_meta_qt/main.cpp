@@ -27,19 +27,30 @@ QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
   base->setLayout(layout);
 
   QObject::connect(widget,
+                   &meta::qt::MetaWidget::edit_ended,
+                   base,
+                   [widget, label2, p_attr]()
+                   {
+                     label2->setText(QString::fromStdString(
+                         "Started = " + p_attr->to_string()));
+                   });
+
+  QObject::connect(widget,
                    &meta::qt::MetaWidget::value_changed,
                    base,
-                   [widget, label1, p_attr]() {
+                   [widget, label1, p_attr]()
+                   {
                      label1->setText(QString::fromStdString(
-                         "Value = " + p_attr->to_string()));
+                         " - Value = " + p_attr->to_string()));
                    });
 
   QObject::connect(widget,
                    &meta::qt::MetaWidget::edit_ended,
                    base,
-                   [widget, label2, p_attr]() {
+                   [widget, label2, p_attr]()
+                   {
                      label2->setText(QString::fromStdString(
-                         "Ended = " + p_attr->to_string()));
+                         "   + Ended = " + p_attr->to_string()));
                    });
 
   if (add_border)
@@ -255,12 +266,16 @@ int main(int argc, char *argv[])
         meta::qt::CategoryPolicy::CP_MERGED);
 
     QObject::connect(widget,
+                     &meta::qt::MetaWidget::edit_started,
+                     []() { std::cout << "+ edit_started\n"; });
+
+    QObject::connect(widget,
                      &meta::qt::MetaWidget::value_changed,
-                     []() { std::cout << "value_changed\n"; });
+                     []() { std::cout << "  - value_changed\n"; });
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_ended,
-                     []() { std::cout << "  > edit_changed\n"; });
+                     []() { std::cout << "    > edit_changed\n"; });
 
     widget->show();
   }
@@ -275,7 +290,11 @@ int main(int argc, char *argv[])
     auto &debug_settings = group.add("debug_settings");
 
     // Fill node settings
-    node_settings.add("threshold", 0.5f);
+    auto *a = node_settings.add("threshold", 0.5f);
+    a->metadata().add(meta::keys::constraints::min, 0.f);
+    a->metadata().add(meta::keys::constraints::max, 5.f);
+    a->metadata().add(meta::keys::ui::widget_type, "Slider");
+
     node_settings.add("iterations", 8);
     node_settings.add("active", true);
 
@@ -294,12 +313,16 @@ int main(int argc, char *argv[])
         meta::qt::CategoryPolicy::CP_MERGED);
 
     QObject::connect(widget,
+                     &meta::qt::MetaWidget::edit_started,
+                     []() { std::cout << "+ edit_started\n"; });
+
+    QObject::connect(widget,
                      &meta::qt::MetaWidget::value_changed,
-                     []() { std::cout << "value_changed\n"; });
+                     []() { std::cout << "  - value_changed\n"; });
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_ended,
-                     []() { std::cout << "  > edit_changed\n"; });
+                     []() { std::cout << "    > edit_changed\n"; });
 
     widget->show();
   }

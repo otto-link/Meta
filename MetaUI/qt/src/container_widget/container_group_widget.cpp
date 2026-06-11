@@ -67,6 +67,11 @@ QWidget *ContainerGroupWidget::build_container_widget(const std::string &key)
 
   // pass-through signals
   connect(container_widget,
+          &MetaWidget::edit_started,
+          this,
+          &MetaWidget::edit_started);
+
+  connect(container_widget,
           &MetaWidget::value_changed,
           this,
           &MetaWidget::value_changed);

@@ -60,6 +60,7 @@ template <> struct WidgetRenderer<int>
                        [&value, widget, min, max](int v)
                        {
                          value = std::clamp(v, min, max);
+                         Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
@@ -91,6 +92,7 @@ template <> struct WidgetRenderer<int>
                        [&value, widget, combo](int)
                        {
                          value = combo->currentData().toInt();
+                         Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
@@ -130,6 +132,11 @@ template <> struct WidgetRenderer<int>
         dial->setValue(value);
         control = dial;
       }
+
+      QObject::connect(control,
+                       &QAbstractSlider::sliderPressed,
+                       widget,
+                       [widget]() { Q_EMIT widget->edit_started(); });
 
       QObject::connect(control,
                        &QAbstractSlider::valueChanged,

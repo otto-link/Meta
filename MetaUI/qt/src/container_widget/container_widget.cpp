@@ -216,6 +216,11 @@ MetaWidget *render(AttributeContainer &container,
   for (MetaWidget *w : collected_widgets)
   {
     QObject::connect(w,
+                     &MetaWidget::edit_started,
+                     container_widget,
+                     &MetaWidget::edit_started);
+
+    QObject::connect(w,
                      &MetaWidget::value_changed,
                      container_widget,
                      &MetaWidget::value_changed);

@@ -62,6 +62,7 @@ template <> struct WidgetRenderer<float>
                        [&value, widget, min, max](double v)
                        {
                          value = std::clamp(static_cast<float>(v), min, max);
+                         Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
@@ -110,6 +111,11 @@ template <> struct WidgetRenderer<float>
         dial->setValue(to_int(value));
         control = dial;
       }
+
+      QObject::connect(control,
+                       &QAbstractSlider::sliderPressed,
+                       widget,
+                       [widget]() { Q_EMIT widget->edit_started(); });
 
       QObject::connect(control,
                        &QAbstractSlider::valueChanged,

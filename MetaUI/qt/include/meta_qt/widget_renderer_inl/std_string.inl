@@ -57,6 +57,7 @@ template <> struct WidgetRenderer<std::string>
                        [&value, widget](const QString &text)
                        {
                          value = text.toStdString();
+                         Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
@@ -112,6 +113,7 @@ template <> struct WidgetRenderer<std::string>
           [&value, widget](QAbstractButton *button)
           {
             value = button->text().toStdString();
+            Q_EMIT widget->edit_started();
             Q_EMIT widget->value_changed();
             Q_EMIT widget->edit_ended();
           });

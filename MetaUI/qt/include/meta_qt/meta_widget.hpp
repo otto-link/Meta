@@ -18,6 +18,7 @@ public:
   MetaWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 
 signals:
+  void edit_started();
   void edit_ended();
   void value_changed();
 };

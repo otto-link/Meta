@@ -44,6 +44,7 @@ template <> struct WidgetRenderer<bool>
                        [widget, &value](bool checked)
                        {
                          value = checked;
+                         Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
@@ -94,6 +95,7 @@ template <> struct WidgetRenderer<bool>
                          {
                            button_false->setChecked(false);
                            value = true;
+                           Q_EMIT widget->edit_started();
                            Q_EMIT widget->value_changed();
                            Q_EMIT widget->edit_ended();
                          }
@@ -113,6 +115,7 @@ template <> struct WidgetRenderer<bool>
                          {
                            button_true->setChecked(false);
                            value = false;
+                           Q_EMIT widget->edit_started();
                            Q_EMIT widget->value_changed();
                            Q_EMIT widget->edit_ended();
                          }
@@ -136,6 +139,7 @@ template <> struct WidgetRenderer<bool>
                         [widget, checkbox, &value](bool checked)
                         {
                           value = checked;
+                          Q_EMIT widget->edit_started();
                           Q_EMIT widget->value_changed();
                           Q_EMIT widget->edit_ended();
                         });
