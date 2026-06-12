@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 
     node_settings.add("iterations", 8);
     node_settings.add("active", true);
-    
+
     // Fill UI settings
     ui_settings.add("theme", std::string("dark"));
     ui_settings.add("font_size", 14.f);
@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
     meta::presets::seed(debug_settings, "seed", "Random Seed");
 
     // generate widget
-    
+
     meta::qt::MetaWidget *widget = meta::qt::render(
         group,
         meta::qt::CategoryPolicy::CP_MERGED);

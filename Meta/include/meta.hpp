@@ -8,12 +8,16 @@
 #include "meta/core/attribute_container.hpp"
 #include "meta/core/container_group.hpp"
 #include "meta/core/meta_object.hpp"
-#include "meta/metadata/keys.hpp"
-#include "meta/presets/numeric.hpp"
-#include "meta/serialization/attribute_factory.hpp"
+
 #include "meta/type/attribute_traits.hpp"
 #include "meta/type/type_name.hpp"
+
+#include "meta/serialization/attribute_factory.hpp"
+
 #include "meta/undo_redo/command.hpp"
 #include "meta/undo_redo/command_group.hpp"
 #include "meta/undo_redo/command_stack.hpp"
 #include "meta/undo_redo/set_attribute_command.hpp"
+
+#include "meta/metadata/keys.hpp"
+#include "meta/presets/numeric.hpp"
