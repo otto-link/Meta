@@ -52,6 +52,11 @@ template <typename T> std::vector<T> allowed_values(const Attribute<T> &attr)
                                  {});
 }
 
+template <typename V> float aspect_ratio(const Attribute<V> &attr)
+{
+  return try_get<float>(attr, meta::keys::constraints::aspect_ratio, 0.f);
+}
+
 template <typename T, typename V>
 std::vector<std::pair<T, std::string>> enum_items(const Attribute<V> &attr)
 {
@@ -68,6 +73,13 @@ template <typename T> T min(const Attribute<T> &attr)
                     std::numeric_limits<T>::lowest());
 }
 
+template <typename T, typename V> T min(const Attribute<V> &attr)
+{
+  return try_get<T>(attr,
+                    meta::keys::constraints::min,
+                    std::numeric_limits<T>::lowest());
+}
+
 template <typename T> T max(const Attribute<T> &attr)
 {
   return try_get<T>(attr,
@@ -75,7 +87,26 @@ template <typename T> T max(const Attribute<T> &attr)
                     std::numeric_limits<T>::max());
 }
 
+template <typename T, typename V> T max(const Attribute<V> &attr)
+{
+  return try_get<T>(attr,
+                    meta::keys::constraints::max,
+                    std::numeric_limits<T>::max());
+}
+
+template <typename T, typename V> T power_of_two(const Attribute<V> &attr)
+{
+  return try_get<T>(attr,
+                    meta::keys::constraints::power_of_two,
+                    static_cast<T>(false));
+}
+
 template <typename T> T step(const Attribute<T> &attr)
+{
+  return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));
+}
+
+template <typename T, typename V> T step(const Attribute<V> &attr)
 {
   return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));
 }

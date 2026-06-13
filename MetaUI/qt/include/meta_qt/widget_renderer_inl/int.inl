@@ -25,6 +25,7 @@ template <> struct WidgetRenderer<int>
     const std::string format = meta::common::format(attr);
     const int         min = meta::common::min(attr);
     const int         max = meta::common::max(attr);
+    const int         step = meta::common::step(attr);
     const auto        items = meta::common::enum_items<int>(attr);
 
     int &value = attr.value();
@@ -48,7 +49,7 @@ template <> struct WidgetRenderer<int>
 
       spinbox->setMinimum(min);
       spinbox->setMaximum(max);
-      spinbox->setSingleStep(1);
+      spinbox->setSingleStep(step);
       spinbox->setValue(std::clamp(value, min, max));
       spinbox->setDecimals(0);
 

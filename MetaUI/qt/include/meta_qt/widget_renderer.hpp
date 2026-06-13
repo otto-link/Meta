@@ -46,7 +46,13 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 
 } // namespace meta::qt
 
-#include "widget_renderer_inl/bool.inl"
-#include "widget_renderer_inl/float.inl"
-#include "widget_renderer_inl/int.inl"
-#include "widget_renderer_inl/std_string.inl"
+// /!\ also update widget_renderer.cpp
+
+#include "meta_qt/widget_renderer_inl/bool.inl"
+#include "meta_qt/widget_renderer_inl/float.inl"
+#include "meta_qt/widget_renderer_inl/int.inl"
+#include "meta_qt/widget_renderer_inl/std_string.inl"
+
+#ifdef META_ENABLE_GLM_TYPES
+#include "meta_qt/widget_renderer_inl/glm_ivec2.inl"
+#endif

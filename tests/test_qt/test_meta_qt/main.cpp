@@ -76,7 +76,11 @@ int main(int argc, char *argv[])
   const bool base_int = false;
   const bool base_string = false;
 
-  const bool base_groups = true;
+#ifdef META_ENABLE_GLM_TYPES
+  const bool base_glm_ivec2 = true;
+#endif
+
+  const bool base_groups = false;
 
   // --- Bool
 
@@ -246,11 +250,32 @@ int main(int argc, char *argv[])
     }
   }
 
+  // --- glm::ivec2
+
+#ifdef META_ENABLE_GLM_TYPES
+
+  if (base_glm_ivec2)
+  {
+    {
+      auto *a = container.add("glm::ivec2_free", glm::ivec2(16, 32));
+    }
+
+    {
+      auto *a = container.add("glm::ivec2_constrained", glm::ivec2(16, 32));
+      a->metadata().add(meta::keys::constraints::min, 16);
+      a->metadata().add(meta::keys::constraints::max, int(std::pow(2, 16)));
+      a->metadata().add(meta::keys::constraints::power_of_two, true);
+      a->metadata().add(meta::keys::constraints::aspect_ratio, 4.f);
+    }
+  }
+
+#endif
+
   // --- GUI
 
   QApplication app(argc, argv);
 
-  if (false)
+  if (true)
   {
     // UI
     bool add_border = false;
@@ -259,7 +284,7 @@ int main(int argc, char *argv[])
       make_debug_view(sp_attr.get(), add_border);
   }
 
-  if (true)
+  if (false)
   {
     meta::qt::MetaWidget *widget = meta::qt::render(
         container,
@@ -282,7 +307,7 @@ int main(int argc, char *argv[])
 
   meta::ContainerGroup group; // watch for lifetime...
 
-  if (true)
+  if (false)
   {
     // Create multiple "views" / contexts
     auto &node_settings = group.add("node_settings");

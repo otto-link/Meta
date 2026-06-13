@@ -7,9 +7,11 @@ namespace meta::keys::constraints
 {
 
 inline constexpr char allowed_values[] = "constraints.allowed_values";
+inline constexpr char aspect_ratio[] = "constraints.aspect_ratio";
 inline constexpr char enum_items[] = "constraints.enum_items";
 inline constexpr char min[] = "constraints.min";
 inline constexpr char max[] = "constraints.max";
+inline constexpr char power_of_two[] = "constraints.power_of_two";
 inline constexpr char step[] = "constraints.step";
 
 } // namespace meta::keys::constraints

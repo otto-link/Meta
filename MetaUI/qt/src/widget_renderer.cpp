@@ -34,6 +34,14 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     return WidgetRenderer<std::string>::render(attr, parent);
   }
 
+#ifdef META_ENABLE_GLM_TYPES
+  if (p_attr->type() == typeid(glm::ivec2))
+  {
+    auto &attr = static_cast<Attribute<glm::ivec2> &>(*p_attr);
+    return WidgetRenderer<glm::ivec2>::render(attr, parent);
+  }
+#endif
+
   return nullptr;
 }
 
