@@ -77,7 +77,8 @@ int main(int argc, char *argv[])
   const bool base_string = false;
 
 #ifdef META_ENABLE_GLM_TYPES
-  const bool base_glm_ivec2 = true;
+  const bool base_glm_ivec2 = false;
+  const bool base_glm_vec2 = true;
 #endif
 
   const bool base_groups = false;
@@ -266,6 +267,21 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::constraints::max, int(std::pow(2, 16)));
       a->metadata().add(meta::keys::constraints::power_of_two, true);
       a->metadata().add(meta::keys::constraints::aspect_ratio, 4.f);
+    }
+  }
+
+  if (base_glm_vec2)
+  {
+    {
+      auto *a = container.add("glm::vec2_free", glm::ivec2(16, 32));
+    }
+
+    {
+      auto *a = container.add("glm::vec2_constrained", glm::vec2(16.f, 32.f));
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 64.f);
+      a->metadata().add(meta::keys::constraints::step, 0.1f);
+      a->metadata().add(meta::keys::ui::format, "{:.2f}");
     }
   }
 
