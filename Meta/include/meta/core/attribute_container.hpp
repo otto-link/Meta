@@ -165,6 +165,9 @@ public:
     if (!inserted)
       throw std::runtime_error("Attribute already exists: " + name);
 
+    // keep track of insertion order
+    _insertion_order.push_back(name);
+
     return ptr;
   }
 
@@ -187,12 +190,20 @@ public:
     if (!inserted)
       throw std::runtime_error("Attribute already exists: " + name);
 
+    // keep track of insertion order
+    _insertion_order.push_back(name);
+
     return ptr;
   }
 
   // -------------------------------------------------------------------------
   // Accessors
   // -------------------------------------------------------------------------
+
+  /**
+   * @brief Returns the attribute names in insertion order.
+   */
+  const std::vector<std::string> &insertion_order() const;
 
   /**
    * @brief Returns a pointer to the attribute value if it exists and has the
@@ -281,7 +292,14 @@ public:
   void json_from(const nlohmann::json &j);
 
 private:
-  AttrContainerType _attributes;
+  AttrContainerType        _attributes;
+  std::vector<std::string> _insertion_order;
+
+  /**
+   * @brief Removes stale entries from _insertion_order that no longer exist
+   *        in _attributes (e.g. after external erasure or clear).
+   */
+  void compact_insertion_order();
 };
 
 // -----------------------------------------------------------------------------

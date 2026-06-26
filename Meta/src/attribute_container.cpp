@@ -31,7 +31,21 @@ ConstAttrIterator AttributeContainer::cend() const
   return _attributes.cend();
 }
 
-void AttributeContainer::clear() { _attributes.clear(); }
+void AttributeContainer::clear()
+{
+  _attributes.clear();
+  compact_insertion_order();
+}
+
+void AttributeContainer::compact_insertion_order()
+{
+  _insertion_order.erase(std::remove_if(_insertion_order.begin(),
+                                        _insertion_order.end(),
+                                        [this](const std::string &name) {
+                                          return !_attributes.contains(name);
+                                        }),
+                         _insertion_order.end());
+}
 
 bool AttributeContainer::contains(const std::string &name) const
 {
@@ -62,6 +76,11 @@ const AbstractAttribute *AttributeContainer::find(const std::string &name) const
 {
   auto it = _attributes.find(name);
   return it == _attributes.end() ? nullptr : it->second.get();
+}
+
+const std::vector<std::string> &AttributeContainer::insertion_order() const
+{
+  return _insertion_order;
 }
 
 void AttributeContainer::json_from(const nlohmann::json &j)
