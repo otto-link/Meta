@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
 
   meta::ContainerGroup group; // watch for lifetime...
 
-  if (false)
+  if (true)
   {
     // Create multiple "views" / contexts
     auto &node_settings = group.add("node_settings");
@@ -331,12 +331,19 @@ int main(int argc, char *argv[])
     auto &debug_settings = group.add("debug_settings");
 
     // Fill node settings
-    auto *a = node_settings.add("threshold", 0.5f);
-    a->metadata().add(meta::keys::constraints::min, 0.f);
-    a->metadata().add(meta::keys::constraints::max, 5.f);
-    a->metadata().add(meta::keys::ui::widget_type, "Slider");
+    {
+      auto *a = node_settings.add("threshold", 0.5f);
+      a->metadata().add(meta::keys::constraints::min, 0.f);
+      a->metadata().add(meta::keys::constraints::max, 5.f);
+      a->metadata().add(meta::keys::ui::widget_type, "Slider");
+      a->metadata().add(meta::keys::ui::category, "Base/Something/Category 2");
+    }
 
-    node_settings.add("iterations", 8);
+    {
+      auto *a = node_settings.add("iterations", 8);
+      a->metadata().add(meta::keys::ui::category, "Base/Cat 1");
+    }
+
     node_settings.add("active", true);
 
     // Fill UI settings
