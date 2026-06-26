@@ -49,6 +49,7 @@ void render_group_merged(CategoryNode              &node,
 MetaWidget *render(meta::AttributeContainer &container,
                    CategoryPolicy     group_policy = CategoryPolicy::CP_SMART,
                    const std::string &root_group_name = "",
-                   QWidget           *parent = nullptr);
+                   const std::vector<std::string> &insertion_order = {},
+                   QWidget                        *parent = nullptr);
 
 } // namespace meta::qt

@@ -151,10 +151,11 @@ void render_category_merged(CategoryNode              &node,
     render_category_merged(*child, layout, collected_widgets);
 }
 
-MetaWidget *render(AttributeContainer &container,
-                   CategoryPolicy      category_policy,
-                   const std::string  &root_category_name,
-                   QWidget            *parent)
+MetaWidget *render(AttributeContainer             &container,
+                   CategoryPolicy                  category_policy,
+                   const std::string              &root_category_name,
+                   const std::vector<std::string> &insertion_order,
+                   QWidget                        *parent)
 {
   // --- Build node tree
 
@@ -164,12 +165,23 @@ MetaWidget *render(AttributeContainer &container,
 
   bool has_no_categorys = true;
 
-  for (const auto &[name, sp_attr] : container)
-  {
-    auto             *attr = sp_attr.get();
-    const std::string category = meta::common::category(*sp_attr);
-    insert_attribute(root, category, attr);
+  const std::vector<std::string> &order = insertion_order.empty()
+                                              ? container.insertion_order()
+                                              : insertion_order;
 
+  for (const auto &name : order)
+  {
+    auto *attr = container.find(name);
+
+    if (!attr)
+    {
+      LOG_ERROR("render: attribute '%s' not found in container, skipping",
+                name.c_str());
+      continue;
+    }
+
+    const std::string category = meta::common::category(*attr);
+    insert_attribute(root, category, attr);
     has_no_categorys &= category.empty();
   }
 
