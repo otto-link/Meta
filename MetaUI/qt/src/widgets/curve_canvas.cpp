@@ -223,7 +223,7 @@ void CurveCanvas::mouseReleaseEvent(QMouseEvent *e)
     sort_ctrl();
     drag_idx_ = -1;
     resample();
-    Q_EMIT curve_changed();
+    Q_EMIT drag_ended();
     update();
   }
 }

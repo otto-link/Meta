@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
 #ifdef META_ENABLE_GLM_TYPES
   const bool base_glm_ivec = false;
-  const bool base_glm_vec = false;
+  const bool base_glm_vec = true;
 #endif
 
   const bool base_groups = false;
@@ -342,6 +342,13 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::constraints::max, 64.f);
       a->metadata().add(meta::keys::constraints::step, 0.1f);
       a->metadata().add(meta::keys::ui::format, "{:.2f}");
+    }
+
+    {
+      auto *a = container.add("glm::vec2_xy", glm::vec2(16.f, 32.f));
+      a->metadata().add(meta::keys::ui::widget_type, "XYCanvas");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 64.f);
     }
 
     {

@@ -68,8 +68,12 @@ template <> struct WidgetRenderer<std::vector<float>>
                        {
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
-                         Q_EMIT widget->edit_ended();
                        });
+
+      QObject::connect(canvas,
+                       &CurveCanvas::drag_ended,
+                       widget,
+                       [widget]() { Q_EMIT widget->edit_ended(); });
 
       // reset to identity diagonal.
       QObject::connect(reset_btn,

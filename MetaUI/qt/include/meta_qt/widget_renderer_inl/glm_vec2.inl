@@ -2,6 +2,9 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
+#include <random>
+
+#include "meta_qt/widgets/xy_canvas.hpp"
 
 namespace meta::qt
 {
@@ -16,6 +19,9 @@ template <> struct WidgetRenderer<glm::vec2>
     const float       min = meta::common::min<float>(attr);
     const float       max = meta::common::max<float>(attr);
     const float       step = meta::common::step<float>(attr);
+    const bool        show_grid = meta::common::try_get<bool>(attr,
+                                                       "ui.show_grid",
+                                                       true);
 
     const int decimals = meta::common::try_get_format_decimals(format);
 
@@ -26,7 +32,7 @@ template <> struct WidgetRenderer<glm::vec2>
 
     if (widget_type.empty()) widget_type = "Input";
 
-    if (widget_type == "Input")
+    if (widget_type == "Input") // --- Input
     {
       if (!label_txt.empty())
       {
@@ -87,6 +93,72 @@ template <> struct WidgetRenderer<glm::vec2>
 
                          value.y = y;
 
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+    }
+    else if (widget_type == "XYCanvas") // --- XYCanvas
+    {
+      auto *canvas = new XYCanvas(value, min, max, min, max, show_grid, widget);
+      layout->addWidget(canvas);
+
+      // Button row
+      auto *btn_row = new QHBoxLayout();
+      auto *center_btn = new QPushButton(QObject::tr("Center"), widget);
+      auto *random_btn = new QPushButton(QObject::tr("Random"), widget);
+
+      for (auto *btn : {center_btn, random_btn})
+      {
+        btn->setFixedHeight(22);
+        btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        btn_row->addWidget(btn);
+      }
+      layout->addLayout(btn_row);
+
+      // Fires on every drag step — edit_started + value_changed only.
+      QObject::connect(canvas,
+                       &XYCanvas::value_changed,
+                       widget,
+                       [widget](glm::vec2)
+                       {
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      // Fires once on mouse release — edit_ended.
+      QObject::connect(canvas,
+                       &XYCanvas::drag_ended,
+                       widget,
+                       [widget](glm::vec2) { Q_EMIT widget->edit_ended(); });
+
+      // Center
+      QObject::connect(center_btn,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value, min, max, canvas, widget]()
+                       {
+                         const glm::vec2 center = {(min + max) * 0.5f,
+                                                   (min + max) * 0.5f};
+                         value = center;
+                         canvas->set_value(center);
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+
+      // Random
+      QObject::connect(random_btn,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value, min, max, canvas, widget]()
+                       {
+                         static std::mt19937 rng{std::random_device{}()};
+                         std::uniform_real_distribution<float> dist_x(min, max);
+                         std::uniform_real_distribution<float> dist_y(min, max);
+                         const glm::vec2 rv = {dist_x(rng), dist_y(rng)};
+                         value = rv;
+                         canvas->set_value(rv);
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();

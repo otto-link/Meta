@@ -36,6 +36,7 @@ public:
 
 Q_SIGNALS:
   void curve_changed();
+  void drag_ended();
 
 protected:
   void leaveEvent(QEvent *) override;
