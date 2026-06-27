@@ -57,4 +57,5 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 #include "meta_qt/widget_renderer_inl/glm_ivec2.inl"
 #include "meta_qt/widget_renderer_inl/glm_vec2.inl"
 #include "meta_qt/widget_renderer_inl/glm_vec3.inl"
+#include "meta_qt/widget_renderer_inl/glm_vec4.inl"
 #endif

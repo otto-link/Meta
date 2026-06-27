@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
   if (base_glm_ivec)
   {
     {
-      auto *a = container.add("glm::ivec2_free", glm::ivec2(16, 32));
+      container.add("glm::ivec2_free", glm::ivec2(16, 32));
     }
 
     {
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
   if (base_glm_vec)
   {
     {
-      auto *a = container.add("glm::vec2_free", glm::vec2(16, 32));
+      container.add("glm::vec2_free", glm::vec2(16, 32));
     }
 
     {
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
     }
 
     {
-      auto *a = container.add("glm::vec3", glm::vec3(16.f, 32.f, 64.f));
+      container.add("glm::vec3", glm::vec3(16.f, 32.f, 64.f));
     }
 
     {
@@ -300,8 +300,16 @@ int main(int argc, char *argv[])
     {
       auto *a = container.add("glm::vec3_color", glm::vec3(0.5f, 0.1f, 0.f));
       a->metadata().add(meta::keys::ui::widget_type, "ColorPicker");
-      // a->metadata().add(meta::keys::constraints::min, 0.f);
-      // a->metadata().add(meta::keys::constraints::max, 1.f);
+    }
+
+    {
+      container.add("glm::vec4", glm::vec4(16.f, 32.f, 64.f, 128.f));
+    }
+
+    {
+      auto *a = container.add("glm::vec4_color",
+                              glm::vec4(0.5f, 0.1f, 0.f, 0.5f));
+      a->metadata().add(meta::keys::ui::widget_type, "ColorPicker");
     }
   }
 

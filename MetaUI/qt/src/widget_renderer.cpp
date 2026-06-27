@@ -52,6 +52,12 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     auto &attr = static_cast<Attribute<glm::vec3> &>(*p_attr);
     return WidgetRenderer<glm::vec3>::render(attr, parent);
   }
+
+  if (p_attr->type() == typeid(glm::vec4))
+  {
+    auto &attr = static_cast<Attribute<glm::vec4> &>(*p_attr);
+    return WidgetRenderer<glm::vec4>::render(attr, parent);
+  }
 #endif
 
   return nullptr;
