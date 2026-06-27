@@ -34,6 +34,14 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     return WidgetRenderer<std::string>::render(attr, parent);
   }
 
+#ifdef META_ENABLE_STD_TYPES
+  if (p_attr->type() == typeid(std::filesystem::path))
+  {
+    auto &attr = static_cast<Attribute<std::filesystem::path> &>(*p_attr);
+    return WidgetRenderer<std::filesystem::path>::render(attr, parent);
+  }
+#endif
+
 #ifdef META_ENABLE_GLM_TYPES
   if (p_attr->type() == typeid(glm::ivec2))
   {

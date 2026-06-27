@@ -66,6 +66,11 @@ std::vector<std::pair<T, std::string>> enum_items(const Attribute<V> &attr)
   return std::any_cast<std::vector<std::pair<T, std::string>>>(m->to_any());
 }
 
+inline std::string file_filter(const AbstractAttribute &attr)
+{
+  return try_get<std::string>(attr, meta::keys::constraints::file_filter, "*");
+}
+
 template <typename T> T min(const Attribute<T> &attr)
 {
   return try_get<T>(attr,
@@ -104,6 +109,11 @@ template <typename T, typename V> T power_of_two(const Attribute<V> &attr)
 template <typename T> T step(const Attribute<T> &attr)
 {
   return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));
+}
+
+inline std::string start_dir(const AbstractAttribute &attr)
+{
+  return try_get<std::string>(attr, meta::keys::constraints::start_dir, "");
 }
 
 template <typename T, typename V> T step(const Attribute<V> &attr)

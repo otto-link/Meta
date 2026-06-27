@@ -76,9 +76,13 @@ int main(int argc, char *argv[])
   const bool base_int = false;
   const bool base_string = false;
 
+#ifdef META_ENABLE_STD_TYPES
+  const bool base_std_filesystem_path = true;
+#endif
+
 #ifdef META_ENABLE_GLM_TYPES
   const bool base_glm_ivec = false;
-  const bool base_glm_vec = true;
+  const bool base_glm_vec = false;
 #endif
 
   const bool base_groups = false;
@@ -250,6 +254,34 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::ui::category, "Base/Something/Category 2");
     }
   }
+
+  // --- std
+
+#ifdef META_ENABLE_STD_TYPES
+
+  if (base_std_filesystem_path)
+  {
+    {
+      auto *a = container.add("std::filesystem::path_open",
+                              std::filesystem::path());
+      a->metadata().add(meta::keys::ui::widget_type, "OpenFile");
+      a->metadata().add(meta::keys::constraints::start_dir, ".");
+    }
+
+    {
+      auto *a = container.add("std::filesystem::path_save",
+                              std::filesystem::path("./some_file"));
+      a->metadata().add(meta::keys::ui::widget_type, "SaveFile");
+    }
+
+    {
+      auto *a = container.add("std::filesystem::path_dir",
+                              std::filesystem::path());
+      a->metadata().add(meta::keys::ui::widget_type, "Directory");
+    }
+  }
+
+#endif
 
   // --- glm::ivec2
 
