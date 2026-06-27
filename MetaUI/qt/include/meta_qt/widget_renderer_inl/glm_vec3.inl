@@ -2,6 +2,8 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
+#include <QColorDialog>
+#include <QFontDatabase>
 
 namespace meta::qt
 {
@@ -40,7 +42,7 @@ template <> struct WidgetRenderer<glm::vec3>
       auto *spinbox_y = new QDoubleSpinBox(widget);
       auto *spinbox_z = new QDoubleSpinBox(widget);
 
-      for (auto *sp : {spinbox_x, spinbox_y})
+      for (auto *sp : {spinbox_x, spinbox_y, spinbox_z})
       {
         sp->setRange(min, max);
         sp->setSingleStep(step);
@@ -108,6 +110,96 @@ template <> struct WidgetRenderer<glm::vec3>
                          }
 
                          value.z = z;
+
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+    }
+    else if (widget_type == "ColorPicker")
+    {
+      if (!label_txt.empty())
+      {
+        layout->addWidget(
+            new QLabel(QString::fromStdString(label_txt), widget));
+      }
+
+      auto *row = new QHBoxLayout();
+
+      // Color swatch button — shows current color and opens QColorDialog on
+      // click
+      auto *color_button = new QPushButton(widget);
+      color_button->setFixedSize(48, 24);
+      color_button->setFlat(true);
+
+      auto update_button_color = [color_button](const glm::vec3 &v)
+      {
+        const int r = static_cast<int>(std::clamp(v.x, 0.f, 1.f) * 255.f);
+        const int g = static_cast<int>(std::clamp(v.y, 0.f, 1.f) * 255.f);
+        const int b = static_cast<int>(std::clamp(v.z, 0.f, 1.f) * 255.f);
+        color_button->setStyleSheet(
+            QString("background-color: rgb(%1,%2,%3); border: 1px solid gray;")
+                .arg(r)
+                .arg(g)
+                .arg(b));
+      };
+
+      update_button_color(value);
+      row->addWidget(color_button);
+
+      // Hex label (read-only display)
+      auto *hex_label = new QLabel(widget);
+      hex_label->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
+      auto update_hex_label = [hex_label](const glm::vec3 &v)
+      {
+        const int r = static_cast<int>(std::clamp(v.x, 0.f, 1.f) * 255.f);
+        const int g = static_cast<int>(std::clamp(v.y, 0.f, 1.f) * 255.f);
+        const int b = static_cast<int>(std::clamp(v.z, 0.f, 1.f) * 255.f);
+        hex_label->setText(QString("#%1%2%3")
+                               .arg(r, 2, 16, QChar('0'))
+                               .arg(g, 2, 16, QChar('0'))
+                               .arg(b, 2, 16, QChar('0'))
+                               .toUpper());
+      };
+
+      update_hex_label(value);
+      row->addWidget(hex_label);
+      row->addStretch();
+
+      layout->addLayout(row);
+
+      QObject::connect(color_button,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value,
+                        widget,
+                        color_button,
+                        update_button_color,
+                        update_hex_label]()
+                       {
+                         const int ri = static_cast<int>(
+                             std::clamp(value.x, 0.f, 1.f) * 255.f);
+                         const int gi = static_cast<int>(
+                             std::clamp(value.y, 0.f, 1.f) * 255.f);
+                         const int bi = static_cast<int>(
+                             std::clamp(value.z, 0.f, 1.f) * 255.f);
+                         const QColor initial(ri, gi, bi);
+
+                         const QColor picked = QColorDialog::getColor(
+                             initial,
+                             widget,
+                             QString(),
+                             QColorDialog::DontUseNativeDialog);
+
+                         if (!picked.isValid()) return;
+
+                         value.x = static_cast<float>(picked.redF());
+                         value.y = static_cast<float>(picked.greenF());
+                         value.z = static_cast<float>(picked.blueF());
+
+                         update_button_color(value);
+                         update_hex_label(value);
 
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();

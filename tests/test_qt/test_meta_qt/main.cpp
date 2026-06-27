@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
   const bool base_string = false;
 
 #ifdef META_ENABLE_GLM_TYPES
-  const bool base_glm_ivec2 = false;
-  const bool base_glm_vec2 = true;
+  const bool base_glm_ivec = false;
+  const bool base_glm_vec = true;
 #endif
 
   const bool base_groups = false;
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 
 #ifdef META_ENABLE_GLM_TYPES
 
-  if (base_glm_ivec2)
+  if (base_glm_ivec)
   {
     {
       auto *a = container.add("glm::ivec2_free", glm::ivec2(16, 32));
@@ -270,10 +270,10 @@ int main(int argc, char *argv[])
     }
   }
 
-  if (base_glm_vec2)
+  if (base_glm_vec)
   {
     {
-      auto *a = container.add("glm::vec2_free", glm::ivec2(16, 32));
+      auto *a = container.add("glm::vec2_free", glm::vec2(16, 32));
     }
 
     {
@@ -282,6 +282,26 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::constraints::max, 64.f);
       a->metadata().add(meta::keys::constraints::step, 0.1f);
       a->metadata().add(meta::keys::ui::format, "{:.2f}");
+    }
+
+    {
+      auto *a = container.add("glm::vec3", glm::vec3(16.f, 32.f, 64.f));
+    }
+
+    {
+      auto *a = container.add("glm::vec3_constrained",
+                              glm::vec3(16.f, 32.f, 64.f));
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 64.f);
+      a->metadata().add(meta::keys::constraints::step, 0.1f);
+      a->metadata().add(meta::keys::ui::format, "{:.1f}");
+    }
+
+    {
+      auto *a = container.add("glm::vec3_color", glm::vec3(0.5f, 0.1f, 0.f));
+      a->metadata().add(meta::keys::ui::widget_type, "ColorPicker");
+      // a->metadata().add(meta::keys::constraints::min, 0.f);
+      // a->metadata().add(meta::keys::constraints::max, 1.f);
     }
   }
 
@@ -323,7 +343,7 @@ int main(int argc, char *argv[])
 
   meta::ContainerGroup group; // watch for lifetime...
 
-  if (true)
+  if (false)
   {
     // Create multiple "views" / contexts
     auto &node_settings = group.add("node_settings");
