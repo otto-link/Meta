@@ -55,6 +55,7 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 
 #ifdef META_ENABLE_STD_TYPES
 #include "meta_qt/widget_renderer_inl/std_filesystem_path.inl"
+#include "meta_qt/widget_renderer_inl/std_vector_float.inl"
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES

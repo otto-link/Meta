@@ -74,10 +74,11 @@ int main(int argc, char *argv[])
   const bool base_bool = false;
   const bool base_float = false;
   const bool base_int = false;
-  const bool base_string = true;
+  const bool base_string = false;
 
 #ifdef META_ENABLE_STD_TYPES
   const bool base_std_filesystem_path = false;
+  const bool base_std_vector_float = true;
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES
@@ -297,6 +298,14 @@ int main(int argc, char *argv[])
       auto *a = container.add("std::filesystem::path_dir",
                               std::filesystem::path());
       a->metadata().add(meta::keys::ui::widget_type, "Directory");
+    }
+  }
+
+  if (base_std_vector_float)
+  {
+    {
+      std::vector<float> values = {0.f, 0.1f, 0.75f, 0.5f};
+      container.add("std::vector::float", values);
     }
   }
 

@@ -40,6 +40,12 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     auto &attr = static_cast<Attribute<std::filesystem::path> &>(*p_attr);
     return WidgetRenderer<std::filesystem::path>::render(attr, parent);
   }
+
+  if (p_attr->type() == typeid(std::vector<float>))
+  {
+    auto &attr = static_cast<Attribute<std::vector<float>> &>(*p_attr);
+    return WidgetRenderer<std::vector<float>>::render(attr, parent);
+  }
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES
