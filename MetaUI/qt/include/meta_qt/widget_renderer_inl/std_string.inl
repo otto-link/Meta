@@ -2,17 +2,69 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
+
 #include <QButtonGroup>
 #include <QComboBox>
+#include <QFontDatabase>
 #include <QHBoxLayout>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "meta/type/type_name.hpp"
 #include "meta_common.hpp"
-
 #include "meta_qt/meta_widget.hpp"
 
 namespace meta::qt
 {
+
+namespace helper
+{
+
+// compute a fixed pixel height that fits [n_lines] of text including
+// the frame margin of a QPlainTextEdit.
+inline int plain_text_height(const QPlainTextEdit *te, int n_lines)
+{
+  const int lh = QFontMetrics(te->font()).lineSpacing();
+  // QPlainTextEdit adds ~4 px top + bottom document margin by default.
+  return lh * n_lines + 8;
+}
+
+// apply min/max height constraints to a QPlainTextEdit from metadata.
+inline void apply_height_constraints(QPlainTextEdit         *te,
+                                     Attribute<std::string> &attr,
+                                     int                     default_min,
+                                     int                     default_max)
+{
+  const int min_lines = meta::common::try_get<int>(attr,
+                                                   "ui.min_lines",
+                                                   default_min);
+  const int max_lines = meta::common::try_get<int>(attr,
+                                                   "ui.max_lines",
+                                                   default_max);
+
+  te->setMinimumHeight(plain_text_height(te, min_lines));
+  te->setMaximumHeight(plain_text_height(te, max_lines));
+}
+
+// create a small right-aligned "Apply" button row.  Returns
+// {row_layout, button} - caller adds the row to the parent layout.
+inline std::pair<QHBoxLayout *, QPushButton *> make_apply_button(
+    QWidget *parent)
+{
+  auto *apply_btn = new QPushButton(QObject::tr("Apply"), parent);
+  apply_btn->setFixedHeight(22);
+  apply_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+  auto *btn_row = new QHBoxLayout();
+  btn_row->addStretch();
+  btn_row->addWidget(apply_btn);
+
+  return {btn_row, apply_btn};
+}
+
+} // namespace helper
 
 template <> struct WidgetRenderer<std::string>
 {
@@ -21,34 +73,170 @@ template <> struct WidgetRenderer<std::string>
     std::string       widget_type = meta::common::widget_type(attr);
     const std::string label_txt = meta::common::label(attr);
     const std::vector<std::string> options = meta::common::allowed_values(attr);
+    std::string                   &value = attr.value();
 
-    std::string &value = attr.value();
+    // default widget type: ComboBox when choices exist,
+    // SingleLineText otherwise.
+    if (widget_type.empty())
+      widget_type = options.empty() ? "SingleLineText" : "ComboBox";
 
-    MetaWidget *widget = make_meta_widget_vbox(parent);
-    auto       *layout = static_cast<QHBoxLayout *>(widget->layout());
+    // multi-line widgets need the label on top → VBoxLayout.
+    // Single-line widgets keep the label inline → HBoxLayout (matches
+    // existing style).
+    const bool needs_vbox = (widget_type == "MultilineText" ||
+                             widget_type == "CodeEditor");
+
+    MetaWidget *widget = needs_vbox ? make_meta_widget_vbox(parent)
+                                    : make_meta_widget_hbox(parent);
+
+    // retrieve the layout as QBoxLayout so we can call
+    // addWidget/addLayout without casting twice.
+    auto *layout = static_cast<QBoxLayout *>(widget->layout());
 
     if (!label_txt.empty())
+      layout->addWidget(new QLabel(QString::fromStdString(label_txt), widget));
+
+    if (widget_type == "SingleLineText") // --- SingleLineText
     {
-      QLabel *label = new QLabel(label_txt.c_str(), widget);
-      layout->addWidget(label);
+      const std::string placeholder = meta::common::try_get<std::string>(
+          attr,
+          "ui.placeholder",
+          std::string{});
+      const int max_length = meta::common::try_get<int>(attr,
+                                                        "ui.max_length",
+                                                        0);
+
+      auto *line_edit = new QLineEdit(widget);
+      line_edit->setText(QString::fromStdString(value));
+
+      if (!placeholder.empty())
+        line_edit->setPlaceholderText(QString::fromStdString(placeholder));
+
+      if (max_length > 0) line_edit->setMaxLength(max_length);
+
+      // line edit and Apply button share one row.
+      auto *apply_btn = new QPushButton(QObject::tr("Apply"), widget);
+      apply_btn->setFixedHeight(22);
+      apply_btn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+      auto *row = new QHBoxLayout();
+      row->addWidget(line_edit);
+      row->addWidget(apply_btn);
+      layout->addLayout(row);
+
+      // stage edits; commit only on Apply / Return.
+      auto do_apply = [&value, line_edit, widget]()
+      {
+        value = line_edit->text().toStdString();
+        Q_EMIT widget->edit_started();
+        Q_EMIT widget->value_changed();
+        Q_EMIT widget->edit_ended();
+      };
+
+      QObject::connect(apply_btn, &QPushButton::clicked, widget, do_apply);
+      QObject::connect(line_edit, &QLineEdit::returnPressed, widget, do_apply);
     }
+    else if (widget_type == "MultilineText") // --- MultilineText
+    {
+      const std::string placeholder = meta::common::try_get<std::string>(
+          attr,
+          "ui.placeholder",
+          std::string{});
 
-    if (widget_type.empty()) widget_type = "ComboBox"; // TODO Input
+      auto *text_edit = new QPlainTextEdit(widget);
+      text_edit->setPlainText(QString::fromStdString(value));
 
-    if (widget_type == "ComboBox")
+      if (!placeholder.empty())
+        text_edit->setPlaceholderText(QString::fromStdString(placeholder));
+
+      helper::apply_height_constraints(text_edit, attr, 4, 12);
+
+      layout->addWidget(text_edit);
+
+      auto [btn_row, apply_btn] = helper::make_apply_button(widget);
+      layout->addLayout(btn_row);
+
+      QObject::connect(apply_btn,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value, text_edit, widget]()
+                       {
+                         value = text_edit->toPlainText().toStdString();
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+    }
+    else if (widget_type == "CodeEditor") // --- CodeEditor
+    {
+      const std::string placeholder = meta::common::try_get<std::string>(
+          attr,
+          "ui.placeholder",
+          std::string{});
+      const int tab_width = meta::common::try_get<int>(attr, "ui.tab_width", 4);
+
+      auto *text_edit = new QPlainTextEdit(widget);
+
+      // fixed-pitch font, prefer common coding fonts, fall back to
+      // system fixed
+      QFont code_font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+      for (const char *name : {"JetBrains Mono",
+                               "Fira Code",
+                               "Cascadia Code",
+                               "Consolas",
+                               "DejaVu Sans Mono",
+                               "Courier New"})
+      {
+        QFont f(name);
+        if (QFontInfo(f).fixedPitch())
+        {
+          code_font = f;
+          break;
+        }
+      }
+      code_font.setPointSize(9);
+      text_edit->setFont(code_font);
+
+      // tab stop in pixels = tab_width * advance width of one space.
+      const int space_width = QFontMetrics(code_font).horizontalAdvance(
+          QLatin1Char(' '));
+      text_edit->setTabStopDistance(tab_width * space_width);
+
+      text_edit->setLineWrapMode(QPlainTextEdit::NoWrap);
+      text_edit->setPlainText(QString::fromStdString(value));
+
+      if (!placeholder.empty())
+        text_edit->setPlaceholderText(QString::fromStdString(placeholder));
+
+      helper::apply_height_constraints(text_edit, attr, 6, 24);
+
+      layout->addWidget(text_edit);
+
+      auto [btn_row, apply_btn] = helper::make_apply_button(widget);
+      layout->addLayout(btn_row);
+
+      QObject::connect(apply_btn,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value, text_edit, widget]()
+                       {
+                         value = text_edit->toPlainText().toStdString();
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+    }
+    else if (widget_type == "ComboBox") // ---
     {
       auto *combo = new QComboBox(widget);
       layout->addWidget(combo);
 
       int current_index = -1;
-
       for (size_t i = 0; i < options.size(); ++i)
       {
         combo->addItem(QString::fromStdString(options[i]));
-
         if (options[i] == value) current_index = static_cast<int>(i);
       }
-
       if (current_index >= 0) combo->setCurrentIndex(current_index);
 
       QObject::connect(combo,
@@ -62,10 +250,8 @@ template <> struct WidgetRenderer<std::string>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else if (widget_type == "ButtonGrid")
+    else if (widget_type == "ButtonGrid") // ---
     {
-      // --- Optional columns override
-
       int max_cols = 5;
       if (attr.metadata().contains("ui.columns"))
       {
@@ -76,8 +262,6 @@ template <> struct WidgetRenderer<std::string>
       const int n = static_cast<int>(options.size());
       int ncols = std::min(max_cols, static_cast<int>(std::ceil(std::sqrt(n))));
 
-      // --- Grid + button group
-
       auto *grid = new QGridLayout();
       auto *group = new QButtonGroup(widget);
 
@@ -87,21 +271,15 @@ template <> struct WidgetRenderer<std::string>
         auto *m2 = attr.metadata().find("ui.exclusive");
         exclusive = std::any_cast<bool>(m2->to_any());
       }
-
       group->setExclusive(exclusive);
-
-      // --- Build buttons
 
       for (int i = 0; i < n; ++i)
       {
         const std::string &choice = options[i];
-
         auto *btn = new QPushButton(QString::fromStdString(choice), widget);
         btn->setCheckable(true);
         btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
         if (choice == value) btn->setChecked(true);
-
         group->addButton(btn);
         grid->addWidget(btn, i / ncols, i % ncols);
       }
@@ -120,7 +298,7 @@ template <> struct WidgetRenderer<std::string>
 
       layout->addLayout(grid);
     }
-    else
+    else // ---
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));

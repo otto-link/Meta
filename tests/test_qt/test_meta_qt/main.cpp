@@ -74,10 +74,10 @@ int main(int argc, char *argv[])
   const bool base_bool = false;
   const bool base_float = false;
   const bool base_int = false;
-  const bool base_string = false;
+  const bool base_string = true;
 
 #ifdef META_ENABLE_STD_TYPES
-  const bool base_std_filesystem_path = true;
+  const bool base_std_filesystem_path = false;
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES
@@ -210,6 +210,25 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::ui::widget_type, "ButtonGrid");
       a->metadata().add(meta::keys::constraints::allowed_values, options);
     }
+
+    {
+      auto *a = container.add("string_single_line", "");
+      a->metadata().add(meta::keys::ui::widget_type, "SingleLineText");
+      a->metadata().add("placeholder", "Text goes here...");
+    }
+
+    {
+      auto *a = container.add("string_multiline", "");
+      a->metadata().add(meta::keys::ui::widget_type, "MultilineText");
+      a->metadata().add("ui.placeholder", "Text goes here...");
+      a->metadata().add("ui.min_lines", 12);
+    }
+
+    {
+      auto *a = container.add("string_editor", "");
+      a->metadata().add(meta::keys::ui::widget_type, "CodeEditor");
+      a->metadata().add("ui.min_lines", 24);
+    }
   }
 
   // --- Groups
@@ -265,7 +284,7 @@ int main(int argc, char *argv[])
       auto *a = container.add("std::filesystem::path_open",
                               std::filesystem::path());
       a->metadata().add(meta::keys::ui::widget_type, "OpenFile");
-      a->metadata().add(meta::keys::constraints::start_dir, ".");
+      a->metadata().add("ui.start_dir", ".");
     }
 
     {

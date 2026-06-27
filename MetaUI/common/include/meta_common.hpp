@@ -111,11 +111,6 @@ template <typename T> T step(const Attribute<T> &attr)
   return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));
 }
 
-inline std::string start_dir(const AbstractAttribute &attr)
-{
-  return try_get<std::string>(attr, meta::keys::constraints::start_dir, "");
-}
-
 template <typename T, typename V> T step(const Attribute<V> &attr)
 {
   return try_get<T>(attr, meta::keys::constraints::step, static_cast<T>(1));

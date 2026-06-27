@@ -11,29 +11,6 @@
 namespace meta::qt
 {
 
-// ---------------------------------------------------------------------------
-// Metadata helpers for std::filesystem::path attributes
-//
-// Supported keys (all optional):
-//
-//   "widget_type"  — one of "OpenFile" (default), "SaveFile", "Directory"
-//   "label"        — label shown above the widget (std::string)
-//   "filter"       — Qt file-dialog filter string, e.g.
-//                    "Images (*.png *.jpg);;All Files (*)"
-//                    Ignored when widget_type == "Directory".
-//   "start_dir"    — initial directory shown by the file dialog (std::string).
-//                    Falls back to the current value's parent_path(), then
-//                    QDir::homePath() if neither is set.
-//
-// Usage example:
-//
-//   Attribute<std::filesystem::path> attr;
-//   attr.set_metadata("widget_type", std::string("SaveFile"));
-//   attr.set_metadata("label",       std::string("Output file"));
-//   attr.set_metadata("filter",      std::string("PNG files (*.png);;All Files
-//   (*)"));
-// ---------------------------------------------------------------------------
-
 template <> struct WidgetRenderer<std::filesystem::path>
 {
   static MetaWidget *render(Attribute<std::filesystem::path> &attr,
@@ -42,7 +19,10 @@ template <> struct WidgetRenderer<std::filesystem::path>
     std::string       widget_type = meta::common::widget_type(attr);
     const std::string label_txt = meta::common::label(attr);
     const std::string filter = meta::common::file_filter(attr);
-    const std::string start_dir_meta = meta::common::start_dir(attr);
+    const std::string start_dir_meta = meta::common::try_get<std::string>(
+        attr,
+        "ui.start_dir",
+        "");
 
     std::filesystem::path &value = attr.value();
 

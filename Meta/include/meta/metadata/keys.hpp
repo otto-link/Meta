@@ -13,7 +13,6 @@ inline constexpr char file_filter[] = "constraints.file_filter";
 inline constexpr char min[] = "constraints.min";
 inline constexpr char max[] = "constraints.max";
 inline constexpr char power_of_two[] = "constraints.power_of_two";
-inline constexpr char start_dir[] = "constraints.start_dir";
 inline constexpr char step[] = "constraints.step";
 
 } // namespace meta::keys::constraints
