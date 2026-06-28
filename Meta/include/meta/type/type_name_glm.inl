@@ -19,4 +19,10 @@ META_DEFINE_TYPE_NAME(glm::ivec2);
 META_DEFINE_TYPE_NAME(glm::ivec3);
 META_DEFINE_TYPE_NAME(glm::ivec4);
 
+META_DEFINE_TYPE_NAME(std::vector<glm::vec2>);
 META_DEFINE_TYPE_NAME(std::vector<glm::vec3>);
+META_DEFINE_TYPE_NAME(std::vector<glm::vec4>);
+
+META_DEFINE_TYPE_NAME(std::vector<glm::ivec2>);
+META_DEFINE_TYPE_NAME(std::vector<glm::ivec3>);
+META_DEFINE_TYPE_NAME(std::vector<glm::ivec4>);
