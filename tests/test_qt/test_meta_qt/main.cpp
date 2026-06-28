@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
 #ifdef META_ENABLE_STD_TYPES
   const bool base_std_filesystem_path = false;
-  const bool base_std_vector_float = true;
+  const bool base_std_vector_float = false;
 #endif
 
 #ifdef META_ENABLE_GLM_TYPES
@@ -349,6 +349,15 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::ui::widget_type, "XYCanvas");
       a->metadata().add(meta::keys::constraints::min, -1.f);
       a->metadata().add(meta::keys::constraints::max, 64.f);
+    }
+
+    {
+      auto *a = container.add("glm::vec2_range", glm::vec2(0.f, 1.f));
+      a->metadata().add(meta::keys::ui::widget_type, "RangeBar");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 2.f);
+      a->metadata().add(meta::keys::constraints::step, 0.1f);
+      a->metadata().add(meta::keys::ui::format, "{:.3f}");
     }
 
     {

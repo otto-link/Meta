@@ -4,6 +4,7 @@
 #pragma once
 #include <random>
 
+#include "meta_qt/widgets/range_bar.hpp"
 #include "meta_qt/widgets/xy_canvas.hpp"
 
 namespace meta::qt
@@ -159,6 +160,86 @@ template <> struct WidgetRenderer<glm::vec2>
                          const glm::vec2 rv = {dist_x(rng), dist_y(rng)};
                          value = rv;
                          canvas->set_value(rv);
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+    }
+    else if (widget_type == "RangeBar") // --- RangeBar
+    {
+      auto *bar = new RangeBar(value, min, max, decimals, widget);
+      layout->addWidget(bar);
+
+      // Button row
+      auto *btn_row = new QHBoxLayout();
+      auto *reset_btn = new QPushButton(QObject::tr("Full"), widget);
+      auto *center_btn = new QPushButton(QObject::tr("Center"), widget);
+      auto *unit_btn = new QPushButton(QObject::tr("[0, 1]"), widget);
+
+      for (auto *btn : {reset_btn, center_btn, unit_btn})
+      {
+        btn->setFixedHeight(22);
+        btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        btn_row->addWidget(btn);
+      }
+      layout->addLayout(btn_row);
+
+      // Live drag → edit_started + value_changed
+      QObject::connect(bar,
+                       &RangeBar::value_changed,
+                       widget,
+                       [widget](glm::vec2)
+                       {
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      // Release → edit_ended
+      QObject::connect(bar,
+                       &RangeBar::drag_ended,
+                       widget,
+                       [widget](glm::vec2) { Q_EMIT widget->edit_ended(); });
+
+      // Reset — full domain
+      QObject::connect(reset_btn,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value, min, max, bar, widget]()
+                       {
+                         bar->set_value({min, max});
+                         value = {min, max};
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
+
+      // Center — shift to middle of domain, preserve span
+      QObject::connect(
+          center_btn,
+          &QPushButton::clicked,
+          widget,
+          [&value, min, max, bar, widget]()
+          {
+            const float span = value.y - value.x;
+            const float mid = (min + max) * 0.5f;
+            const float lo = std::clamp(mid - span * 0.5f, min, max - span);
+            bar->set_value({lo, lo + span});
+            value = {lo, lo + span};
+            Q_EMIT widget->edit_started();
+            Q_EMIT widget->value_changed();
+            Q_EMIT widget->edit_ended();
+          });
+
+      // Unit — clamp [0, 1] to domain
+      QObject::connect(unit_btn,
+                       &QPushButton::clicked,
+                       widget,
+                       [&value, min, max, bar, widget]()
+                       {
+                         const float lo = std::clamp(0.f, min, max);
+                         const float hi = std::clamp(1.f, min, max);
+                         bar->set_value({lo, hi});
+                         value = {lo, hi};
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
