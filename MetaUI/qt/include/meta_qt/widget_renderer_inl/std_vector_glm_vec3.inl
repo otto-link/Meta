@@ -32,6 +32,7 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
     const float min_y = meta::common::try_get<float>(attr, "ui.min_y", 0.f);
     const float max_y = meta::common::try_get<float>(attr, "ui.max_y", 1.f);
     const float z_step = meta::common::try_get<float>(attr, "ui.z_step", 0.05f);
+    const bool  closed = meta::common::try_get<bool>(attr, "ui.closed", false);
 
     std::vector<glm::vec3> &value = attr.value();
 
@@ -40,14 +41,25 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
 
     if (widget_type.empty()) widget_type = "PointsEditor";
 
-    if (widget_type == "PointsEditor") // --- PointsEditor
+    const bool is_points = (widget_type == "PointsEditor");
+    const bool is_path = (widget_type == "PathEditor");
+
+    if (is_points || is_path)
     {
       if (!label_txt.empty())
         layout->addWidget(
             new QLabel(QString::fromStdString(label_txt), widget));
 
-      auto *canvas =
-          new PointsCanvas(value, min_x, max_x, min_y, max_y, z_step, widget);
+      auto *canvas = new PointsCanvas(value,
+                                      min_x,
+                                      max_x,
+                                      min_y,
+                                      max_y,
+                                      z_step,
+                                      is_path ? PointsCanvas::Mode::Path
+                                              : PointsCanvas::Mode::Points,
+                                      closed,
+                                      widget);
       layout->addWidget(canvas);
 
       // --- Toolbar
@@ -101,7 +113,7 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
       QObject::connect(rand_btn,
                        &QPushButton::clicked,
                        widget,
-                       [value, canvas]() { canvas->randomize(value.size()); });
+                       [&value, canvas]() { canvas->randomize(value.size()); });
 
       // From CSV
       QObject::connect(csv_btn,

@@ -82,18 +82,17 @@ int main()
   container.add("glm::ivec3", glm::ivec3(0, 1, 2));
   container.add("glm::ivec4", glm::ivec4(0, 1, 2, 3));
 
-
   {
     std::vector<glm::ivec3> values = {glm::ivec3(0, 2, 20),
-				      glm::ivec3(0, 3, 30),
-				      glm::ivec3(0, 4, 40)};
+                                      glm::ivec3(0, 3, 30),
+                                      glm::ivec3(0, 4, 40)};
     container.add("std::vector<glm::ivec3>", values);
   }
 
   {
     std::vector<glm::vec3> values = {glm::vec3(0.1f, 0.2f, 0.1f),
-				     glm::vec3(0.5f, 0.25f, 0.5f),
-				     glm::vec3(0.7f, 0.5f, 1.f)};
+                                     glm::vec3(0.5f, 0.25f, 0.5f),
+                                     glm::vec3(0.7f, 0.5f, 1.f)};
     container.add("std::vector<glm::vec3>", values);
   }
 #endif

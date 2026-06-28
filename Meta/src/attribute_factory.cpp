@@ -52,7 +52,7 @@ void register_default_types()
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::vec2>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::vec3>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::vec4>);
-  
+
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::ivec2>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::ivec3>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::ivec4>);

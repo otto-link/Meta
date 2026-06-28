@@ -9,6 +9,7 @@
 #include <QFontDatabase>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QTextStream>
 #include <QWheelEvent>
 
@@ -23,6 +24,8 @@ PointsCanvas::PointsCanvas(std::vector<glm::vec3> &points,
                            float                   min_y,
                            float                   max_y,
                            float                   z_step,
+                           Mode                    mode,
+                           bool                    closed,
                            QWidget                *parent)
     : QWidget(parent),
       points_(points),
@@ -30,7 +33,9 @@ PointsCanvas::PointsCanvas(std::vector<glm::vec3> &points,
       max_x_(max_x),
       min_y_(min_y),
       max_y_(max_y),
-      z_step_(z_step)
+      z_step_(z_step),
+      mode_(mode),
+      closed_(closed)
 {
   setMinimumSize(200, 180);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -39,18 +44,9 @@ PointsCanvas::PointsCanvas(std::vector<glm::vec3> &points,
   setCursor(Qt::CrossCursor);
 }
 
-QRect PointsCanvas::canvas_rect() const
-{
-  return rect().adjusted(PAD, PAD, -PAD, -PAD);
-}
-
-glm::vec2 PointsCanvas::canvas_to_value(const QPoint &p) const
-{
-  const QRect r = canvas_rect();
-  const float tx = float(p.x() - r.left()) / float(r.width());
-  const float ty = float(r.bottom() - p.y()) / float(r.height());
-  return {min_x_ + tx * (max_x_ - min_x_), min_y_ + ty * (max_y_ - min_y_)};
-}
+// ---------------------------------------------------------------------------
+// Public actions (called by toolbar buttons)
+// ---------------------------------------------------------------------------
 
 void PointsCanvas::clear_all()
 {
@@ -62,30 +58,21 @@ void PointsCanvas::clear_all()
   Q_EMIT drag_ended();
 }
 
-int PointsCanvas::hit_test(const QPoint &pos) const
+void PointsCanvas::randomize(int count)
 {
-  float best_d = HIT_R * HIT_R;
-  int   best_i = -1;
+  std::mt19937                          rng{std::random_device{}()};
+  std::uniform_real_distribution<float> dx(min_x_, max_x_);
+  std::uniform_real_distribution<float> dy(min_y_, max_y_);
+  std::uniform_real_distribution<float> dz(0.f, 1.f);
 
-  for (int i = 0; i < static_cast<int>(points_.size()); ++i)
-  {
-    const QPoint cp = value_to_canvas(points_[i].x, points_[i].y);
-    const float  dx = float(pos.x() - cp.x());
-    const float  dy = float(pos.y() - cp.y());
-    const float  d = dx * dx + dy * dy;
-    if (d < best_d)
-    {
-      best_d = d;
-      best_i = i;
-    }
-  }
-  return best_i;
-}
+  points_.clear();
+  points_.reserve(count);
+  for (int i = 0; i < count; ++i)
+    points_.push_back({dx(rng), dy(rng), dz(rng)});
 
-void PointsCanvas::leaveEvent(QEvent *)
-{
-  hovered_idx_ = -1;
   update();
+  Q_EMIT points_changed();
+  Q_EMIT drag_ended();
 }
 
 void PointsCanvas::load_csv(const QString &path)
@@ -126,71 +113,9 @@ void PointsCanvas::load_csv(const QString &path)
   }
 }
 
-void PointsCanvas::mouseMoveEvent(QMouseEvent *e)
-{
-  if (drag_idx_ >= 0)
-  {
-    const glm::vec2 v = canvas_to_value(e->pos());
-    points_[drag_idx_].x = std::clamp(v.x, min_x_, max_x_);
-    points_[drag_idx_].y = std::clamp(v.y, min_y_, max_y_);
-    moved_during_drag_ = true;
-    update();
-    Q_EMIT points_changed();
-  }
-  else
-  {
-    const int prev = hovered_idx_;
-    hovered_idx_ = hit_test(e->pos());
-    setCursor(hovered_idx_ >= 0 ? Qt::SizeAllCursor : Qt::CrossCursor);
-    if (hovered_idx_ != prev) update();
-  }
-}
-
-void PointsCanvas::mousePressEvent(QMouseEvent *e)
-{
-  if (e->button() == Qt::LeftButton)
-  {
-    const int idx = hit_test(e->pos());
-    if (idx >= 0)
-    {
-      drag_idx_ = idx;
-      moved_during_drag_ = false;
-    }
-    else
-    {
-      // Add new point with z = 1
-      const glm::vec2 v = canvas_to_value(e->pos());
-      points_.push_back({v.x, v.y, 1.f});
-      drag_idx_ = static_cast<int>(points_.size()) - 1;
-      moved_during_drag_ = false;
-      Q_EMIT points_changed();
-      update();
-    }
-  }
-  else if (e->button() == Qt::RightButton)
-  {
-    const int idx = hit_test(e->pos());
-    if (idx >= 0)
-    {
-      points_.erase(points_.begin() + idx);
-      hovered_idx_ = -1;
-      drag_idx_ = -1;
-      update();
-      Q_EMIT points_changed();
-      Q_EMIT drag_ended();
-    }
-  }
-}
-
-void PointsCanvas::mouseReleaseEvent(QMouseEvent *e)
-{
-  if (e->button() == Qt::LeftButton && drag_idx_ >= 0)
-  {
-    if (moved_during_drag_) Q_EMIT drag_ended();
-    drag_idx_ = -1;
-    update();
-  }
-}
+// ---------------------------------------------------------------------------
+// Paint
+// ---------------------------------------------------------------------------
 
 void PointsCanvas::paintEvent(QPaintEvent *)
 {
@@ -220,6 +145,44 @@ void PointsCanvas::paintEvent(QPaintEvent *)
   p.setPen(QPen(palette().color(QPalette::Mid), 1));
   p.setBrush(Qt::NoBrush);
   p.drawRect(r);
+
+  // Path lines (PathEditor mode only)
+  if (mode_ == Mode::Path && points_.size() >= 2)
+  {
+    // Highlight hovered segment (drawn first, underneath the main path)
+    if (hovered_segment_ >= 0)
+    {
+      const int n = static_cast<int>(points_.size());
+      const int j = (hovered_segment_ + 1) % n;
+      QPen      hover_pen(palette().color(QPalette::Highlight), 4);
+      hover_pen.setCapStyle(Qt::RoundCap);
+      p.setPen(hover_pen);
+      p.drawLine(value_to_canvas(points_[hovered_segment_].x,
+                                 points_[hovered_segment_].y),
+                 value_to_canvas(points_[j].x, points_[j].y));
+    }
+
+    QPen path_pen(palette().color(QPalette::Highlight).darker(120), 2);
+    p.setPen(path_pen);
+    p.setBrush(Qt::NoBrush);
+
+    QPainterPath pp;
+    pp.moveTo(value_to_canvas(points_[0].x, points_[0].y));
+    for (int i = 1; i < static_cast<int>(points_.size()); ++i)
+      pp.lineTo(value_to_canvas(points_[i].x, points_[i].y));
+    if (closed_) pp.closeSubpath();
+    p.drawPath(pp);
+
+    // Index labels along the path
+    p.setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+    p.setPen(palette().color(QPalette::Text));
+    for (int i = 0; i < static_cast<int>(points_.size()); ++i)
+    {
+      const QPoint cp = value_to_canvas(points_[i].x, points_[i].y);
+      p.drawText(cp + QPoint(int(POINT_R) + 3, -int(POINT_R)),
+                 QString::number(i));
+    }
+  }
 
   // Points
   for (int i = 0; i < static_cast<int>(points_.size()); ++i)
@@ -277,30 +240,116 @@ void PointsCanvas::paintEvent(QPaintEvent *)
   }
 }
 
-void PointsCanvas::randomize(int count)
+// ---------------------------------------------------------------------------
+// Mouse
+// ---------------------------------------------------------------------------
+
+void PointsCanvas::mousePressEvent(QMouseEvent *e)
 {
-  std::mt19937                          rng{std::random_device{}()};
-  std::uniform_real_distribution<float> dx(min_x_, max_x_);
-  std::uniform_real_distribution<float> dy(min_y_, max_y_);
-  std::uniform_real_distribution<float> dz(0.f, 1.f);
-
-  points_.clear();
-  points_.reserve(count);
-  for (int i = 0; i < count; ++i)
-    points_.push_back({dx(rng), dy(rng), dz(rng)});
-
-  update();
-  Q_EMIT points_changed();
-  Q_EMIT drag_ended();
+  if (e->button() == Qt::LeftButton)
+  {
+    const int idx = hit_test(e->pos());
+    if (idx >= 0)
+    {
+      drag_idx_ = idx;
+      moved_during_drag_ = false;
+    }
+    else
+    {
+      const glm::vec2 v = canvas_to_value(e->pos());
+      if (mode_ == Mode::Path)
+      {
+        // Check whether the click lands near an existing segment.
+        // If so, insert between the two endpoints rather than appending.
+        const int seg_idx = segment_hit_test(e->pos());
+        if (seg_idx >= 0)
+        {
+          // Insert after seg_idx
+          const auto it = points_.begin() + seg_idx + 1;
+          points_.insert(it, {v.x, v.y, 1.f});
+          drag_idx_ = seg_idx + 1;
+        }
+        else
+        {
+          points_.push_back({v.x, v.y, 1.f});
+          drag_idx_ = static_cast<int>(points_.size()) - 1;
+        }
+      }
+      else
+      {
+        points_.push_back({v.x, v.y, 1.f});
+        drag_idx_ = static_cast<int>(points_.size()) - 1;
+      }
+      moved_during_drag_ = false;
+      Q_EMIT points_changed();
+      update();
+    }
+  }
+  else if (e->button() == Qt::RightButton)
+  {
+    const int idx = hit_test(e->pos());
+    if (idx >= 0)
+    {
+      points_.erase(points_.begin() + idx);
+      hovered_idx_ = -1;
+      drag_idx_ = -1;
+      update();
+      Q_EMIT points_changed();
+      Q_EMIT drag_ended();
+    }
+  }
 }
 
-QPoint PointsCanvas::value_to_canvas(float x, float y) const
+void PointsCanvas::mouseMoveEvent(QMouseEvent *e)
 {
-  const QRect r = canvas_rect();
-  const float tx = (x - min_x_) / (max_x_ - min_x_);
-  const float ty = (y - min_y_) / (max_y_ - min_y_);
-  return {r.left() + int(tx * r.width()),
-          r.bottom() - int(ty * r.height())}; // Y flipped
+  if (drag_idx_ >= 0)
+  {
+    const glm::vec2 v = canvas_to_value(e->pos());
+    points_[drag_idx_].x = std::clamp(v.x, min_x_, max_x_);
+    points_[drag_idx_].y = std::clamp(v.y, min_y_, max_y_);
+    moved_during_drag_ = true;
+    update();
+    Q_EMIT points_changed();
+  }
+  else
+  {
+    const int prev_pt = hovered_idx_;
+    const int prev_seg = hovered_segment_;
+    hovered_idx_ = hit_test(e->pos());
+
+    // In Path mode, also track the nearest segment for insert-on-click
+    // feedback. Only highlight a segment when NOT hovering an existing point.
+    if (mode_ == Mode::Path && hovered_idx_ < 0)
+      hovered_segment_ = segment_hit_test(e->pos());
+    else
+      hovered_segment_ = -1;
+
+    if (hovered_idx_ >= 0)
+      setCursor(Qt::SizeAllCursor);
+    else if (hovered_segment_ >= 0)
+      setCursor(Qt::PointingHandCursor); // signals "insert here"
+    else
+      setCursor(Qt::CrossCursor);
+
+    if (hovered_idx_ != prev_pt || hovered_segment_ != prev_seg) update();
+  }
+}
+
+void PointsCanvas::mouseReleaseEvent(QMouseEvent *e)
+{
+  if (e->button() == Qt::LeftButton && drag_idx_ >= 0)
+  {
+    if (moved_during_drag_) Q_EMIT drag_ended();
+    drag_idx_ = -1;
+    update();
+  }
+}
+
+void PointsCanvas::leaveEvent(QEvent *)
+{
+  hovered_idx_ = -1;
+  hovered_segment_ = -1;
+  update();
 }
 
 void PointsCanvas::wheelEvent(QWheelEvent *e)
@@ -315,6 +364,52 @@ void PointsCanvas::wheelEvent(QWheelEvent *e)
   Q_EMIT points_changed();
   Q_EMIT drag_ended(); // treat each scroll tick as a committed edit
   e->accept();
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+QRect PointsCanvas::canvas_rect() const
+{
+  return rect().adjusted(PAD, PAD, -PAD, -PAD);
+}
+
+QPoint PointsCanvas::value_to_canvas(float x, float y) const
+{
+  const QRect r = canvas_rect();
+  const float tx = (x - min_x_) / (max_x_ - min_x_);
+  const float ty = (y - min_y_) / (max_y_ - min_y_);
+  return {r.left() + int(tx * r.width()),
+          r.bottom() - int(ty * r.height())}; // Y flipped
+}
+
+glm::vec2 PointsCanvas::canvas_to_value(const QPoint &p) const
+{
+  const QRect r = canvas_rect();
+  const float tx = float(p.x() - r.left()) / float(r.width());
+  const float ty = float(r.bottom() - p.y()) / float(r.height());
+  return {min_x_ + tx * (max_x_ - min_x_), min_y_ + ty * (max_y_ - min_y_)};
+}
+
+int PointsCanvas::hit_test(const QPoint &pos) const
+{
+  float best_d = HIT_R * HIT_R;
+  int   best_i = -1;
+
+  for (int i = 0; i < static_cast<int>(points_.size()); ++i)
+  {
+    const QPoint cp = value_to_canvas(points_[i].x, points_[i].y);
+    const float  dx = float(pos.x() - cp.x());
+    const float  dy = float(pos.y() - cp.y());
+    const float  d = dx * dx + dy * dy;
+    if (d < best_d)
+    {
+      best_d = d;
+      best_i = i;
+    }
+  }
+  return best_i;
 }
 
 QColor PointsCanvas::z_to_color(float z) const
@@ -347,6 +442,56 @@ QColor PointsCanvas::z_to_color(float z) const
     b = 0.f;
   }
   return QColor(int(r * 255), int(g * 255), int(b * 255));
+}
+
+int PointsCanvas::segment_hit_test(const QPoint &pos) const
+{
+  // For each edge (i → i+1), find the closest point on the segment to pos.
+  // Return index i of the nearest edge whose closest point is within HIT_R,
+  // or -1 if none qualifies.
+  //
+  // In closed-path mode the edge (n-1 → 0) is also tested.
+
+  const int n = static_cast<int>(points_.size());
+  if (n < 2) return -1;
+
+  float best_d2 = HIT_R * HIT_R;
+  int   best_i = -1;
+
+  const int edges = closed_ ? n : n - 1;
+
+  for (int i = 0; i < edges; ++i)
+  {
+    const int j = (i + 1) % n;
+
+    const QPoint a = value_to_canvas(points_[i].x, points_[i].y);
+    const QPoint b = value_to_canvas(points_[j].x, points_[j].y);
+
+    // Parametric closest point on segment AB to P
+    const float abx = float(b.x() - a.x());
+    const float aby = float(b.y() - a.y());
+    const float apx = float(pos.x() - a.x());
+    const float apy = float(pos.y() - a.y());
+    const float ab2 = abx * abx + aby * aby;
+
+    // Degenerate edge (zero length) — skip
+    if (ab2 < 1e-6f) continue;
+
+    const float t = std::clamp((apx * abx + apy * aby) / ab2, 0.f, 1.f);
+    const float cx = float(a.x()) + t * abx;
+    const float cy = float(a.y()) + t * aby;
+    const float dx = float(pos.x()) - cx;
+    const float dy = float(pos.y()) - cy;
+    const float d2 = dx * dx + dy * dy;
+
+    if (d2 < best_d2)
+    {
+      best_d2 = d2;
+      best_i = i;
+    }
+  }
+
+  return best_i;
 }
 
 } // namespace meta::qt

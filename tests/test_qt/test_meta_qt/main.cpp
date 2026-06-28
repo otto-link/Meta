@@ -414,6 +414,14 @@ int main(int argc, char *argv[])
       auto *a = container.add("std::vector<glm::vec3>_points", values);
       a->metadata().add(meta::keys::ui::widget_type, "PointsEditor");
     }
+
+    {
+      std::vector<glm::vec3> values = {glm::vec3(0.1f, 0.2f, 0.1f),
+                                       glm::vec3(0.5f, 0.25f, 0.5f),
+                                       glm::vec3(0.7f, 0.5f, 1.f)};
+      auto *a = container.add("std::vector<glm::vec3>_path", values);
+      a->metadata().add(meta::keys::ui::widget_type, "PathEditor");
+    }
   }
 
 #endif
