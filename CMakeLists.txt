@@ -7,7 +7,6 @@ project(meta-root)
 # -----------------------------------------------------------------------------
 
 option(META_ENABLE_TESTS "" ON)
-option(META_ENABLE_STD_TYPES "Enable built-in STL type registrations" ON)
 option(META_ENABLE_GLM_TYPES "Enable built-in GLM type registrations" ON)
 
 # -----------------------------------------------------------------------------
@@ -22,7 +21,6 @@ option(META_ENABLE_QT_UI "Enable QT UI backend" OFF)
 # -----------------------------------------------------------------------------
 
 message(STATUS "┌─ Meta configuration ────────────────")
-message(STATUS "│ META_ENABLE_STD_TYPES: ${META_ENABLE_STD_TYPES}")
 message(STATUS "│ META_ENABLE_GLM_TYPES: ${META_ENABLE_GLM_TYPES}")
 message(STATUS "│ META_ENABLE_FTXUI_UI:  ${META_ENABLE_FTXUI_UI}")
 message(STATUS "│ META_ENABLE_QT_UI:     ${META_ENABLE_QT_UI}")

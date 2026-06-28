@@ -51,12 +51,10 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 #include "meta_qt/widget_renderer_inl/bool.inl"
 #include "meta_qt/widget_renderer_inl/float.inl"
 #include "meta_qt/widget_renderer_inl/int.inl"
-#include "meta_qt/widget_renderer_inl/std_string.inl"
 
-#ifdef META_ENABLE_STD_TYPES
 #include "meta_qt/widget_renderer_inl/std_filesystem_path.inl"
+#include "meta_qt/widget_renderer_inl/std_string.inl"
 #include "meta_qt/widget_renderer_inl/std_vector_float.inl"
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
 #include "meta_qt/widget_renderer_inl/glm_ivec2.inl"
@@ -64,3 +62,5 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 #include "meta_qt/widget_renderer_inl/glm_vec3.inl"
 #include "meta_qt/widget_renderer_inl/glm_vec4.inl"
 #endif
+
+#include "meta_qt/widget_renderer_inl/std_vector_glm_vec3.inl"

@@ -23,14 +23,13 @@ void register_default_types()
   META_REGISTER_ATTRIBUTE_TYPE(float);
   META_REGISTER_ATTRIBUTE_TYPE(double);
   META_REGISTER_ATTRIBUTE_TYPE(bool);
-  META_REGISTER_ATTRIBUTE_TYPE(std::string);
 
   META_REGISTER_ATTRIBUTE_TYPE(uint8_t);
   META_REGISTER_ATTRIBUTE_TYPE(uint16_t);
   META_REGISTER_ATTRIBUTE_TYPE(uint32_t);
   META_REGISTER_ATTRIBUTE_TYPE(uint64_t);
 
-#ifdef META_ENABLE_STD_TYPES
+  META_REGISTER_ATTRIBUTE_TYPE(std::string);
   META_REGISTER_ATTRIBUTE_TYPE(std::filesystem::path);
 
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<float>);
@@ -40,7 +39,6 @@ void register_default_types()
 
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::string>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::pair<int, std::string>>);
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
   META_REGISTER_ATTRIBUTE_TYPE(glm::vec2);
@@ -50,6 +48,8 @@ void register_default_types()
   META_REGISTER_ATTRIBUTE_TYPE(glm::ivec2);
   META_REGISTER_ATTRIBUTE_TYPE(glm::ivec3);
   META_REGISTER_ATTRIBUTE_TYPE(glm::ivec4);
+
+  META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::vec3>);
 #endif
 }
 

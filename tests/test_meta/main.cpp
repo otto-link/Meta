@@ -55,16 +55,14 @@ int main()
   container.add("double", 1.0);
   container.add("int", 1);
   container.add("bool", true);
-  container.add("std::string", "some text");
 
   container.add("uint8_t", (uint8_t)8);
   container.add("uint16_t", (uint16_t)16);
   container.add("uint32_t", (uint32_t)32);
   container.add("uint64_t", (uint64_t)64);
 
-#ifdef META_ENABLE_STD_TYPES
+  container.add("std::string", "some text");
   container.add("std::filesystem::path", std::filesystem::path("some_path"));
-
   container.add("std::vector<std::string>", std::vector<std::string>{"a", "b"});
   container.add("std::vector<bool>", std::vector<bool>{true, false});
 
@@ -74,7 +72,6 @@ int main()
                                                         {2, "Bezier"}};
     container.add("std::vector<std::pair<int, std::string>>", options);
   }
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
   container.add("glm::vec2", glm::vec2(0.f, 1.f));
@@ -84,6 +81,11 @@ int main()
   container.add("glm::ivec2", glm::ivec2(0, 1));
   container.add("glm::ivec3", glm::ivec3(0, 1, 2));
   container.add("glm::ivec4", glm::ivec4(0, 1, 2, 3));
+
+  std::vector<glm::vec3> values = {glm::vec3(0.1f, 0.2f, 0.1f),
+                                   glm::vec3(0.5f, 0.25f, 0.5f),
+                                   glm::vec3(0.7f, 0.5f, 1.f)};
+  container.add("std::vector<glm::vec3>", values);
 #endif
 
   // --- Metadata example
@@ -118,7 +120,7 @@ int main()
 
   AttributeContainer container2;
 
-  // "basic" types
+  // "built-in" types for serialization
   meta::register_default_types();
 
   // any specific class needs to be registered to the attribute

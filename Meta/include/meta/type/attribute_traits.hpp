@@ -52,10 +52,7 @@ template <typename T> struct AttributeTraits
 // -----------------------------------------------------------------------------
 
 #include "meta/type/attribute_traits_base.inl"
-
-#ifdef META_ENABLE_STD_TYPES
 #include "meta/type/attribute_traits_std.inl"
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
 #include "meta/type/attribute_traits_glm.inl"

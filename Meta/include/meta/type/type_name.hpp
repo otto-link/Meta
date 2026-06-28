@@ -103,11 +103,7 @@ META_DEFINE_TYPE_NAME(uint16_t);
 META_DEFINE_TYPE_NAME(uint32_t);
 META_DEFINE_TYPE_NAME(uint64_t);
 
-META_DEFINE_TYPE_NAME(std::string); // basic need...
-
-#ifdef META_ENABLE_STD_TYPES
 #include "meta/type/type_name_std.inl"
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
 #include "meta/type/type_name_glm.inl"

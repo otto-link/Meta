@@ -17,6 +17,21 @@ namespace meta
 {
 
 /**
+ * @brief Traits specialization for std::string serialization and formatting.
+ */
+template <> struct AttributeTraits<std::string>
+{
+  static std::string to_string(const std::string &v) { return v; }
+
+  static nlohmann::json json_to(const std::string &v) { return v; }
+
+  static std::string json_from(const nlohmann::json &j)
+  {
+    return j.get<std::string>();
+  }
+};
+
+/**
  * @brief Traits specialization for std::filesystem::path serialization and
  * formatting.
  */
@@ -47,8 +62,9 @@ template <typename T> struct AttributeTraits<std::vector<T>>
 
     for (size_t i = 0; i < v.size(); ++i)
     {
+      if (i != 0) oss << ", ";
+
       oss << AttributeTraits<T>::to_string(v[i]);
-      if (i + 1 < v.size()) oss << ", ";
     }
 
     return oss.str();
@@ -56,12 +72,23 @@ template <typename T> struct AttributeTraits<std::vector<T>>
 
   static nlohmann::json json_to(const std::vector<T> &v)
   {
-    return nlohmann::json(v);
+    nlohmann::json j = nlohmann::json::array();
+
+    for (const auto &x : v)
+      j.push_back(AttributeTraits<T>::json_to(x));
+
+    return j;
   }
 
   static std::vector<T> json_from(const nlohmann::json &j)
   {
-    return j.get<std::vector<T>>();
+    std::vector<T> v;
+    v.reserve(j.size());
+
+    for (const auto &x : j)
+      v.push_back(AttributeTraits<T>::json_from(x));
+
+    return v;
   }
 };
 
@@ -76,10 +103,10 @@ struct AttributeTraits<std::vector<std::pair<T, U>>>
 
     for (size_t i = 0; i < v.size(); ++i)
     {
+      if (i != 0) oss << ", ";
+
       oss << "(" << AttributeTraits<T>::to_string(v[i].first) << ": "
           << AttributeTraits<U>::to_string(v[i].second) << ")";
-
-      if (i + 1 < v.size()) oss << ", ";
     }
 
     return oss.str();
@@ -91,7 +118,8 @@ struct AttributeTraits<std::vector<std::pair<T, U>>>
 
     for (const auto &p : v)
     {
-      j.push_back({{"value", p.first}, {"label", p.second}});
+      j.push_back({{"value", AttributeTraits<T>::json_to(p.first)},
+                   {"label", AttributeTraits<U>::json_to(p.second)}});
     }
 
     return j;
@@ -100,14 +128,12 @@ struct AttributeTraits<std::vector<std::pair<T, U>>>
   static value_type json_from(const nlohmann::json &j)
   {
     value_type result;
-
-    if (!j.is_array()) return result;
+    result.reserve(j.size());
 
     for (const auto &el : j)
     {
-      if (!el.contains("value") || !el.contains("label")) continue;
-
-      result.emplace_back(el["value"].get<T>(), el["label"].get<U>());
+      result.emplace_back(AttributeTraits<T>::json_from(el.at("value")),
+                          AttributeTraits<U>::json_from(el.at("label")));
     }
 
     return result;
@@ -120,65 +146,104 @@ struct AttributeTraits<std::vector<std::pair<T, U>>>
 
 template <typename K, typename V> struct AttributeTraits<std::map<K, V>>
 {
-  static std::string to_string(const std::map<K, V> &m)
+  using value_type = std::map<K, V>;
+
+  static std::string to_string(const value_type &m)
   {
-    std::string result;
+    std::ostringstream oss;
 
-    for (auto it = m.begin(); it != m.end(); ++it)
+    bool first = true;
+    for (const auto &[k, v] : m)
     {
-      result += AttributeTraits<K>::to_string(it->first);
-      result += ": ";
-      result += AttributeTraits<V>::to_string(it->second);
+      if (!first) oss << ", ";
 
-      auto next = it;
-      ++next;
-      if (next != m.end()) result += ", ";
+      first = false;
+
+      oss << AttributeTraits<K>::to_string(k) << ": "
+          << AttributeTraits<V>::to_string(v);
     }
 
-    return result;
+    return oss.str();
   }
 
-  static nlohmann::json json_to(const std::map<K, V> &m)
+  static nlohmann::json json_to(const value_type &m)
   {
-    return m; // nlohmann supports map directly
+    nlohmann::json j = nlohmann::json::array();
+
+    for (const auto &[k, v] : m)
+    {
+      j.push_back({{"key", AttributeTraits<K>::json_to(k)},
+                   {"value", AttributeTraits<V>::json_to(v)}});
+    }
+
+    return j;
   }
 
-  static std::map<K, V> json_from(const nlohmann::json &j)
+  static value_type json_from(const nlohmann::json &j)
   {
-    return j.get<std::map<K, V>>();
+    value_type m;
+
+    for (const auto &el : j)
+    {
+      m.emplace(AttributeTraits<K>::json_from(el.at("key")),
+                AttributeTraits<V>::json_from(el.at("value")));
+    }
+
+    return m;
   }
 };
 
 // ---------------------------
-//  Generic map trait
+//  Generic unordered map trait
 // ---------------------------
 
 template <typename K, typename V>
 struct AttributeTraits<std::unordered_map<K, V>>
 {
-  static std::string to_string(const std::unordered_map<K, V> &m)
+  using value_type = std::unordered_map<K, V>;
+
+  static std::string to_string(const value_type &m)
   {
-    std::string result;
+    std::ostringstream oss;
 
-    for (auto it = m.begin(); it != m.end(); ++it)
+    bool first = true;
+    for (const auto &[k, v] : m)
     {
-      result += AttributeTraits<K>::to_string(it->first);
-      result += ": ";
-      result += AttributeTraits<V>::to_string(it->second);
+      if (!first) oss << ", ";
 
-      auto next = it;
-      ++next;
-      if (next != m.end()) result += ", ";
+      first = false;
+
+      oss << AttributeTraits<K>::to_string(k) << ": "
+          << AttributeTraits<V>::to_string(v);
     }
 
-    return result;
+    return oss.str();
   }
 
-  static nlohmann::json json_to(const std::unordered_map<K, V> &m) { return m; }
-
-  static std::unordered_map<K, V> json_from(const nlohmann::json &j)
+  static nlohmann::json json_to(const value_type &m)
   {
-    return j.get<std::unordered_map<K, V>>();
+    nlohmann::json j = nlohmann::json::array();
+
+    for (const auto &[k, v] : m)
+    {
+      j.push_back({{"key", AttributeTraits<K>::json_to(k)},
+                   {"value", AttributeTraits<V>::json_to(v)}});
+    }
+
+    return j;
+  }
+
+  static value_type json_from(const nlohmann::json &j)
+  {
+    value_type m;
+
+    for (const auto &el : j)
+    {
+      m.emplace(AttributeTraits<K>::json_from(el.at("key")),
+                AttributeTraits<V>::json_from(el.at("value")));
+    }
+
+    return m;
   }
 };
 

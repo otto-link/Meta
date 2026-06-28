@@ -7,6 +7,8 @@
  * @copyright Copyright (c) 2026
  */
 #pragma once
+#include <vector>
+
 #include <glm/glm.hpp>
 
 META_DEFINE_TYPE_NAME(glm::vec2);
@@ -16,3 +18,5 @@ META_DEFINE_TYPE_NAME(glm::vec4);
 META_DEFINE_TYPE_NAME(glm::ivec2);
 META_DEFINE_TYPE_NAME(glm::ivec3);
 META_DEFINE_TYPE_NAME(glm::ivec4);
+
+META_DEFINE_TYPE_NAME(std::vector<glm::vec3>);

@@ -9,6 +9,12 @@
 
 // --- Qt helper
 
+std::string truncate(const std::string &s, size_t max_len = 80)
+{
+  if (s.size() <= max_len) return s;
+  return s.substr(0, max_len) + "...";
+}
+
 QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
                          bool                     add_border = false)
 {
@@ -16,9 +22,9 @@ QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
 
   auto *widget = meta::qt::render(p_attr);
   auto *label1 = new QLabel(
-      QString::fromStdString("Value = " + p_attr->to_string()));
+      QString::fromStdString("Value = " + truncate(p_attr->to_string())));
   auto *label2 = new QLabel(
-      QString::fromStdString("Ended = " + p_attr->to_string()));
+      QString::fromStdString("Ended = " + truncate(p_attr->to_string())));
 
   auto *layout = new QVBoxLayout();
   layout->addWidget(widget);
@@ -32,7 +38,7 @@ QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
                    [widget, label2, p_attr]()
                    {
                      label2->setText(QString::fromStdString(
-                         "Started = " + p_attr->to_string()));
+                         "Started = " + truncate(p_attr->to_string())));
                    });
 
   QObject::connect(widget,
@@ -41,7 +47,7 @@ QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
                    [widget, label1, p_attr]()
                    {
                      label1->setText(QString::fromStdString(
-                         " - Value = " + p_attr->to_string()));
+                         " - Value = " + truncate(p_attr->to_string())));
                    });
 
   QObject::connect(widget,
@@ -50,7 +56,7 @@ QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
                    [widget, label2, p_attr]()
                    {
                      label2->setText(QString::fromStdString(
-                         "   + Ended = " + p_attr->to_string()));
+                         "   + Ended = " + truncate(p_attr->to_string())));
                    });
 
   if (add_border)
@@ -73,17 +79,15 @@ int main(int argc, char *argv[])
 
   const bool base_bool = false;
   const bool base_float = false;
-  const bool base_int = true;
-  const bool base_string = false;
+  const bool base_int = false;
 
-#ifdef META_ENABLE_STD_TYPES
+  const bool base_string = false;
   const bool base_std_filesystem_path = false;
   const bool base_std_vector_float = false;
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
   const bool base_glm_ivec = false;
-  const bool base_glm_vec = false;
+  const bool base_glm_vec = true;
 #endif
 
   const bool base_groups = false;
@@ -296,8 +300,6 @@ int main(int argc, char *argv[])
 
   // --- std
 
-#ifdef META_ENABLE_STD_TYPES
-
   if (base_std_filesystem_path)
   {
     {
@@ -327,8 +329,6 @@ int main(int argc, char *argv[])
       container.add("std::vector::float", values);
     }
   }
-
-#endif
 
   // --- glm::ivec2
 
@@ -405,6 +405,14 @@ int main(int argc, char *argv[])
       auto *a = container.add("glm::vec4_color",
                               glm::vec4(0.5f, 0.1f, 0.f, 0.5f));
       a->metadata().add(meta::keys::ui::widget_type, "ColorPicker");
+    }
+
+    {
+      std::vector<glm::vec3> values = {glm::vec3(0.1f, 0.2f, 0.1f),
+                                       glm::vec3(0.5f, 0.25f, 0.5f),
+                                       glm::vec3(0.7f, 0.5f, 1.f)};
+      auto *a = container.add("std::vector<glm::vec3>_points", values);
+      a->metadata().add(meta::keys::ui::widget_type, "PointsEditor");
     }
   }
 

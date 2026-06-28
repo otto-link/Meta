@@ -12,6 +12,7 @@
 #include <vector>
 
 META_DEFINE_TYPE_NAME(std::filesystem::path);
+META_DEFINE_TYPE_NAME(std::string);
 
 META_DEFINE_TYPE_NAME(std::vector<float>);
 META_DEFINE_TYPE_NAME(std::vector<double>);

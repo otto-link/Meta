@@ -34,7 +34,6 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     return WidgetRenderer<std::string>::render(attr, parent);
   }
 
-#ifdef META_ENABLE_STD_TYPES
   if (p_attr->type() == typeid(std::filesystem::path))
   {
     auto &attr = static_cast<Attribute<std::filesystem::path> &>(*p_attr);
@@ -46,7 +45,6 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     auto &attr = static_cast<Attribute<std::vector<float>> &>(*p_attr);
     return WidgetRenderer<std::vector<float>>::render(attr, parent);
   }
-#endif
 
 #ifdef META_ENABLE_GLM_TYPES
   if (p_attr->type() == typeid(glm::ivec2))
@@ -71,6 +69,12 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
   {
     auto &attr = static_cast<Attribute<glm::vec4> &>(*p_attr);
     return WidgetRenderer<glm::vec4>::render(attr, parent);
+  }
+
+  if (p_attr->type() == typeid(std::vector<glm::vec3>))
+  {
+    auto &attr = static_cast<Attribute<std::vector<glm::vec3>> &>(*p_attr);
+    return WidgetRenderer<std::vector<glm::vec3>>::render(attr, parent);
   }
 #endif
 
