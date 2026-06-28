@@ -11,6 +11,8 @@
 #include <QMenu>
 #include <QPainter>
 
+#include "meta/macrologger.h"
+
 #include "meta_qt/widgets/helpers.hpp"
 #include "meta_qt/widgets/slider_int.hpp"
 
@@ -124,6 +126,12 @@ std::string SliderInt::get_value_as_string() const
 
 void SliderInt::mouseDoubleClickEvent(QMouseEvent *)
 {
+  const bool is_bounded = this->vmin != INT_MIN && this->vmax != INT_MAX;
+  const int  delta = is_bounded ? std::max(1,
+                                          (this->vmax - this->vmin) /
+                                              this->style.button_ticks())
+                                : 1;
+
   if (this->is_bar_hovered)
   {
     this->value_edit->setText(QString::number(this->value));
@@ -132,6 +140,14 @@ void SliderInt::mouseDoubleClickEvent(QMouseEvent *)
     this->value_edit->setFocus();
     this->value_edit->selectAll();
     this->update();
+  }
+  else if (this->is_minus_hovered)
+  {
+    if (this->set_value(this->value - delta)) Q_EMIT this->edit_ended();
+  }
+  else if (this->is_plus_hovered)
+  {
+    if (this->set_value(this->value + delta)) Q_EMIT this->edit_ended();
   }
 }
 

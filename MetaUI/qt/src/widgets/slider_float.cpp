@@ -127,6 +127,11 @@ std::string SliderFloat::get_value_as_string() const
 
 void SliderFloat::mouseDoubleClickEvent(QMouseEvent *)
 {
+  const bool  is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
+  const float delta = is_bounded ? (this->vmax - this->vmin) /
+                                       float(this->style.button_ticks())
+                                 : 1.f;
+
   if (this->is_bar_hovered)
   {
     this->value_edit->setText(QString::number(this->value));
@@ -135,6 +140,14 @@ void SliderFloat::mouseDoubleClickEvent(QMouseEvent *)
     this->value_edit->setFocus();
     this->value_edit->selectAll();
     this->update();
+  }
+  else if (this->is_minus_hovered)
+  {
+    if (this->set_value(this->value - delta)) Q_EMIT this->edit_ended();
+  }
+  else if (this->is_plus_hovered)
+  {
+    if (this->set_value(this->value + delta)) Q_EMIT this->edit_ended();
   }
 }
 
