@@ -2,13 +2,14 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
-
 #include <climits>
 #include <deque>
 #include <string>
 
 #include <QLineEdit>
 #include <QWidget>
+
+#include "meta_qt/widgets/style.hpp"
 
 namespace meta::qt
 {
@@ -49,16 +50,11 @@ private:
   void set_is_dragging(bool new_state);
   void update_geometry();
 
-  // --- config ---------------------------------------------------------------
-  static constexpr int   MAX_LABEL_LEN = 32;
+  // --- Config
+  Style style{this};
+
   static constexpr float PPU_UNBOUNDED = 4.f; // px per integer step (unbounded)
   static constexpr float PPU_MULT_FINE = 10.f;
-  static constexpr int   BUTTON_TICKS = 100;
-  static constexpr int   PADDING_V = 6;
-  static constexpr int   PADDING_MIDDLE = 8;
-  static constexpr int   RADIUS = 4;
-  static constexpr int   BORDER_WIDTH = 1;
-  static constexpr int   HOVER_BORDER_WIDTH = 2;
 
   // --- state ----------------------------------------------------------------
   std::string label;

@@ -56,8 +56,8 @@ private:
   // map canvas px → domain point.
   QPointF canvas_to_sample(const QPointF &pt, const QRect &r) const;
 
-  // returns the index of the first control point within hit_radius of pos,
-  // or -1 if none.
+  // returns the index of the first control point within
+  // hit_this->style.border_radius() of pos, or -1 if none.
   int hit_test(const QPoint &pos, const QRect &r) const;
 
   // --- Control point helpers
@@ -87,8 +87,9 @@ private:
 
   static constexpr int   pad_ = 8;       // canvas padding in px
   static constexpr int   max_ctrl_ = 32; // max control points from bootstrap
-  static constexpr float point_r_ = 5.f; // control point radius
-  static constexpr float hit_r_ = 8.f;   // hit-test radius
+  static constexpr float point_r_ =
+      5.f; // control point this->style.border_radius()
+  static constexpr float hit_r_ = 8.f; // hit-test this->style.border_radius()
 };
 
 } // namespace meta::qt

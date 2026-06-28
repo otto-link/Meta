@@ -203,8 +203,9 @@ int main(int argc, char *argv[])
     {
       auto *a = container.add("int_slider_custome", 0);
       a->metadata().add(meta::keys::ui::widget_type, "SliderInt");
-      a->metadata().add(meta::keys::constraints::min, 0);
-      a->metadata().add(meta::keys::constraints::max, INT_MAX);
+      a->metadata().add(meta::keys::constraints::min, -1);
+      // a->metadata().add(meta::keys::constraints::max, INT_MAX);
+      a->metadata().add(meta::keys::constraints::max, 10);
       a->metadata().add("ui.plus_minus", true);
     }
   }

@@ -33,7 +33,7 @@ SliderFloat::SliderFloat(const std::string &label_,
       add_plus_minus_buttons(add_plus_minus_buttons_),
       value_format(value_format_)
 {
-  this->label = helpers::truncate_string(label_, MAX_LABEL_LEN);
+  this->label = helpers::truncate_string(label_, this->style.label_max_len());
 
   this->setMouseTracking(true);
   this->setAttribute(Qt::WA_Hover);
@@ -176,9 +176,9 @@ void SliderFloat::mousePressEvent(QMouseEvent *event)
   if (event->button() == Qt::LeftButton)
   {
     const bool  is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
-    const float delta = is_bounded
-                            ? (this->vmax - this->vmin) / float(BUTTON_TICKS)
-                            : 1.f;
+    const float delta = is_bounded ? (this->vmax - this->vmin) /
+                                         float(this->style.button_ticks())
+                                   : 1.f;
 
     if (this->is_bar_hovered)
     {
@@ -221,8 +221,11 @@ void SliderFloat::paintEvent(QPaintEvent *)
   // Background + border
   p.setBrush(c_bg);
   p.setPen(QPen(this->is_hovered ? c_hover : c_border,
-                this->is_hovered ? HOVER_BORDER_WIDTH : BORDER_WIDTH));
-  p.drawRoundedRect(this->rect(), RADIUS, RADIUS);
+                this->is_hovered ? this->style.border_width_hovered()
+                                 : this->style.border_width()));
+  p.drawRoundedRect(this->rect(),
+                    this->style.border_radius(),
+                    this->style.border_radius());
 
   // Value fill bar
   const bool is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
@@ -242,15 +245,15 @@ void SliderFloat::paintEvent(QPaintEvent *)
         p.drawRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1));
       else
         p.drawRoundedRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1),
-                          RADIUS,
-                          RADIUS);
+                          this->style.border_radius(),
+                          this->style.border_radius());
     }
   }
 
   // +/- button separators
   if (this->add_plus_minus_buttons)
   {
-    p.setPen(QPen(c_border, BORDER_WIDTH));
+    p.setPen(QPen(c_border, this->style.border_width()));
     p.drawLine(QPoint(this->rect_minus.right() + 1, this->rect().top()),
                QPoint(this->rect_minus.right() + 1, this->rect().bottom()));
     p.drawLine(QPoint(this->rect_plus.left() - 1, this->rect().top()),
@@ -321,14 +324,14 @@ void SliderFloat::update_geometry()
 {
   QFontMetrics fm(this->font());
   this->base_dx = fm.horizontalAdvance(QString("M"));
-  this->base_dy = fm.height() + PADDING_V;
+  this->base_dy = fm.height() + this->style.vertical_spacing();
 
   const int label_w = helpers::text_width(this, this->label);
-  this->slider_width = label_w + PADDING_MIDDLE +
+  this->slider_width = label_w + this->style.horizontal_spacing() +
                        10 * fm.horizontalAdvance(QString("0")) +
                        6 * this->base_dx;
 
-  this->slider_width_min = label_w + PADDING_MIDDLE +
+  this->slider_width_min = label_w + this->style.horizontal_spacing() +
                            fm.horizontalAdvance(QString::fromStdString(
                                this->get_value_as_string())) +
                            6 * this->base_dx;

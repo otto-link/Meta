@@ -10,6 +10,8 @@
 #include <QLineEdit>
 #include <QWidget>
 
+#include "meta_qt/widgets/style.hpp"
+
 namespace meta::qt
 {
 
@@ -51,15 +53,10 @@ private:
   void update_geometry();
 
   // --- Config (replaces QSX_CONFIG) TODO / use Qt QStyle
-  static constexpr int   MAX_LABEL_LEN = 32;
+  Style style{this};
+
   static constexpr float PPU_F = 200.f; // pixels-per-unit (unbounded)
   static constexpr float PPU_MULT_FINE = 10.f;
-  static constexpr int   BUTTON_TICKS = 100; // steps across full range
-  static constexpr int   PADDING_V = 6;      // vertical padding (px)
-  static constexpr int   PADDING_MIDDLE = 8;
-  static constexpr int   RADIUS = 4;
-  static constexpr int   BORDER_WIDTH = 1;
-  static constexpr int   HOVER_BORDER_WIDTH = 2;
 
   // --- State
   std::string label;
