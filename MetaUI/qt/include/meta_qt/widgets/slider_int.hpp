@@ -51,7 +51,6 @@ private:
 
   // --- config ---------------------------------------------------------------
   static constexpr int   MAX_LABEL_LEN = 32;
-  static constexpr int   MAX_HISTORY = 8;
   static constexpr float PPU_UNBOUNDED = 4.f; // px per integer step (unbounded)
   static constexpr float PPU_MULT_FINE = 10.f;
   static constexpr int   BUTTON_TICKS = 100;
