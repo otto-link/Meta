@@ -12,6 +12,7 @@
 #include "meta_common.hpp"
 
 #include "meta_qt/meta_widget.hpp"
+#include "meta_qt/widgets/slider_int.hpp"
 
 namespace meta::qt
 {
@@ -27,6 +28,9 @@ template <> struct WidgetRenderer<int>
     const int         max = meta::common::max(attr);
     const int         step = meta::common::step(attr);
     const auto        items = meta::common::enum_items<int>(attr);
+    const bool        plus_minus = meta::common::try_get<bool>(attr,
+                                                        "ui.plus_minus",
+                                                        false);
 
     int &value = attr.value();
 
@@ -154,6 +158,37 @@ template <> struct WidgetRenderer<int>
                        [widget]() { Q_EMIT widget->edit_ended(); });
 
       layout->addWidget(control);
+    }
+    else if (widget_type == "SliderInt") // SliderInt
+    {
+      auto *slider = new SliderInt(label_txt,
+                                   /*value_init=*/value,
+                                   min,
+                                   max,
+                                   plus_minus,
+                                   format,
+                                   widget);
+      slider->set_value(value);
+      layout->addWidget(slider);
+
+      QObject::connect(slider,
+                       &SliderInt::value_changed,
+                       widget,
+                       [&value, slider, widget]()
+                       {
+                         value = slider->get_value();
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      QObject::connect(slider,
+                       &SliderInt::edit_ended,
+                       widget,
+                       [&value, slider, widget]()
+                       {
+                         value = slider->get_value();
+                         Q_EMIT widget->edit_ended();
+                       });
     }
     else
     {

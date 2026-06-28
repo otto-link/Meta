@@ -19,7 +19,7 @@
 namespace meta::qt
 {
 
-namespace helper
+namespace helpers
 {
 
 // compute a fixed pixel height that fits [n_lines] of text including
@@ -64,7 +64,7 @@ inline std::pair<QHBoxLayout *, QPushButton *> make_apply_button(
   return {btn_row, apply_btn};
 }
 
-} // namespace helper
+} // namespace helpers
 
 template <> struct WidgetRenderer<std::string>
 {
@@ -149,11 +149,11 @@ template <> struct WidgetRenderer<std::string>
       if (!placeholder.empty())
         text_edit->setPlaceholderText(QString::fromStdString(placeholder));
 
-      helper::apply_height_constraints(text_edit, attr, 4, 12);
+      helpers::apply_height_constraints(text_edit, attr, 4, 12);
 
       layout->addWidget(text_edit);
 
-      auto [btn_row, apply_btn] = helper::make_apply_button(widget);
+      auto [btn_row, apply_btn] = helpers::make_apply_button(widget);
       layout->addLayout(btn_row);
 
       QObject::connect(apply_btn,
@@ -208,11 +208,11 @@ template <> struct WidgetRenderer<std::string>
       if (!placeholder.empty())
         text_edit->setPlaceholderText(QString::fromStdString(placeholder));
 
-      helper::apply_height_constraints(text_edit, attr, 6, 24);
+      helpers::apply_height_constraints(text_edit, attr, 6, 24);
 
       layout->addWidget(text_edit);
 
-      auto [btn_row, apply_btn] = helper::make_apply_button(widget);
+      auto [btn_row, apply_btn] = helpers::make_apply_button(widget);
       layout->addLayout(btn_row);
 
       QObject::connect(apply_btn,

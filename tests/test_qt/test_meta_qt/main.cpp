@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
   const bool base_bool = false;
   const bool base_float = false;
-  const bool base_int = false;
+  const bool base_int = true;
   const bool base_string = false;
 
 #ifdef META_ENABLE_STD_TYPES
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
 #ifdef META_ENABLE_GLM_TYPES
   const bool base_glm_ivec = false;
-  const bool base_glm_vec = true;
+  const bool base_glm_vec = false;
 #endif
 
   const bool base_groups = false;
@@ -147,6 +147,16 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::constraints::min, -1.f);
       a->metadata().add(meta::keys::constraints::max, 3.f);
     }
+
+    {
+      auto *a = container.add("float_slider_custome", 0.f);
+      a->metadata().add(meta::keys::ui::widget_type, "SliderFloat");
+      a->metadata().add(meta::keys::constraints::min, -1.f);
+      a->metadata().add(meta::keys::constraints::max, 3.f);
+      a->metadata().add(meta::keys::constraints::step, 0.2f);
+      a->metadata().add(meta::keys::ui::format, "{:.2f}");
+      a->metadata().add("ui.plus_minus", true);
+    }
   }
 
   // --- Int
@@ -188,6 +198,14 @@ int main(int argc, char *argv[])
       a->metadata().add(meta::keys::ui::widget_type, "Dial");
       a->metadata().add(meta::keys::constraints::min, -1);
       a->metadata().add(meta::keys::constraints::max, 3);
+    }
+
+    {
+      auto *a = container.add("int_slider_custome", 0);
+      a->metadata().add(meta::keys::ui::widget_type, "SliderInt");
+      a->metadata().add(meta::keys::constraints::min, 0);
+      a->metadata().add(meta::keys::constraints::max, INT_MAX);
+      a->metadata().add("ui.plus_minus", true);
     }
   }
 

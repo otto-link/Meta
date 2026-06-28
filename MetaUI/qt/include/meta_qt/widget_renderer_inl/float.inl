@@ -15,6 +15,7 @@
 #include "meta_common.hpp"
 
 #include "meta_qt/meta_widget.hpp"
+#include "meta_qt/widgets/slider_float.hpp"
 
 namespace meta::qt
 {
@@ -29,7 +30,11 @@ template <> struct WidgetRenderer<float>
     const float       min = meta::common::min(attr);
     const float       max = meta::common::max(attr);
     const float       step = meta::common::step(attr);
-    float            &value = attr.value();
+    const bool        plus_minus = meta::common::try_get<bool>(attr,
+                                                        "ui.plus_minus",
+                                                        false);
+
+    float &value = attr.value();
 
     MetaWidget *widget = make_meta_widget_vbox(parent);
     auto       *layout = static_cast<QVBoxLayout *>(widget->layout());
@@ -42,7 +47,7 @@ template <> struct WidgetRenderer<float>
 
     if (widget_type.empty()) widget_type = "Input";
 
-    if (widget_type == "Input")
+    if (widget_type == "Input") // --- Input
     {
       // --- INPUT
 
@@ -132,6 +137,41 @@ template <> struct WidgetRenderer<float>
                        [widget]() { Q_EMIT widget->edit_ended(); });
 
       layout->addWidget(control);
+    }
+    else if (widget_type == "SliderFloat") // --- SliderFloat
+    {
+      // SliderFloat takes value_init for "Reset" - seed it from the current
+      // value.
+      auto *slider = new SliderFloat(label_txt,
+                                     /*value_init=*/value,
+                                     min,
+                                     max,
+                                     plus_minus,
+                                     format,
+                                     widget);
+      slider->set_value(value);
+      layout->addWidget(slider);
+
+      // Live drag / +- buttons
+      QObject::connect(slider,
+                       &SliderFloat::value_changed,
+                       widget,
+                       [&value, slider, widget]()
+                       {
+                         value = slider->get_value();
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      // Committed (drag release, double-click confirm, context menu action)
+      QObject::connect(slider,
+                       &SliderFloat::edit_ended,
+                       widget,
+                       [&value, slider, widget]()
+                       {
+                         value = slider->get_value();
+                         Q_EMIT widget->edit_ended();
+                       });
     }
     else
     {
