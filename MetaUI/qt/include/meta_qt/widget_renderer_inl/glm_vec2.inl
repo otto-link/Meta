@@ -221,7 +221,7 @@ template <> struct WidgetRenderer<glm::vec2>
           [&value, min, max, bar, widget]()
           {
             const float span = value.y - value.x;
-            const float mid = (min + max) * 0.5f;
+            const float mid = 0.f; // (min + max) * 0.5f;
             const float lo = std::clamp(mid - span * 0.5f, min, max - span);
             bar->set_value({lo, lo + span});
             value = {lo, lo + span};

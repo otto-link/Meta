@@ -29,16 +29,133 @@ RangeBar::RangeBar(glm::vec2 &value,
   setMouseTracking(true);
 }
 
-void RangeBar::set_value(glm::vec2 v)
+void RangeBar::apply_drag(const QPoint &pos)
 {
-  value_ = v;
-  clamp_and_order();
+  const int   dx = pos.x() - drag_anchor_px_;
+  const float dv = float(dx) / float(track_rect().width()) *
+                   (domain_max_ - domain_min_);
+  const float span = drag_high_start_ - drag_low_start_;
+
+  switch (drag_handle_)
+  {
+  case Handle::Low:
+    value_.x = std::clamp(canvas_to_value(pos.x()), domain_min_, value_.y);
+    break;
+
+  case Handle::High:
+    value_.y = std::clamp(canvas_to_value(pos.x()), value_.x, domain_max_);
+    break;
+
+  case Handle::Track:
+  {
+    // Shift the whole range, clamping at both edges while preserving span.
+    float lo = drag_low_start_ + dv;
+    float hi = drag_high_start_ + dv;
+    if (lo < domain_min_)
+    {
+      lo = domain_min_;
+      hi = lo + span;
+    }
+    if (hi > domain_max_)
+    {
+      hi = domain_max_;
+      lo = hi - span;
+    }
+    value_.x = lo;
+    value_.y = hi;
+    break;
+  }
+
+  default: return;
+  }
+
+  update();
+  Q_EMIT value_changed(value_);
+}
+
+float RangeBar::canvas_to_value(int px) const
+{
+  const QRect tr = track_rect();
+  const float t = float(px - tr.left()) / float(tr.width());
+  return domain_min_ + std::clamp(t, 0.f, 1.f) * (domain_max_ - domain_min_);
+}
+
+void RangeBar::clamp_and_order()
+{
+  value_.x = std::clamp(value_.x, domain_min_, domain_max_);
+  value_.y = std::clamp(value_.y, domain_min_, domain_max_);
+  if (value_.x > value_.y) std::swap(value_.x, value_.y);
+}
+
+RangeBar::Handle RangeBar::hit_test(const QPoint &pos) const
+{
+  const int lx = value_to_canvas(value_.x);
+  const int hx = value_to_canvas(value_.y);
+  const int ht = track_h_ + 6; // match drawn handle height
+  const int cy = track_rect().center().y();
+
+  // Check handles first (priority over track).
+  if (std::abs(pos.x() - lx) <= handle_w_ + 2 &&
+      std::abs(pos.y() - cy) <= ht / 2)
+    return Handle::Low;
+
+  if (std::abs(pos.x() - hx) <= handle_w_ + 2 &&
+      std::abs(pos.y() - cy) <= ht / 2)
+    return Handle::High;
+
+  // Check filled track segment (drag whole range).
+  if (pos.x() >= lx && pos.x() <= hx &&
+      std::abs(pos.y() - cy) <= track_h_ / 2 + 2)
+    return Handle::Track;
+
+  return Handle::None;
+}
+
+void RangeBar::leaveEvent(QEvent *)
+{
+  hovered_handle_ = Handle::None;
   update();
 }
 
-// ---------------------------------------------------------------------------
-// Paint
-// ---------------------------------------------------------------------------
+void RangeBar::mouseMoveEvent(QMouseEvent *e)
+{
+  if (drag_handle_ != Handle::None)
+  {
+    apply_drag(e->pos());
+  }
+  else
+  {
+    const Handle prev = hovered_handle_;
+    hovered_handle_ = hit_test(e->pos());
+    setCursor(hovered_handle_ != Handle::None ? Qt::SizeHorCursor
+                                              : Qt::ArrowCursor);
+    if (hovered_handle_ != prev) update();
+  }
+}
+
+void RangeBar::mousePressEvent(QMouseEvent *e)
+{
+  if (e->button() != Qt::LeftButton) return;
+
+  drag_handle_ = hit_test(e->pos());
+  drag_anchor_px_ = e->pos().x();
+  drag_low_start_ = value_.x;
+  drag_high_start_ = value_.y;
+
+  if (drag_handle_ != Handle::None) setCursor(Qt::SizeHorCursor);
+}
+
+void RangeBar::mouseReleaseEvent(QMouseEvent *e)
+{
+  if (e->button() == Qt::LeftButton && drag_handle_ != Handle::None)
+  {
+    apply_drag(e->pos());
+    drag_handle_ = Handle::None;
+    setCursor(Qt::ArrowCursor);
+    Q_EMIT drag_ended(value_);
+    update();
+  }
+}
 
 void RangeBar::paintEvent(QPaintEvent *)
 {
@@ -103,59 +220,12 @@ void RangeBar::paintEvent(QPaintEvent *)
       hi_txt);
 }
 
-// ---------------------------------------------------------------------------
-// Mouse
-// ---------------------------------------------------------------------------
-
-void RangeBar::mousePressEvent(QMouseEvent *e)
+void RangeBar::set_value(glm::vec2 v)
 {
-  if (e->button() != Qt::LeftButton) return;
-
-  drag_handle_ = hit_test(e->pos());
-  drag_anchor_px_ = e->pos().x();
-  drag_low_start_ = value_.x;
-  drag_high_start_ = value_.y;
-
-  if (drag_handle_ != Handle::None) setCursor(Qt::SizeHorCursor);
-}
-
-void RangeBar::mouseMoveEvent(QMouseEvent *e)
-{
-  if (drag_handle_ != Handle::None)
-  {
-    apply_drag(e->pos());
-  }
-  else
-  {
-    const Handle prev = hovered_handle_;
-    hovered_handle_ = hit_test(e->pos());
-    setCursor(hovered_handle_ != Handle::None ? Qt::SizeHorCursor
-                                              : Qt::ArrowCursor);
-    if (hovered_handle_ != prev) update();
-  }
-}
-
-void RangeBar::mouseReleaseEvent(QMouseEvent *e)
-{
-  if (e->button() == Qt::LeftButton && drag_handle_ != Handle::None)
-  {
-    apply_drag(e->pos());
-    drag_handle_ = Handle::None;
-    setCursor(Qt::ArrowCursor);
-    Q_EMIT drag_ended(value_);
-    update();
-  }
-}
-
-void RangeBar::leaveEvent(QEvent *)
-{
-  hovered_handle_ = Handle::None;
+  value_ = v;
+  clamp_and_order();
   update();
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 QRect RangeBar::track_rect() const
 {
@@ -164,93 +234,11 @@ QRect RangeBar::track_rect() const
   return QRect(pad_h_, cy - track_h_ / 2, width() - 2 * pad_h_, track_h_);
 }
 
-float RangeBar::canvas_to_value(int px) const
-{
-  const QRect tr = track_rect();
-  const float t = float(px - tr.left()) / float(tr.width());
-  return domain_min_ + std::clamp(t, 0.f, 1.f) * (domain_max_ - domain_min_);
-}
-
 int RangeBar::value_to_canvas(float v) const
 {
   const QRect tr = track_rect();
   const float t = (v - domain_min_) / (domain_max_ - domain_min_);
   return tr.left() + int(std::clamp(t, 0.f, 1.f) * float(tr.width()));
-}
-
-RangeBar::Handle RangeBar::hit_test(const QPoint &pos) const
-{
-  const int lx = value_to_canvas(value_.x);
-  const int hx = value_to_canvas(value_.y);
-  const int ht = track_h_ + 6; // match drawn handle height
-  const int cy = track_rect().center().y();
-
-  // Check handles first (priority over track).
-  if (std::abs(pos.x() - lx) <= handle_w_ + 2 &&
-      std::abs(pos.y() - cy) <= ht / 2)
-    return Handle::Low;
-
-  if (std::abs(pos.x() - hx) <= handle_w_ + 2 &&
-      std::abs(pos.y() - cy) <= ht / 2)
-    return Handle::High;
-
-  // Check filled track segment (drag whole range).
-  if (pos.x() >= lx && pos.x() <= hx &&
-      std::abs(pos.y() - cy) <= track_h_ / 2 + 2)
-    return Handle::Track;
-
-  return Handle::None;
-}
-
-void RangeBar::apply_drag(const QPoint &pos)
-{
-  const int   dx = pos.x() - drag_anchor_px_;
-  const float dv = float(dx) / float(track_rect().width()) *
-                   (domain_max_ - domain_min_);
-  const float span = drag_high_start_ - drag_low_start_;
-
-  switch (drag_handle_)
-  {
-  case Handle::Low:
-    value_.x = std::clamp(canvas_to_value(pos.x()), domain_min_, value_.y);
-    break;
-
-  case Handle::High:
-    value_.y = std::clamp(canvas_to_value(pos.x()), value_.x, domain_max_);
-    break;
-
-  case Handle::Track:
-  {
-    // Shift the whole range, clamping at both edges while preserving span.
-    float lo = drag_low_start_ + dv;
-    float hi = drag_high_start_ + dv;
-    if (lo < domain_min_)
-    {
-      lo = domain_min_;
-      hi = lo + span;
-    }
-    if (hi > domain_max_)
-    {
-      hi = domain_max_;
-      lo = hi - span;
-    }
-    value_.x = lo;
-    value_.y = hi;
-    break;
-  }
-
-  default: return;
-  }
-
-  update();
-  Q_EMIT value_changed(value_);
-}
-
-void RangeBar::clamp_and_order()
-{
-  value_.x = std::clamp(value_.x, domain_min_, domain_max_);
-  value_.y = std::clamp(value_.y, domain_min_, domain_max_);
-  if (value_.x > value_.y) std::swap(value_.x, value_.y);
 }
 
 } // namespace meta::qt
