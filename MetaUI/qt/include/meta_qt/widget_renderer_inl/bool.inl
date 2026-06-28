@@ -71,8 +71,10 @@ template <> struct WidgetRenderer<bool>
           meta::keys::ui::label_false,
           "False");
 
-      auto *button_true = new QPushButton(label_true.c_str(), widget);
-      auto *button_false = new QPushButton(label_false.c_str(), widget);
+      auto *button_true = new QPushButton(QObject::tr(label_true.c_str()),
+                                          widget);
+      auto *button_false = new QPushButton(QObject::tr(label_false.c_str()),
+                                           widget);
 
       layout->addWidget(button_true, row, 0);
       layout->addWidget(button_false, row, 1);

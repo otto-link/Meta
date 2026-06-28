@@ -4,8 +4,8 @@
 #include <string>
 
 #include <QFontMetrics>
-#include <QWidget>
 #include <QPlainTextEdit>
+#include <QWidget>
 
 namespace meta::qt::helpers
 {

@@ -4,8 +4,8 @@
 #pragma once
 #include <string>
 
-#include <QWidget>
 #include <QPlainTextEdit>
+#include <QWidget>
 
 namespace meta::qt::helpers
 {

@@ -69,7 +69,7 @@ template <> struct WidgetRenderer<glm::ivec2>
         spinbox_y->setEnabled(false);
         spinbox_y->setRange(int(min / aspect_ratio), int(max / aspect_ratio));
         spinbox_y->setToolTip(
-            QString("Aspect ratio x/y = %1").arg(aspect_ratio));
+            QString(QObject::tr("Aspect ratio x/y = %1")).arg(aspect_ratio));
 
         // synchronize the initial value
         int y = int(std::lround(double(spinbox_x->value()) / aspect_ratio));
