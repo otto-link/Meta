@@ -167,22 +167,88 @@ template <> struct WidgetRenderer<glm::vec2>
     }
     else if (widget_type == "RangeBar") // --- RangeBar
     {
-      auto *bar = new RangeBar(value, min, max, decimals, widget);
-      layout->addWidget(bar);
+      // Guard value sentinel: {-1, 0} means "disabled / no range".
+      const bool initially_active = !(value.x == -1.f && value.y == 0.f);
 
-      // Button row
+      // Restore the last meaningful range when toggling back on.
+      // Seeded from the current value if it's valid, otherwise full domain.
+      glm::vec2 last_active_value = initially_active ? value
+                                                     : glm::vec2{min, max};
+
+      auto *bar = new RangeBar(value, min, max, decimals, widget);
       auto *btn_row = new QHBoxLayout();
+      auto *toggle_btn = new QPushButton(widget);
       auto *reset_btn = new QPushButton(QObject::tr("Full"), widget);
       auto *center_btn = new QPushButton(QObject::tr("Center"), widget);
       auto *unit_btn = new QPushButton(QObject::tr("[0, 1]"), widget);
+
+      toggle_btn->setCheckable(true);
+      toggle_btn->setChecked(initially_active);
+      toggle_btn->setText(initially_active ? QObject::tr("On")
+                                           : QObject::tr("Off"));
+      toggle_btn->setFixedHeight(22);
+      toggle_btn->setFixedWidth(40);
 
       for (auto *btn : {reset_btn, center_btn, unit_btn})
       {
         btn->setFixedHeight(22);
         btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        btn_row->addWidget(btn);
       }
+
+      btn_row->addWidget(toggle_btn);
+      btn_row->addSpacing(4);
+      btn_row->addWidget(reset_btn);
+      btn_row->addWidget(center_btn);
+      btn_row->addWidget(unit_btn);
+
+      layout->addWidget(bar);
       layout->addLayout(btn_row);
+
+      // Helper: enable or disable all range controls at once.
+      auto set_active = [bar, reset_btn, center_btn, unit_btn](bool active)
+      {
+        bar->setEnabled(active);
+        reset_btn->setEnabled(active);
+        center_btn->setEnabled(active);
+        unit_btn->setEnabled(active);
+      };
+
+      set_active(initially_active);
+
+      // Toggle
+      QObject::connect(toggle_btn,
+                       &QPushButton::toggled,
+                       widget,
+                       [&value,
+                        bar,
+                        toggle_btn,
+                        set_active,
+                        widget,
+                        // mutable copy so each lambda invocation can update it
+                        lav = last_active_value](bool active) mutable
+                       {
+                         toggle_btn->setText(active ? QObject::tr("On")
+                                                    : QObject::tr("Off"));
+                         set_active(active);
+
+                         if (active)
+                         {
+                           // Restore last known good range.
+                           value = lav;
+                           bar->set_value(lav);
+                         }
+                         else
+                         {
+                           // Save current range before clobbering it.
+                           lav = value;
+                           value = {-1.f, 0.f};
+                           bar->set_value({-1.f, 0.f});
+                         }
+
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
 
       // Live drag → edit_started + value_changed
       QObject::connect(bar,
@@ -200,7 +266,7 @@ template <> struct WidgetRenderer<glm::vec2>
                        widget,
                        [widget](glm::vec2) { Q_EMIT widget->edit_ended(); });
 
-      // Reset — full domain
+      // Full domain
       QObject::connect(reset_btn,
                        &QPushButton::clicked,
                        widget,
@@ -213,7 +279,7 @@ template <> struct WidgetRenderer<glm::vec2>
                          Q_EMIT widget->edit_ended();
                        });
 
-      // Center — shift to middle of domain, preserve span
+      // Center — shift span to domain midpoint
       QObject::connect(
           center_btn,
           &QPushButton::clicked,
@@ -230,7 +296,7 @@ template <> struct WidgetRenderer<glm::vec2>
             Q_EMIT widget->edit_ended();
           });
 
-      // Unit — clamp [0, 1] to domain
+      // Unit — [0, 1] clamped to domain
       QObject::connect(unit_btn,
                        &QPushButton::clicked,
                        widget,
