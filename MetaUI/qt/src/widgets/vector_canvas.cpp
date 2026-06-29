@@ -40,38 +40,62 @@ VectorCanvas::VectorCanvas(glm::vec2 &value,
   setCursor(Qt::CrossCursor);
 }
 
-// ---------------------------------------------------------------------------
-// External setters (called by sliders / lock toggle)
-// ---------------------------------------------------------------------------
-
-void VectorCanvas::set_locked(bool locked)
+void VectorCanvas::apply_drag(const QPoint &pos)
 {
-  locked_ = locked;
-  if (locked_) angle_deg_ = 45.f;
+  const QPoint ctr = center();
+  const float  R = radius();
+
+  const float dx = float(pos.x() - ctr.x());
+  const float dy = -float(pos.y() - ctr.y()); // Y flipped
+
+  const float dist = std::sqrt(dx * dx + dy * dy);
+  magnitude_ = std::clamp(dist / R * k_max_, 0.f, k_max_);
+
+  if (!locked_ && dist > 1e-3f) angle_deg_ = std::atan2(dy, dx) * RAD2DEG;
+
   commit();
   update();
 }
 
-void VectorCanvas::set_magnitude(float mag)
+QPoint VectorCanvas::center() const { return {width() / 2, height() / 2}; }
+
+void VectorCanvas::commit()
 {
-  magnitude_ = std::clamp(mag, 0.f, k_max_);
-  commit();
-  update();
+  const float rad = angle_deg_ * DEG2RAD;
+
+  if (locked_)
+    value_ = {magnitude_, magnitude_};
+  else
+    value_ = {magnitude_ * std::cos(rad), magnitude_ * std::sin(rad)};
+
+  Q_EMIT value_changed(value_);
+  Q_EMIT magnitude_changed(magnitude_);
+  Q_EMIT angle_changed(angle_deg_);
 }
 
-void VectorCanvas::set_angle_deg(float deg)
+void VectorCanvas::mouseMoveEvent(QMouseEvent *e)
 {
-  if (!locked_)
+  if (dragging_) apply_drag(e->pos());
+}
+
+void VectorCanvas::mousePressEvent(QMouseEvent *e)
+{
+  if (e->button() == Qt::LeftButton)
   {
-    angle_deg_ = deg;
-    commit();
-    update();
+    dragging_ = true;
+    apply_drag(e->pos());
   }
 }
 
-// ---------------------------------------------------------------------------
-// Paint
-// ---------------------------------------------------------------------------
+void VectorCanvas::mouseReleaseEvent(QMouseEvent *e)
+{
+  if (e->button() == Qt::LeftButton && dragging_)
+  {
+    dragging_ = false;
+    apply_drag(e->pos());
+    Q_EMIT drag_ended(value_);
+  }
+}
 
 void VectorCanvas::paintEvent(QPaintEvent *)
 {
@@ -179,70 +203,30 @@ void VectorCanvas::paintEvent(QPaintEvent *)
   }
 }
 
-// ---------------------------------------------------------------------------
-// Mouse
-// ---------------------------------------------------------------------------
-
-void VectorCanvas::mousePressEvent(QMouseEvent *e)
+void VectorCanvas::set_angle_deg(float deg)
 {
-  if (e->button() == Qt::LeftButton)
+  if (!locked_)
   {
-    dragging_ = true;
-    apply_drag(e->pos());
+    angle_deg_ = deg;
+    commit();
+    update();
   }
 }
 
-void VectorCanvas::mouseMoveEvent(QMouseEvent *e)
+void VectorCanvas::set_locked(bool locked)
 {
-  if (dragging_) apply_drag(e->pos());
-}
-
-void VectorCanvas::mouseReleaseEvent(QMouseEvent *e)
-{
-  if (e->button() == Qt::LeftButton && dragging_)
-  {
-    dragging_ = false;
-    apply_drag(e->pos());
-    Q_EMIT drag_ended(value_);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-void VectorCanvas::apply_drag(const QPoint &pos)
-{
-  const QPoint ctr = center();
-  const float  R = radius();
-
-  const float dx = float(pos.x() - ctr.x());
-  const float dy = -float(pos.y() - ctr.y()); // Y flipped
-
-  const float dist = std::sqrt(dx * dx + dy * dy);
-  magnitude_ = std::clamp(dist / R * k_max_, 0.f, k_max_);
-
-  if (!locked_ && dist > 1e-3f) angle_deg_ = std::atan2(dy, dx) * RAD2DEG;
-
+  locked_ = locked;
+  if (locked_) angle_deg_ = 45.f;
   commit();
   update();
 }
 
-void VectorCanvas::commit()
+void VectorCanvas::set_magnitude(float mag)
 {
-  const float rad = angle_deg_ * DEG2RAD;
-
-  if (locked_)
-    value_ = {magnitude_, magnitude_};
-  else
-    value_ = {magnitude_ * std::cos(rad), magnitude_ * std::sin(rad)};
-
-  Q_EMIT value_changed(value_);
-  Q_EMIT magnitude_changed(magnitude_);
-  Q_EMIT angle_changed(angle_deg_);
+  magnitude_ = std::clamp(mag, 0.f, k_max_);
+  commit();
+  update();
 }
-
-QPoint VectorCanvas::center() const { return {width() / 2, height() / 2}; }
 
 float VectorCanvas::radius() const
 {

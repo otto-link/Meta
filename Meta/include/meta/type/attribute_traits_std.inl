@@ -54,6 +54,9 @@ template <> struct AttributeTraits<std::filesystem::path>
 //  Generic vector traits
 // ---------------------------
 
+/**
+ * @brief Traits specialization for std::vector serialization and formatting.
+ */
 template <typename T> struct AttributeTraits<std::vector<T>>
 {
   static std::string to_string(const std::vector<T> &v)
@@ -92,6 +95,10 @@ template <typename T> struct AttributeTraits<std::vector<T>>
   }
 };
 
+/**
+ * @brief Traits specialization for std::vector of std::pair serialization and
+ * formatting.
+ */
 template <typename T, typename U>
 struct AttributeTraits<std::vector<std::pair<T, U>>>
 {
@@ -144,6 +151,9 @@ struct AttributeTraits<std::vector<std::pair<T, U>>>
 //  Generic map trait
 // ---------------------------
 
+/**
+ * @brief Traits specialization for std::map serialization and formatting.
+ */
 template <typename K, typename V> struct AttributeTraits<std::map<K, V>>
 {
   using value_type = std::map<K, V>;
@@ -197,6 +207,10 @@ template <typename K, typename V> struct AttributeTraits<std::map<K, V>>
 //  Generic unordered map trait
 // ---------------------------
 
+/**
+ * @brief Traits specialization for std::unordered_map serialization and
+ * formatting.
+ */
 template <typename K, typename V>
 struct AttributeTraits<std::unordered_map<K, V>>
 {
