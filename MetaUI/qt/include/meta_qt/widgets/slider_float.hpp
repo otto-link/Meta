@@ -15,6 +15,21 @@
 namespace meta::qt
 {
 
+// ---------------------------------------------------------------------------
+// SliderFloat
+//
+// A single-row float slider with:
+//   • Drag on the bar to change the value (Ctrl = fine, Shift = coarse,
+//     Ctrl+Shift = fine + immediate edit_ended per step)
+//   • Double-click the bar to type a value directly
+//   • Optional ◁/▷ increment buttons on the sides
+//   • Right-click context menu: Reset, Randomize (when bounded), History
+//
+// Signals:
+//   value_changed()  — emitted on every incremental change
+//   edit_ended()     — emitted on drag release, text confirm, button click
+// ---------------------------------------------------------------------------
+
 class SliderFloat : public QWidget
 {
   Q_OBJECT

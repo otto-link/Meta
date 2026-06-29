@@ -11,6 +11,20 @@
 namespace meta::qt
 {
 
+// ---------------------------------------------------------------------------
+// PointsCanvas
+//
+// Displays and edits a std::vector<glm::vec3> where:
+//   .x, .y  — 2-D position in [min_x,max_x] × [min_y,max_y]
+//   .z      — scalar value forced to [0, 1], colour-mapped on the canvas
+//
+// Mouse interactions:
+//   Left-click empty area     → add point (z = 1.0)
+//   Left-drag existing point  → move it
+//   Right-click point         → delete it
+//   Scroll wheel on point     → adjust z in [0, 1] by z_step
+// ---------------------------------------------------------------------------
+
 class PointsCanvas : public QWidget
 {
   Q_OBJECT

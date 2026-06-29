@@ -4,7 +4,10 @@
 #pragma once
 #include <random>
 
+#include <QFormLayout>
+
 #include "meta_qt/widgets/range_bar.hpp"
+#include "meta_qt/widgets/vector_canvas.hpp"
 #include "meta_qt/widgets/xy_canvas.hpp"
 
 namespace meta::qt
@@ -23,6 +26,9 @@ template <> struct WidgetRenderer<glm::vec2>
     const bool        show_grid = meta::common::try_get<bool>(attr,
                                                        "ui.show_grid",
                                                        true);
+    const bool        locked_xy = meta::common::try_get<bool>(attr,
+                                                       "ui.locked_xy",
+                                                       false);
 
     const int decimals = meta::common::try_get_format_decimals(format);
 
@@ -310,6 +316,136 @@ template <> struct WidgetRenderer<glm::vec2>
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
+    }
+    else if (widget_type == "VectorEditor") // --- VectorEditor
+    {
+      if (!label_txt.empty())
+        layout->addWidget(
+            new QLabel(QString::fromStdString(label_txt), widget));
+
+      // --- Canvas ----------------------------------------------------------
+      auto *canvas = new VectorCanvas(value, max, locked_xy, widget);
+
+      // Centre the fixed-size canvas horizontally.
+      auto *canvas_row = new QHBoxLayout();
+      canvas_row->addStretch();
+      canvas_row->addWidget(canvas);
+      canvas_row->addStretch();
+      layout->addLayout(canvas_row);
+
+      // --- Controls --------------------------------------------------------
+      auto *form = new QFormLayout();
+      form->setContentsMargins(0, 2, 0, 2);
+      form->setSpacing(3);
+
+      // Magnitude spinbox
+      auto *mag_spin = new QDoubleSpinBox(widget);
+      mag_spin->setRange(0.0, double(max));
+      mag_spin->setDecimals(decimals);
+      mag_spin->setSingleStep(double(max) / 100.0);
+      mag_spin->setValue(double(canvas->magnitude()));
+      mag_spin->setFixedHeight(22);
+
+      // Angle spinbox (disabled when locked)
+      auto *angle_spin = new QDoubleSpinBox(widget);
+      angle_spin->setRange(-360.0, 360.0);
+      angle_spin->setDecimals(1);
+      angle_spin->setSingleStep(1.0);
+      angle_spin->setSuffix("°");
+      angle_spin->setValue(double(canvas->angle_deg()));
+      angle_spin->setEnabled(!locked_xy);
+      angle_spin->setFixedHeight(22);
+
+      form->addRow(QObject::tr("Magnitude"), mag_spin);
+      form->addRow(QObject::tr("Angle"), angle_spin);
+      layout->addLayout(form);
+
+      // Lock toggle
+      auto *lock_row = new QHBoxLayout();
+      auto *lock_cb = new QCheckBox(QObject::tr("Isotropic  (kx = ky)"),
+                                    widget);
+      lock_cb->setChecked(locked_xy);
+      lock_row->addStretch();
+      lock_row->addWidget(lock_cb);
+      layout->addLayout(lock_row);
+
+      // --- Sync helpers ----------------------------------------------------
+
+      // Canvas → spinboxes (keep in sync after drag)
+      QObject::connect(canvas,
+                       &VectorCanvas::magnitude_changed,
+                       widget,
+                       [mag_spin](float mag)
+                       {
+                         QSignalBlocker b(mag_spin);
+                         mag_spin->setValue(double(mag));
+                       });
+
+      QObject::connect(canvas,
+                       &VectorCanvas::angle_changed,
+                       widget,
+                       [angle_spin](float deg)
+                       {
+                         QSignalBlocker b(angle_spin);
+                         angle_spin->setValue(double(deg));
+                       });
+
+      // Magnitude spinbox → canvas
+      QObject::connect(mag_spin,
+                       qOverload<double>(&QDoubleSpinBox::valueChanged),
+                       widget,
+                       [canvas](double v) { canvas->set_magnitude(float(v)); });
+
+      // Angle spinbox → canvas
+      QObject::connect(angle_spin,
+                       qOverload<double>(&QDoubleSpinBox::valueChanged),
+                       widget,
+                       [canvas](double v) { canvas->set_angle_deg(float(v)); });
+
+      // Lock toggle → canvas + angle spinbox enable state
+      QObject::connect(lock_cb,
+                       &QCheckBox::toggled,
+                       widget,
+                       [canvas, angle_spin](bool checked)
+                       {
+                         canvas->set_locked(checked);
+                         angle_spin->setEnabled(!checked);
+                       });
+
+      // --- Graph signals ---------------------------------------------------
+
+      // Live drag / spinbox change
+      QObject::connect(canvas,
+                       &VectorCanvas::value_changed,
+                       widget,
+                       [widget](glm::vec2)
+                       {
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      // Committed (drag release, lock toggle, spinbox enter)
+      QObject::connect(canvas,
+                       &VectorCanvas::drag_ended,
+                       widget,
+                       [widget](glm::vec2) { Q_EMIT widget->edit_ended(); });
+
+      // Spinboxes commit on editingFinished (Return / focus-out)
+      auto spinbox_commit = [widget]() { Q_EMIT widget->edit_ended(); };
+      QObject::connect(mag_spin,
+                       &QDoubleSpinBox::editingFinished,
+                       widget,
+                       spinbox_commit);
+      QObject::connect(angle_spin,
+                       &QDoubleSpinBox::editingFinished,
+                       widget,
+                       spinbox_commit);
+
+      // Lock toggle commits immediately
+      QObject::connect(lock_cb,
+                       &QCheckBox::toggled,
+                       widget,
+                       [widget](bool) { Q_EMIT widget->edit_ended(); });
     }
     else
     {

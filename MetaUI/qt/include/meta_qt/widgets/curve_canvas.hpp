@@ -17,6 +17,30 @@
 namespace meta::qt
 {
 
+// ---------------------------------------------------------------------------
+// WidgetRenderer<std::vector<float>>
+//
+// widget_type: "CurveEditor" (default)
+//
+// The attribute value is treated as a uniformly-sampled lookup table in
+// [min_y, max_y] over the domain [min_x, max_x], with `curve_size` samples.
+// Internally the widget works with Catmull-Rom control points and resamples
+// on every change.
+//
+// Metadata:
+//   "curve_size"  int    output sample count               (default 256)
+//   "min_x"       float  left edge of the domain           (default 0.f)
+//   "max_x"       float  right edge of the domain          (default 1.f)
+//   "min_y"       float  bottom of the value range         (default 0.f)
+//   "max_y"       float  top of the value range            (default 1.f)
+//   "label"       std::string  label shown above the canvas
+//
+// Mouse interactions:
+//   Left-click empty area   → add control point
+//   Left-drag point         → move point (clamped to domain)
+//   Right-click point       → delete point (minimum 2 points kept)
+// ---------------------------------------------------------------------------
+
 class CurveCanvas : public QWidget
 {
   Q_OBJECT

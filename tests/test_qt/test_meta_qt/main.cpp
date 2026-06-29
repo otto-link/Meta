@@ -371,6 +371,14 @@ int main(int argc, char *argv[])
     }
 
     {
+      auto *a = container.add("glm::vec2_vector", glm::vec2(16.f, 32.f));
+      a->metadata().add(meta::keys::ui::widget_type, "VectorEditor");
+      a->metadata().add(meta::keys::constraints::min, 0.f);
+      a->metadata().add(meta::keys::constraints::max, 128.f);
+      a->metadata().add("ui.locked_xy", true);
+    }
+
+    {
       auto *a = container.add("glm::vec2_range", glm::vec2(0.f, 1.f));
       a->metadata().add(meta::keys::ui::widget_type, "RangeBar");
       a->metadata().add(meta::keys::constraints::min, -1.f);
