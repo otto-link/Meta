@@ -12,7 +12,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
 target_compile_definitions(
-  meta PUBLIC $<$<BOOL:${META_ENABLE_GLM_TYPES}>:META_ENABLE_GLM_TYPES>)
+  meta
+  PUBLIC $<$<BOOL:${META_ENABLE_GLM_TYPES}>:META_ENABLE_GLM_TYPES>
+  PUBLIC
+    $<$<BOOL:${META_ENABLE_COLOR_GRADIENT_TYPES}>:META_ENABLE_COLOR_GRADIENT_TYPES>
+)
 
 target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 

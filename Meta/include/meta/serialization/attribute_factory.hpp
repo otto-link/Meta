@@ -104,6 +104,6 @@ template <typename T> void register_attribute_type(const std::string &name)
  *
  * Typically called once at application startup or before deserialization.
  */
-void register_default_types();
+void register_builtin_types();
 
 } // namespace meta

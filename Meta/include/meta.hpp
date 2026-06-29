@@ -21,3 +21,7 @@
 
 #include "meta/metadata/keys.hpp"
 #include "meta/presets/numeric.hpp"
+
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+#include "meta/ext/color_gradient/color_gradient.hpp"
+#endif

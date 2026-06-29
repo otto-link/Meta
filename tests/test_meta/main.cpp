@@ -97,6 +97,12 @@ int main()
   }
 #endif
 
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+  {
+    container.add("ColorGradient", ColorGradient());
+  }
+#endif
+
   // --- Metadata example
 
   {
@@ -130,7 +136,7 @@ int main()
   AttributeContainer container2;
 
   // "built-in" types for serialization
-  meta::register_default_types();
+  meta::register_builtin_types();
 
   // any specific class needs to be registered to the attribute
   // factory to allow deserialization

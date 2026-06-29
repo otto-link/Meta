@@ -8,6 +8,8 @@ project(meta-root)
 
 option(META_ENABLE_TESTS "" ON)
 option(META_ENABLE_GLM_TYPES "Enable built-in GLM type registrations" ON)
+option(META_ENABLE_COLOR_GRADIENT_TYPES
+       "Enable built-in color gradient type registrations" ON)
 
 # -----------------------------------------------------------------------------
 # UI backends
@@ -21,10 +23,13 @@ option(META_ENABLE_QT_UI "Enable QT UI backend" OFF)
 # -----------------------------------------------------------------------------
 
 message(STATUS "┌─ Meta configuration ────────────────")
-message(STATUS "│ META_ENABLE_GLM_TYPES: ${META_ENABLE_GLM_TYPES}")
-message(STATUS "│ META_ENABLE_FTXUI_UI:  ${META_ENABLE_FTXUI_UI}")
-message(STATUS "│ META_ENABLE_QT_UI:     ${META_ENABLE_QT_UI}")
-message(STATUS "│ META_ENABLE_TESTS:     ${META_ENABLE_TESTS}")
+message(STATUS "│ META_ENABLE_GLM_TYPES:            ${META_ENABLE_GLM_TYPES}")
+message(
+  STATUS
+    "│ META_ENABLE_COLOR_GRADIENT_TYPES: ${META_ENABLE_COLOR_GRADIENT_TYPES}")
+message(STATUS "│ META_ENABLE_FTXUI_UI:             ${META_ENABLE_FTXUI_UI}")
+message(STATUS "│ META_ENABLE_QT_UI:                ${META_ENABLE_QT_UI}")
+message(STATUS "│ META_ENABLE_TESTS:                ${META_ENABLE_TESTS}")
 message(STATUS "└─────────────────────────────────────")
 
 # -----------------------------------------------------------------------------

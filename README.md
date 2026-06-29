@@ -65,7 +65,7 @@ struct AttributeTraits<glm::vec2>
 
 To enable automatic instantiation during deserialization, register the type in the attribute factory.
 
-For built-in types, add the registration in `Meta/src/serialization/attribute_factory.cpp` inside `register_default_types()`:
+For built-in types, add the registration in `Meta/src/serialization/attribute_factory.cpp` inside `register_builtin_types()`:
 
 ```cpp
 META_REGISTER_ATTRIBUTE_TYPE(float);

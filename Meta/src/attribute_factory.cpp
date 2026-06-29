@@ -5,6 +5,10 @@
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute_container.hpp"
 
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+#include "meta/ext/color_gradient/color_gradient.hpp"
+#endif
+
 namespace meta
 {
 
@@ -17,7 +21,7 @@ std::unique_ptr<AbstractAttribute> AttributeFactory::create(
   return it->second(attr_name);
 }
 
-void register_default_types()
+void register_builtin_types()
 {
   META_REGISTER_ATTRIBUTE_TYPE(int);
   META_REGISTER_ATTRIBUTE_TYPE(float);
@@ -56,6 +60,10 @@ void register_default_types()
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::ivec2>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::ivec3>);
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<glm::ivec4>);
+#endif
+
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+  META_REGISTER_ATTRIBUTE_TYPE(meta::ColorGradient);
 #endif
 }
 
