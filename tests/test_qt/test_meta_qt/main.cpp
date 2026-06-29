@@ -379,6 +379,17 @@ int main(int argc, char *argv[])
     }
 
     {
+      auto *a = container.add("glm::vec2_linked", glm::vec2(16.f, 32.f));
+      a->metadata().add(meta::keys::ui::widget_type, "LinkedSliders");
+      a->metadata().add(meta::keys::constraints::min, 0.f);
+      a->metadata().add(meta::keys::constraints::max, 64.f);
+      a->metadata().add("ui.locked_xy", true);
+      a->metadata().add("ui.label_x", "kx");
+      a->metadata().add("ui.label_y", "ky");
+      a->metadata().add(meta::keys::ui::format, "{:.1f}");
+    }
+
+    {
       auto *a = container.add("glm::vec2_range", glm::vec2(0.f, 1.f));
       a->metadata().add(meta::keys::ui::widget_type, "RangeBar");
       a->metadata().add(meta::keys::constraints::min, -1.f);

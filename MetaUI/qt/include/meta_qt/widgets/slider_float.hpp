@@ -48,19 +48,20 @@ public:
   std::string get_value_as_string() const;
   bool        set_value(float new_value); // returns true if value changed
 
+  QSize sizeHint() const override;
+
 Q_SIGNALS:
   void value_changed();
   void edit_ended();
 
 protected:
-  bool  event(QEvent *event) override;
-  void  mouseDoubleClickEvent(QMouseEvent *event) override;
-  void  mouseMoveEvent(QMouseEvent *event) override;
-  void  mousePressEvent(QMouseEvent *event) override;
-  void  mouseReleaseEvent(QMouseEvent *event) override;
-  void  paintEvent(QPaintEvent *event) override;
-  void  resizeEvent(QResizeEvent *event) override;
-  QSize sizeHint() const override;
+  bool event(QEvent *event) override;
+  void mouseDoubleClickEvent(QMouseEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
+  void paintEvent(QPaintEvent *event) override;
+  void resizeEvent(QResizeEvent *event) override;
 
 private:
   void apply_text_edit_value();

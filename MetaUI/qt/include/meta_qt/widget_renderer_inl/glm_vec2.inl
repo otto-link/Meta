@@ -29,6 +29,12 @@ template <> struct WidgetRenderer<glm::vec2>
     const bool        locked_xy = meta::common::try_get<bool>(attr,
                                                        "ui.locked_xy",
                                                        false);
+    const std::string x_label = meta::common::try_get<std::string>(attr,
+                                                                   "ui.label_x",
+                                                                   "x");
+    const std::string y_label = meta::common::try_get<std::string>(attr,
+                                                                   "ui.label_y",
+                                                                   "y");
 
     const int decimals = meta::common::try_get_format_decimals(format);
 
@@ -323,7 +329,8 @@ template <> struct WidgetRenderer<glm::vec2>
         layout->addWidget(
             new QLabel(QString::fromStdString(label_txt), widget));
 
-      // --- Canvas ----------------------------------------------------------
+      // --- Canvas
+
       auto *canvas = new VectorCanvas(value, max, locked_xy, widget);
 
       // Centre the fixed-size canvas horizontally.
@@ -333,7 +340,8 @@ template <> struct WidgetRenderer<glm::vec2>
       canvas_row->addStretch();
       layout->addLayout(canvas_row);
 
-      // --- Controls --------------------------------------------------------
+      // --- Controls
+
       auto *form = new QFormLayout();
       form->setContentsMargins(0, 2, 0, 2);
       form->setSpacing(3);
@@ -369,7 +377,7 @@ template <> struct WidgetRenderer<glm::vec2>
       lock_row->addWidget(lock_cb);
       layout->addLayout(lock_row);
 
-      // --- Sync helpers ----------------------------------------------------
+      // --- Sync helpers
 
       // Canvas → spinboxes (keep in sync after drag)
       QObject::connect(canvas,
@@ -412,7 +420,7 @@ template <> struct WidgetRenderer<glm::vec2>
                          angle_spin->setEnabled(!checked);
                        });
 
-      // --- Graph signals ---------------------------------------------------
+      // --- Graph signals
 
       // Live drag / spinbox change
       QObject::connect(canvas,
@@ -447,7 +455,140 @@ template <> struct WidgetRenderer<glm::vec2>
                        widget,
                        [widget](bool) { Q_EMIT widget->edit_ended(); });
     }
-    else
+    else if (widget_type == "LinkedSliders") // --- LinkedSliders
+    {
+      if (!label_txt.empty())
+        layout->addWidget(
+            new QLabel(QString::fromStdString(label_txt), widget));
+
+      // Row: [slider X] [slider Y] [X=Y toggle]
+      auto *row = new QHBoxLayout();
+      row->setSpacing(4);
+
+      auto *slider_x = new SliderFloat(x_label,
+                                       value.x,
+                                       min,
+                                       max,
+                                       /* plus_minus */ false,
+                                       format,
+                                       widget);
+      auto *slider_y = new SliderFloat(y_label,
+                                       value.y,
+                                       min,
+                                       max,
+                                       /* plus_minus */ false,
+                                       format,
+                                       widget);
+
+      slider_x->set_value(value.x);
+      slider_y->set_value(value.y);
+
+      // Lock toggle — compact, fixed width so sliders get most of the space
+      auto *lock_btn = new QPushButton(QObject::tr("X=Y"), widget);
+      lock_btn->setCheckable(true);
+      lock_btn->setChecked(locked_xy);
+      lock_btn->setFixedWidth(36);
+      lock_btn->setFixedHeight(slider_x->sizeHint().height());
+      lock_btn->setToolTip(QObject::tr("Lock X = Y"));
+
+      // Visual feedback: bold/highlighted when locked
+      auto update_lock_style = [lock_btn](bool locked)
+      {
+        lock_btn->setProperty("locked", locked);
+        // Simple style: invert background when active
+        lock_btn->setStyleSheet(locked ? "font-weight: bold;"
+                                       : "font-weight: normal;");
+      };
+      update_lock_style(locked_xy);
+
+      // Sync Y → X when locked on startup
+      if (locked_xy)
+      {
+        value.y = value.x;
+        slider_y->set_value(value.x);
+        slider_y->setEnabled(false);
+      }
+
+      row->addWidget(slider_x, 1); // stretch factor 1
+      row->addWidget(slider_y, 1);
+      row->addWidget(lock_btn, 0);
+      layout->addLayout(row);
+
+      // --- Connections
+
+      // slider_x changed
+      QObject::connect(slider_x,
+                       &SliderFloat::value_changed,
+                       widget,
+                       [&value, slider_x, slider_y, lock_btn, widget]()
+                       {
+                         value.x = slider_x->get_value();
+                         if (lock_btn->isChecked())
+                         {
+                           value.y = value.x;
+                           QSignalBlocker b(slider_y);
+                           slider_y->set_value(value.x);
+                         }
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      QObject::connect(slider_x,
+                       &SliderFloat::edit_ended,
+                       widget,
+                       [&value, slider_x, widget]()
+                       {
+                         value.x = slider_x->get_value();
+                         Q_EMIT widget->edit_ended();
+                       });
+
+      // slider_y changed (only reachable when unlocked)
+      QObject::connect(slider_y,
+                       &SliderFloat::value_changed,
+                       widget,
+                       [&value, slider_y, widget]()
+                       {
+                         value.y = slider_y->get_value();
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                       });
+
+      QObject::connect(slider_y,
+                       &SliderFloat::edit_ended,
+                       widget,
+                       [&value, slider_y, widget]()
+                       {
+                         value.y = slider_y->get_value();
+                         Q_EMIT widget->edit_ended();
+                       });
+
+      // Lock toggle
+      QObject::connect(
+          lock_btn,
+          &QPushButton::toggled,
+          widget,
+          [&value, slider_x, slider_y, lock_btn, update_lock_style, widget](
+              bool locked)
+          {
+            update_lock_style(locked);
+            slider_y->setEnabled(!locked);
+
+            if (locked)
+            {
+              // Snap Y to current X immediately
+              value.y = value.x;
+              {
+                QSignalBlocker b(slider_y);
+                slider_y->set_value(value.x);
+              }
+            }
+
+            Q_EMIT widget->edit_started();
+            Q_EMIT widget->value_changed();
+            Q_EMIT widget->edit_ended();
+          });
+    }
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
