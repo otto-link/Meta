@@ -15,6 +15,56 @@ std::string truncate(const std::string &s, size_t max_len = 80)
   return s.substr(0, max_len) + "...";
 }
 
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+inline std::vector<meta::Preset> generate_random_presets(
+    size_t   n,
+    uint32_t seed = std::random_device{}())
+{
+  std::mt19937 rng(seed);
+
+  std::uniform_int_distribution<int>    stop_count_dist(2, 8);
+  std::uniform_real_distribution<float> pos_dist(0.f, 1.f);
+  std::uniform_real_distribution<float> color_dist(0.f, 1.f);
+
+  std::vector<meta::Preset> presets;
+  presets.reserve(n);
+
+  for (size_t i = 0; i < n; ++i)
+  {
+    meta::Preset preset;
+    preset.name = "Preset " + std::to_string(i + 1);
+
+    int stop_count = stop_count_dist(rng);
+    preset.stops.reserve(stop_count);
+
+    // First stop
+    preset.stops.push_back(
+        {0.f, {color_dist(rng), color_dist(rng), color_dist(rng), 1.f}});
+
+    // Intermediate stops
+    for (int j = 1; j < stop_count - 1; ++j)
+    {
+      preset.stops.push_back(
+          {pos_dist(rng),
+           {color_dist(rng), color_dist(rng), color_dist(rng), 1.f}});
+    }
+
+    // Last stop
+    preset.stops.push_back(
+        {1.f, {color_dist(rng), color_dist(rng), color_dist(rng), 1.f}});
+
+    std::sort(preset.stops.begin() + 1,
+              preset.stops.end() - 1,
+              [](const meta::Stop &a, const meta::Stop &b)
+              { return a.position < b.position; });
+
+    presets.push_back(std::move(preset));
+  }
+
+  return presets;
+}
+#endif
+
 QWidget *make_debug_view(meta::AbstractAttribute *p_attr,
                          bool                     add_border = false)
 {
@@ -87,7 +137,11 @@ int main(int argc, char *argv[])
 
 #ifdef META_ENABLE_GLM_TYPES
   const bool base_glm_ivec = false;
-  const bool base_glm_vec = true;
+  const bool base_glm_vec = false;
+#endif
+
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+  const bool base_color_gradient = true;
 #endif
 
   const bool base_groups = false;
@@ -443,6 +497,17 @@ int main(int argc, char *argv[])
     }
   }
 
+#endif
+
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+  if (base_color_gradient)
+  {
+    {
+      auto *a = container.add("ColorGradient", meta::ColorGradient());
+      container.value<meta::ColorGradient>("ColorGradient")
+          .set_presets(generate_random_presets(16));
+    }
+  }
 #endif
 
   // --- GUI

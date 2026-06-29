@@ -61,6 +61,10 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 #include "meta_qt/widget_renderer_inl/glm_vec2.inl"
 #include "meta_qt/widget_renderer_inl/glm_vec3.inl"
 #include "meta_qt/widget_renderer_inl/glm_vec4.inl"
-#endif
 
 #include "meta_qt/widget_renderer_inl/std_vector_glm_vec3.inl"
+#endif
+
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+#include "meta_qt/widget_renderer_inl/color_gradient.inl"
+#endif

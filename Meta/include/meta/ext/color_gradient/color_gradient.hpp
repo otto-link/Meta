@@ -88,7 +88,9 @@ public:
 private:
   std::vector<Stop>   value_ = {{0.f, {0.f, 0.f, 0.f, 1.f}},
                                 {1.f, {1.f, 1.f, 1.f, 1.f}}};
-  std::vector<Preset> presets_;
+  std::vector<Preset> presets_ = {
+      {"Grayscale",
+       {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {1.f, 1.f, 1.f, 1.f}}}}};
 };
 
 } // namespace meta

@@ -2,13 +2,18 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #include "meta_qt/widget_renderer.hpp"
+#include "meta/macrologger.h"
 
 namespace meta::qt
 {
 
 MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
 {
-  if (!p_attr) return nullptr;
+  if (!p_attr)
+  {
+    LOG_ERROR("incoming p_attr is nullptr");
+    return nullptr;
+  }
 
   if (p_attr->type() == typeid(bool))
   {
@@ -77,6 +82,16 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
     return WidgetRenderer<std::vector<glm::vec3>>::render(attr, parent);
   }
 #endif
+
+#ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+  if (p_attr->type() == typeid(meta::ColorGradient))
+  {
+    auto &attr = static_cast<Attribute<meta::ColorGradient> &>(*p_attr);
+    return WidgetRenderer<meta::ColorGradient>::render(attr, parent);
+  }
+#endif
+
+  LOG_ERROR("attribute type not supported %s", p_attr->type().name());
 
   return nullptr;
 }
