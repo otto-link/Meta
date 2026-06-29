@@ -77,28 +77,31 @@ GradientPicker::GradientPicker(std::vector<Stop>         &stops,
   vbox->addWidget(scroll);
 
   // Shuffle button
-  auto *shuffle_btn = new QPushButton(QObject::tr("Shuffle colors"), this);
-  shuffle_btn->setFixedHeight(22);
-  vbox->addWidget(shuffle_btn);
+  if (false)
+  {
+    auto *shuffle_btn = new QPushButton(QObject::tr("Shuffle colors"), this);
+    shuffle_btn->setFixedHeight(22);
+    vbox->addWidget(shuffle_btn);
 
-  connect(shuffle_btn,
-          &QPushButton::clicked,
-          this,
-          [this]()
-          {
-            // Randomise colours, keep positions.
-            std::srand(static_cast<unsigned>(std::time(nullptr)));
-            for (auto &s : stops_)
+    connect(shuffle_btn,
+            &QPushButton::clicked,
+            this,
+            [this]()
             {
-              s.color = {float(std::rand()) / RAND_MAX,
-                         float(std::rand()) / RAND_MAX,
-                         float(std::rand()) / RAND_MAX,
-                         1.f};
-            }
-            update();
-            Q_EMIT value_changed();
-            Q_EMIT edit_ended();
-          });
+              // Randomise colours, keep positions.
+              std::srand(static_cast<unsigned>(std::time(nullptr)));
+              for (auto &s : stops_)
+              {
+                s.color = {float(std::rand()) / RAND_MAX,
+                           float(std::rand()) / RAND_MAX,
+                           float(std::rand()) / RAND_MAX,
+                           1.f};
+              }
+              update();
+              Q_EMIT value_changed();
+              Q_EMIT edit_ended();
+            });
+  }
 
   rebuild_preset_strip();
 }

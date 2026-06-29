@@ -36,14 +36,10 @@ template <> struct WidgetRenderer<meta::ColorGradient>
     MetaWidget *widget = make_meta_widget_vbox(parent);
     auto       *layout = static_cast<QVBoxLayout *>(widget->layout());
 
-    LOG_DEBUG("HERE");
-
     if (widget_type.empty()) widget_type = "GradientEditor";
 
     if (widget_type == "GradientEditor") // --- GradientEditor
     {
-      LOG_DEBUG("HERE");
-
       if (!label_txt.empty())
         layout->addWidget(
             new QLabel(QString::fromStdString(label_txt), widget));
