@@ -21,12 +21,18 @@ enum CategoryPolicy
   CP_SMART
 };
 
+struct ContainerRenderOptions
+{
+  CategoryPolicy            category_policy = CategoryPolicy::CP_SMART;
+  std::string               root_category_name = "";
+  std::vector<std::string>  insertion_order = {};
+  std::optional<std::regex> collapse_regex = std::nullopt;
+};
+
 struct CategoryNode
 {
-  std::string name;
-
-  std::vector<meta::AbstractAttribute *> attributes;
-
+  std::string                                          name;
+  std::vector<meta::AbstractAttribute *>               attributes;
   std::map<std::string, std::unique_ptr<CategoryNode>> children;
 };
 
@@ -48,12 +54,8 @@ void render_group_merged(CategoryNode              &node,
                          QVBoxLayout               *parent_layout,
                          std::vector<MetaWidget *> &collected_widgets);
 
-MetaWidget *render(
-    meta::AttributeContainer        &container,
-    CategoryPolicy                   group_policy = CategoryPolicy::CP_SMART,
-    const std::string               &root_group_name = "",
-    const std::vector<std::string>  &insertion_order = {},
-    const std::optional<std::regex> &collapse_regex = std::nullopt,
-    QWidget                         *parent = nullptr);
+MetaWidget *render(meta::AttributeContainer &container,
+                   ContainerRenderOptions    options = ContainerRenderOptions{},
+                   QWidget                  *parent = nullptr);
 
 } // namespace meta::qt

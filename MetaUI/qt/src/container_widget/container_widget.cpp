@@ -147,22 +147,19 @@ void render_category_merged(CategoryNode                    &node,
     render_category_merged(*child, layout, collected_widgets, collapse_regex);
 }
 
-MetaWidget *render(AttributeContainer              &container,
-                   CategoryPolicy                   category_policy,
-                   const std::string               &root_category_name,
-                   const std::vector<std::string>  &insertion_order,
-                   const std::optional<std::regex> &collapse_regex,
-                   QWidget                         *parent)
+MetaWidget *render(AttributeContainer    &container,
+                   ContainerRenderOptions options,
+                   QWidget               *parent)
 {
   CategoryNode root;
 
-  if (root_category_name.empty()) root.name = META_ROOT_CATEGORY;
+  if (options.root_category_name.empty()) root.name = META_ROOT_CATEGORY;
 
   bool has_no_categorys = true;
 
-  const std::vector<std::string> &order = insertion_order.empty()
+  const std::vector<std::string> &order = options.insertion_order.empty()
                                               ? container.insertion_order()
-                                              : insertion_order;
+                                              : options.insertion_order;
 
   for (const auto &name : order)
   {
@@ -185,21 +182,27 @@ MetaWidget *render(AttributeContainer              &container,
 
   std::vector<MetaWidget *> collected_widgets;
 
-  switch (category_policy)
+  switch (options.category_policy)
   {
   case CategoryPolicy::CP_TREE:
     render_category(root, layout, collected_widgets);
     break;
 
   case CategoryPolicy::CP_MERGED:
-    render_category_merged(root, layout, collected_widgets, collapse_regex);
+    render_category_merged(root,
+                           layout,
+                           collected_widgets,
+                           options.collapse_regex);
     break;
 
   case CategoryPolicy::CP_SMART:
     if (has_no_categorys)
       render_flat(root, layout, collected_widgets);
     else
-      render_category_merged(root, layout, collected_widgets, collapse_regex);
+      render_category_merged(root,
+                             layout,
+                             collected_widgets,
+                             options.collapse_regex);
     break;
 
   case CategoryPolicy::CP_FLAT:

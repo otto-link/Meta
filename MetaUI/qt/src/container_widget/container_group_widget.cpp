@@ -8,17 +8,10 @@
 namespace meta::qt
 {
 
-ContainerGroupWidget::ContainerGroupWidget(
-    meta::ContainerGroup            &group,
-    CategoryPolicy                   group_policy,
-    const std::string               &root_group_name,
-    const std::optional<std::regex> &collapse_regex,
-    QWidget                         *parent)
-    : MetaWidget(parent),
-      group(group),
-      group_policy(group_policy),
-      root_group_name(root_group_name),
-      collapse_regex(collapse_regex)
+ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
+                                           ContainerRenderOptions options,
+                                           QWidget               *parent)
+    : MetaWidget(parent), group(group), options(options)
 {
   auto *root = new QVBoxLayout(this);
   this->setLayout(root);
@@ -64,11 +57,7 @@ QWidget *ContainerGroupWidget::build_container_widget(const std::string &key)
 
   if (!container) return new QWidget(); // dummy
 
-  MetaWidget *container_widget = meta::qt::render(*container,
-                                                  group_policy,
-                                                  root_group_name,
-                                                  {},
-                                                  collapse_regex);
+  MetaWidget *container_widget = meta::qt::render(*container, options);
 
   // pass-through signals
   connect(container_widget,
@@ -101,17 +90,11 @@ void ContainerGroupWidget::sync_stack()
 
 // --- Function
 
-MetaWidget *render(meta::ContainerGroup            &group,
-                   CategoryPolicy                   group_policy,
-                   const std::string               &root_group_name,
-                   const std::optional<std::regex> &collapse_regex,
-                   QWidget                         *parent)
+MetaWidget *render(meta::ContainerGroup  &group,
+                   ContainerRenderOptions options,
+                   QWidget               *parent)
 {
-  auto *widget = new ContainerGroupWidget(group,
-                                          group_policy,
-                                          root_group_name,
-                                          collapse_regex,
-                                          parent);
+  auto *widget = new ContainerGroupWidget(group, options, parent);
   return widget;
 }
 

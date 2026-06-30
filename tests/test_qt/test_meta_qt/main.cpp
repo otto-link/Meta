@@ -525,9 +525,10 @@ int main(int argc, char *argv[])
 
   if (false)
   {
-    meta::qt::MetaWidget *widget = meta::qt::render(
-        container,
-        meta::qt::CategoryPolicy::CP_MERGED);
+    meta::qt::ContainerRenderOptions options;
+    options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+
+    meta::qt::MetaWidget *widget = meta::qt::render(container, options);
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_started,
@@ -583,13 +584,11 @@ int main(int argc, char *argv[])
 
     // generate widget
 
-    std::regex collapse_re("^Cat 1");
+    meta::qt::ContainerRenderOptions options;
+    options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+    options.collapse_regex = std::regex("^Cat 1");
 
-    meta::qt::MetaWidget *widget = meta::qt::render(
-        group,
-        meta::qt::CategoryPolicy::CP_MERGED,
-        "",
-        collapse_re);
+    meta::qt::MetaWidget *widget = meta::qt::render(group, options);
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_started,

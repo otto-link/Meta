@@ -19,11 +19,9 @@ class ContainerGroupWidget : public MetaWidget
 {
 public:
   ContainerGroupWidget(
-      meta::ContainerGroup            &group,
-      CategoryPolicy                   group_policy = CategoryPolicy::CP_SMART,
-      const std::string               &root_group_name = "",
-      const std::optional<std::regex> &collapse_regex = std::nullopt,
-      QWidget                         *parent = nullptr);
+      meta::ContainerGroup  &group,
+      ContainerRenderOptions options = ContainerRenderOptions{},
+      QWidget               *parent = nullptr);
 
 private:
   QWidget *build_container_widget(const std::string &key);
@@ -31,10 +29,8 @@ private:
   void sync_stack();
 
 private:
-  meta::ContainerGroup     &group;
-  CategoryPolicy            group_policy;
-  std::string               root_group_name;
-  std::optional<std::regex> collapse_regex;
+  meta::ContainerGroup  &group;
+  ContainerRenderOptions options;
 
   QComboBox      *combo = nullptr;
   QStackedWidget *stacked = nullptr;
@@ -43,11 +39,8 @@ private:
 };
 
 // wrapper
-MetaWidget *render(
-    meta::ContainerGroup            &group,
-    CategoryPolicy                   group_policy = CategoryPolicy::CP_SMART,
-    const std::string               &root_group_name = "",
-    const std::optional<std::regex> &collapse_regex = std::nullopt,
-    QWidget                         *parent = nullptr);
+MetaWidget *render(meta::ContainerGroup  &group,
+                   ContainerRenderOptions options = ContainerRenderOptions{},
+                   QWidget               *parent = nullptr);
 
 } // namespace meta::qt
