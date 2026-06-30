@@ -34,19 +34,15 @@ CollapsibleSection::CollapsibleSection(const QString &title, QWidget *parent)
   connect(toggle_button,
           &QToolButton::toggled,
           this,
-          [this](bool checked)
-          {
-            content->setVisible(checked);
-
-            toggle_button->setArrowType(checked ? Qt::DownArrow
-                                                : Qt::RightArrow);
-          });
+          [this](bool checked) { this->set_expanded(checked); });
 }
 
 void CollapsibleSection::set_expanded(bool new_state)
 {
   content->setVisible(new_state);
   toggle_button->setArrowType(new_state ? Qt::DownArrow : Qt::RightArrow);
+  QSignalBlocker blocker(toggle_button);
+  toggle_button->setChecked(new_state);
 }
 
 } // namespace meta::qt
