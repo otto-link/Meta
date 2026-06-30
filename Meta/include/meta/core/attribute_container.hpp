@@ -160,13 +160,13 @@ public:
 
     auto *ptr = attr.get();
 
-    auto [it, inserted] = _attributes.try_emplace(name, std::move(attr));
+    auto [it, inserted] = attributes_.try_emplace(name, std::move(attr));
 
     if (!inserted)
       throw std::runtime_error("Attribute already exists: " + name);
 
     // keep track of insertion order
-    _insertion_order.push_back(name);
+    insertion_order_.push_back(name);
 
     return ptr;
   }
@@ -185,13 +185,13 @@ public:
 
     auto *ptr = attr.get();
 
-    auto [it, inserted] = _attributes.try_emplace(name, std::move(attr));
+    auto [it, inserted] = attributes_.try_emplace(name, std::move(attr));
 
     if (!inserted)
       throw std::runtime_error("Attribute already exists: " + name);
 
     // keep track of insertion order
-    _insertion_order.push_back(name);
+    insertion_order_.push_back(name);
 
     return ptr;
   }
@@ -292,14 +292,14 @@ public:
   void json_from(const nlohmann::json &j);
 
 private:
-  AttrContainerType        _attributes;
-  std::vector<std::string> _insertion_order;
+  AttrContainerType        attributes_;
+  std::vector<std::string> insertion_order_;
 
   /**
-   * @brief Removes stale entries from _insertion_order that no longer exist
-   *        in _attributes (e.g. after external erasure or clear).
+   * @brief Removes stale entries from insertion_order_ that no longer exist
+   *        in attributes_ (e.g. after external erasure or clear).
    */
-  void compact_insertion_order();
+  void compactinsertion_order_();
 };
 
 // -----------------------------------------------------------------------------

@@ -71,7 +71,7 @@ public:
 
 private:
   /// Owned metadata container storing arbitrary attributes.
-  std::unique_ptr<AttributeContainer> _metadata;
+  std::unique_ptr<AttributeContainer> metadata_;
 };
 
 } // namespace meta

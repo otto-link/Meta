@@ -27,17 +27,17 @@ template <typename T> class SetAttributeCommand : public ICommand
 public:
   /// @brief Creates a command changing an attribute value.
   SetAttributeCommand(Attribute<T> &attribute, const T &new_value)
-      : _attribute(attribute),
-        _old_value(attribute.value()),
-        _new_value(new_value)
+      : attribute_(attribute),
+        old_value_(attribute.value()),
+        new_value_(new_value)
   {
   }
 
   /// @brief Restores the previous value.
-  void undo() override { _attribute.value() = _old_value; }
+  void undo() override { attribute_.value() = old_value_; }
 
   /// @brief Applies the new value.
-  void redo() override { _attribute.value() = _new_value; }
+  void redo() override { attribute_.value() = new_value_; }
 
   /// @brief Merges consecutive edits on the same attribute.
   bool merge_with(const ICommand &other) override
@@ -49,20 +49,20 @@ public:
       return false;
     }
 
-    if (&ptr->_attribute != &_attribute)
+    if (&ptr->attribute_ != &attribute_)
     {
       return false;
     }
 
-    _new_value = ptr->_new_value;
+    new_value_ = ptr->new_value_;
 
     return true;
   }
 
 private:
-  Attribute<T> &_attribute;
-  T             _old_value;
-  T             _new_value;
+  Attribute<T> &attribute_;
+  T             old_value_;
+  T             new_value_;
 };
 
 } // namespace meta

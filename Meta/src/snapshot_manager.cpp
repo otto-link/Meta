@@ -9,29 +9,29 @@ namespace meta
 void SnapshotManager::save(const std::string    &name,
                            const nlohmann::json &snapshot)
 {
-  _snapshots[name] = snapshot;
+  snapshots_[name] = snapshot;
 }
 
 bool SnapshotManager::has(const std::string &name) const
 {
-  return _snapshots.contains(name);
+  return snapshots_.contains(name);
 }
 
 const nlohmann::json &SnapshotManager::load(const std::string &name) const
 {
-  return _snapshots.at(name);
+  return snapshots_.at(name);
 }
 
-void SnapshotManager::erase(const std::string &name) { _snapshots.erase(name); }
+void SnapshotManager::erase(const std::string &name) { snapshots_.erase(name); }
 
-void SnapshotManager::clear() { _snapshots.clear(); }
+void SnapshotManager::clear() { snapshots_.clear(); }
 
 std::vector<std::string> SnapshotManager::names() const
 {
   std::vector<std::string> result;
-  result.reserve(_snapshots.size());
+  result.reserve(snapshots_.size());
 
-  for (const auto &[name, _] : _snapshots)
+  for (const auto &[name, _] : snapshots_)
     result.push_back(name);
 
   return result;

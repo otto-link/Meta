@@ -7,10 +7,10 @@
 namespace meta
 {
 
-MetaObject::MetaObject() : _metadata(std::make_unique<AttributeContainer>()) {}
+MetaObject::MetaObject() : metadata_(std::make_unique<AttributeContainer>()) {}
 
-AttributeContainer &MetaObject::metadata() { return *_metadata; }
+AttributeContainer &MetaObject::metadata() { return *metadata_; }
 
-const AttributeContainer &MetaObject::metadata() const { return *_metadata; }
+const AttributeContainer &MetaObject::metadata() const { return *metadata_; }
 
 } // namespace meta

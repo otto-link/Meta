@@ -8,13 +8,13 @@ namespace meta
 
 AttributeContainer &ContainerGroup::add(const std::string &key)
 {
-  auto [it, inserted] = _containers.try_emplace(
+  auto [it, inserted] = containers_.try_emplace(
       key,
       std::make_unique<AttributeContainer>());
 
   if (!inserted) throw std::runtime_error("Container already exists: " + key);
 
-  if (!_current) _current = it->second.get();
+  if (!current_) current_ = it->second.get();
 
   return *it->second;
 }
@@ -22,64 +22,64 @@ AttributeContainer &ContainerGroup::add(const std::string &key)
 const std::unordered_map<std::string, std::unique_ptr<AttributeContainer>> &
 ContainerGroup::containers() const
 {
-  return _containers;
+  return containers_;
 }
 
 bool ContainerGroup::contains(const std::string &key) const
 {
-  return _containers.contains(key);
+  return containers_.contains(key);
 }
 
 AttributeContainer &ContainerGroup::current()
 {
-  if (!_current) throw std::runtime_error("No current container selected");
+  if (!current_) throw std::runtime_error("No current container selected");
 
-  return *_current;
+  return *current_;
 }
 
 const AttributeContainer &ContainerGroup::current() const
 {
-  if (!_current) throw std::runtime_error("No current container selected");
+  if (!current_) throw std::runtime_error("No current container selected");
 
-  return *_current;
+  return *current_;
 }
 
 std::optional<std::string> ContainerGroup::current_container_name() const
 {
-  if (!_current) return std::nullopt;
+  if (!current_) return std::nullopt;
 
-  for (const auto &[key, container] : _containers)
-    if (container.get() == _current) return key;
+  for (const auto &[key, container] : containers_)
+    if (container.get() == current_) return key;
 
   return std::nullopt;
 }
 
 bool ContainerGroup::erase(const std::string &key)
 {
-  auto it = _containers.find(key);
+  auto it = containers_.find(key);
 
-  if (it == _containers.end()) return false;
+  if (it == containers_.end()) return false;
 
-  if (_current == it->second.get()) _current = nullptr;
+  if (current_ == it->second.get()) current_ = nullptr;
 
-  _containers.erase(it);
+  containers_.erase(it);
 
-  if (!_current && !_containers.empty())
-    _current = _containers.begin()->second.get();
+  if (!current_ && !containers_.empty())
+    current_ = containers_.begin()->second.get();
 
   return true;
 }
 
 AttributeContainer *ContainerGroup::find(const std::string &key)
 {
-  auto it = _containers.find(key);
-  return it != _containers.end() ? it->second.get() : nullptr;
+  auto it = containers_.find(key);
+  return it != containers_.end() ? it->second.get() : nullptr;
 }
 
 const AttributeContainer *ContainerGroup::find(const std::string &key) const
 {
-  auto it = _containers.find(key);
-  return it != _containers.end() ? it->second.get() : nullptr;
+  auto it = containers_.find(key);
+  return it != containers_.end() ? it->second.get() : nullptr;
 }
 
 void ContainerGroup::set_current(const std::string &key)
@@ -88,7 +88,7 @@ void ContainerGroup::set_current(const std::string &key)
 
   if (!container) throw std::runtime_error("Container does not exist: " + key);
 
-  _current = container;
+  current_ = container;
 }
 
 } // namespace meta

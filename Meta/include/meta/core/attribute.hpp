@@ -59,14 +59,14 @@ public:
    * @param value Initial stored value.
    */
   Attribute(std::string name, T value)
-      : _name(std::move(name)), _value(std::move(value))
+      : name_(std::move(name)), value_(std::move(value))
   {
   }
 
   /**
    * @brief Get attribute name.
    */
-  const std::string &name() const override { return _name; }
+  const std::string &name() const override { return name_; }
 
   /**
    * @brief Get runtime type information of stored value.
@@ -76,12 +76,12 @@ public:
   /**
    * @brief Get mutable pointer to stored value.
    */
-  void *raw_ptr() override { return &_value; }
+  void *raw_ptr() override { return &value_; }
 
   /**
    * @brief Get const pointer to stored value.
    */
-  const void *raw_ptr() const override { return &_value; }
+  const void *raw_ptr() const override { return &value_; }
 
   /**
    * @brief Assign value from type-erased container.
@@ -93,31 +93,31 @@ public:
   {
     if (value.type() != typeid(T)) return false;
 
-    _value = std::any_cast<T>(value);
+    value_ = std::any_cast<T>(value);
     return true;
   }
 
   /**
    * @brief Convert value to std::any.
    */
-  std::any to_any() const override { return _value; }
+  std::any to_any() const override { return value_; }
 
   /**
    * @brief Access mutable value.
    */
-  T &value() { return _value; }
+  T &value() { return value_; }
 
   /**
    * @brief Access const value.
    */
-  const T &value() const { return _value; }
+  const T &value() const { return value_; }
 
   /**
    * @brief Convert value to human-readable string.
    */
   std::string to_string() const override
   {
-    return AttributeTraits<T>::to_string(_value);
+    return AttributeTraits<T>::to_string(value_);
   }
 
   /**
@@ -131,7 +131,7 @@ public:
   nlohmann::json json_to() const override
   {
     return {{"type", TypeName<T>::name},
-            {"value", AttributeTraits<T>::json_to(_value)},
+            {"value", AttributeTraits<T>::json_to(value_)},
             {"metadata", serialize_metadata(metadata())}};
   }
 
@@ -144,13 +144,13 @@ public:
    */
   void json_from(const nlohmann::json &j) override
   {
-    _value = AttributeTraits<T>::json_from(j.at("value"));
+    value_ = AttributeTraits<T>::json_from(j.at("value"));
     deserialize_metadata(metadata(), j.at("metadata"));
   }
 
 private:
-  std::string _name;
-  T           _value;
+  std::string name_;
+  T           value_;
 };
 
 } // namespace meta

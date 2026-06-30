@@ -8,18 +8,18 @@ namespace meta
 
 void CommandGroup::add(std::unique_ptr<ICommand> command)
 {
-  _commands.push_back(std::move(command));
+  commands_.push_back(std::move(command));
 }
 
 void CommandGroup::redo()
 {
-  for (auto &command : _commands)
+  for (auto &command : commands_)
     command->redo();
 }
 
 void CommandGroup::undo()
 {
-  for (auto it = _commands.rbegin(); it != _commands.rend(); ++it)
+  for (auto it = commands_.rbegin(); it != commands_.rend(); ++it)
   {
     (*it)->undo();
   }

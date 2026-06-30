@@ -62,7 +62,7 @@ public:
    */
   void register_attribute_type(std::string name, CreateFn fn)
   {
-    _registry[std::move(name)] = std::move(fn);
+    registry_[std::move(name)] = std::move(fn);
   }
 
   /**
@@ -76,7 +76,7 @@ public:
                                             const std::string &name) const;
 
 private:
-  std::unordered_map<std::string, CreateFn> _registry;
+  std::unordered_map<std::string, CreateFn> registry_;
 };
 
 // -----------------------------------------------------------------------------

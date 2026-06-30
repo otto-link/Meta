@@ -60,7 +60,7 @@ public:
   std::vector<std::string> names() const;
 
 private:
-  std::unordered_map<std::string, nlohmann::json> _snapshots;
+  std::unordered_map<std::string, nlohmann::json> snapshots_;
 };
 
 } // namespace meta

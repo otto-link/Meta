@@ -33,7 +33,7 @@ public:
   void undo() override;
 
 private:
-  std::vector<std::unique_ptr<ICommand>> _commands;
+  std::vector<std::unique_ptr<ICommand>> commands_;
 };
 
 } // namespace meta

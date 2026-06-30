@@ -16,8 +16,8 @@ std::unique_ptr<AbstractAttribute> AttributeFactory::create(
     const std::string &name,
     const std::string &attr_name) const
 {
-  auto it = _registry.find(name);
-  if (it == _registry.end()) return nullptr;
+  auto it = registry_.find(name);
+  if (it == registry_.end()) return nullptr;
   return it->second(attr_name);
 }
 

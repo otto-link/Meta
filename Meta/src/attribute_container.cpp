@@ -14,82 +14,82 @@
 namespace meta
 {
 
-AttrIterator AttributeContainer::begin() { return _attributes.begin(); }
+AttrIterator AttributeContainer::begin() { return attributes_.begin(); }
 
 ConstAttrIterator AttributeContainer::begin() const
 {
-  return _attributes.begin();
+  return attributes_.begin();
 }
 
 ConstAttrIterator AttributeContainer::cbegin() const
 {
-  return _attributes.cbegin();
+  return attributes_.cbegin();
 }
 
 ConstAttrIterator AttributeContainer::cend() const
 {
-  return _attributes.cend();
+  return attributes_.cend();
 }
 
 void AttributeContainer::clear()
 {
-  _attributes.clear();
-  compact_insertion_order();
+  attributes_.clear();
+  compactinsertion_order_();
 }
 
-void AttributeContainer::compact_insertion_order()
+void AttributeContainer::compactinsertion_order_()
 {
-  _insertion_order.erase(std::remove_if(_insertion_order.begin(),
-                                        _insertion_order.end(),
+  insertion_order_.erase(std::remove_if(insertion_order_.begin(),
+                                        insertion_order_.end(),
                                         [this](const std::string &name) {
-                                          return !_attributes.contains(name);
+                                          return !attributes_.contains(name);
                                         }),
-                         _insertion_order.end());
+                         insertion_order_.end());
 }
 
 bool AttributeContainer::contains(const std::string &name) const
 {
-  return _attributes.contains(name);
+  return attributes_.contains(name);
 }
 
 bool AttributeContainer::contains_all_keys(const std::vector<std::string> &keys)
 {
   for (const auto &key : keys)
-    if (_attributes.find(key) == _attributes.end()) return false;
+    if (attributes_.find(key) == attributes_.end()) return false;
 
   return true;
 }
 
-bool AttributeContainer::empty() const noexcept { return _attributes.empty(); }
+bool AttributeContainer::empty() const noexcept { return attributes_.empty(); }
 
-AttrIterator AttributeContainer::end() { return _attributes.end(); }
+AttrIterator AttributeContainer::end() { return attributes_.end(); }
 
-ConstAttrIterator AttributeContainer::end() const { return _attributes.end(); }
+ConstAttrIterator AttributeContainer::end() const { return attributes_.end(); }
 
 AbstractAttribute *AttributeContainer::find(const std::string &name)
 {
-  auto it = _attributes.find(name);
-  return it == _attributes.end() ? nullptr : it->second.get();
+  auto it = attributes_.find(name);
+  return it == attributes_.end() ? nullptr : it->second.get();
 }
 
 const AbstractAttribute *AttributeContainer::find(const std::string &name) const
 {
-  auto it = _attributes.find(name);
-  return it == _attributes.end() ? nullptr : it->second.get();
+  auto it = attributes_.find(name);
+  return it == attributes_.end() ? nullptr : it->second.get();
 }
 
 const std::vector<std::string> &AttributeContainer::insertion_order() const
 {
-  return _insertion_order;
+  return insertion_order_;
 }
 
 void AttributeContainer::json_from(const nlohmann::json &j)
 {
   for (auto &[name, value] : j.items())
   {
-    auto it = _attributes.find(name);
+    auto it = attributes_.find(name);
 
-    if (it == _attributes.end())
+    if (it == attributes_.end())
     {
       const std::string attr_type = value.at("type");
       auto new_attr = AttributeFactory::instance().create(attr_type, name);
@@ -100,7 +100,7 @@ void AttributeContainer::json_from(const nlohmann::json &j)
         continue;
       }
 
-      auto [insert_it, inserted] = _attributes.emplace(name,
+      auto [insert_it, inserted] = attributes_.emplace(name,
                                                        std::move(new_attr));
 
       it = insert_it;
@@ -114,7 +114,7 @@ nlohmann::json AttributeContainer::json_to() const
 {
   nlohmann::json j;
 
-  for (const auto &[name, attr] : _attributes)
+  for (const auto &[name, attr] : attributes_)
     j[name] = attr->json_to();
 
   return j;
@@ -122,7 +122,7 @@ nlohmann::json AttributeContainer::json_to() const
 
 std::size_t AttributeContainer::size() const noexcept
 {
-  return _attributes.size();
+  return attributes_.size();
 }
 
 // --- Functions

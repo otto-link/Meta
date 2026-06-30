@@ -50,8 +50,8 @@ public:
   void redo();
 
 private:
-  std::vector<std::unique_ptr<ICommand>> _undo_stack;
-  std::vector<std::unique_ptr<ICommand>> _redo_stack;
+  std::vector<std::unique_ptr<ICommand>> undo_stack_;
+  std::vector<std::unique_ptr<ICommand>> redo_stack_;
 };
 
 } // namespace meta

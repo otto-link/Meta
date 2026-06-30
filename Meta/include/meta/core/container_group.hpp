@@ -95,8 +95,8 @@ public:
   void set_current(const std::string &key);
 
 private:
-  ContainerMap        _containers;
-  AttributeContainer *_current = nullptr;
+  ContainerMap        containers_;
+  AttributeContainer *current_ = nullptr;
 };
 
 } // namespace meta

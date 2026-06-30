@@ -6,14 +6,14 @@
 namespace meta
 {
 
-bool CommandStack::can_undo() const { return !_undo_stack.empty(); }
+bool CommandStack::can_undo() const { return !undo_stack_.empty(); }
 
-bool CommandStack::can_redo() const { return !_redo_stack.empty(); }
+bool CommandStack::can_redo() const { return !redo_stack_.empty(); }
 
 void CommandStack::clear()
 {
-  _undo_stack.clear();
-  _redo_stack.clear();
+  undo_stack_.clear();
+  redo_stack_.clear();
 }
 
 void CommandStack::execute(std::unique_ptr<ICommand> command, bool allow_merge)
@@ -22,37 +22,37 @@ void CommandStack::execute(std::unique_ptr<ICommand> command, bool allow_merge)
 
   command->redo();
 
-  if (allow_merge && !_undo_stack.empty())
+  if (allow_merge && !undo_stack_.empty())
   {
-    if (_undo_stack.back()->merge_with(*command))
+    if (undo_stack_.back()->merge_with(*command))
     {
-      _redo_stack.clear();
+      redo_stack_.clear();
       return;
     }
   }
 
-  _undo_stack.push_back(std::move(command));
-  _redo_stack.clear();
+  undo_stack_.push_back(std::move(command));
+  redo_stack_.clear();
 }
 
 void CommandStack::undo()
 {
-  if (_undo_stack.empty()) return;
+  if (undo_stack_.empty()) return;
 
-  auto command = std::move(_undo_stack.back());
-  _undo_stack.pop_back();
+  auto command = std::move(undo_stack_.back());
+  undo_stack_.pop_back();
   command->undo();
-  _redo_stack.push_back(std::move(command));
+  redo_stack_.push_back(std::move(command));
 }
 
 void CommandStack::redo()
 {
-  if (_redo_stack.empty()) return;
+  if (redo_stack_.empty()) return;
 
-  auto command = std::move(_redo_stack.back());
-  _redo_stack.pop_back();
+  auto command = std::move(redo_stack_.back());
+  redo_stack_.pop_back();
   command->redo();
-  _undo_stack.push_back(std::move(command));
+  undo_stack_.push_back(std::move(command));
 }
 
 } // namespace meta
