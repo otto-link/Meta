@@ -50,6 +50,12 @@ public:
             });
   }
 
+  void set_expanded(bool new_state)
+  {
+    content->setVisible(new_state);
+    toggle_button->setArrowType(new_state ? Qt::DownArrow : Qt::RightArrow);
+  }
+
   QVBoxLayout *content_layout;
 
 private:

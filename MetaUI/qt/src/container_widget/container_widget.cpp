@@ -1,8 +1,10 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
-#include "meta/macrologger.h"
+#include <optional>
+#include <regex>
 
+#include "meta/macrologger.h"
 #include "meta_common.hpp"
 
 #include "meta_qt/collapsible_section.hpp"
@@ -23,9 +25,7 @@ std::string compute_flattened_path(CategoryNode *node)
 
     path += node->name;
 
-    // stop if not a pure chain
     if (node->attributes.size() > 0) break;
-
     if (node->children.size() != 1) break;
 
     node = node->children.begin()->second.get();
@@ -63,7 +63,6 @@ void render_flat(CategoryNode              &node,
                  QVBoxLayout               *layout,
                  std::vector<MetaWidget *> &collected_widgets)
 {
-  // render attributes from this node
   for (auto *p_attr : node.attributes)
   {
     MetaWidget *w = meta::qt::render(p_attr);
@@ -71,7 +70,6 @@ void render_flat(CategoryNode              &node,
     collected_widgets.push_back(w);
   }
 
-  // recurse into children
   for (auto &[name, child] : node.children)
     render_flat(*child, layout, collected_widgets);
 }
@@ -90,7 +88,6 @@ void render_category(CategoryNode              &node,
     current_layout = section->content_layout;
   }
 
-  // --- render attributes in this category
   for (auto *p_attr : node.attributes)
   {
     MetaWidget *w = meta::qt::render(p_attr);
@@ -98,19 +95,18 @@ void render_category(CategoryNode              &node,
     collected_widgets.push_back(w);
   }
 
-  // --- render children categorys
   for (auto &[name, child] : node.children)
     render_category(*child, current_layout, collected_widgets);
 }
 
-void render_category_merged(CategoryNode              &node,
-                            QVBoxLayout               *parent_layout,
-                            std::vector<MetaWidget *> &collected_widgets)
+void render_category_merged(CategoryNode                    &node,
+                            QVBoxLayout                     *parent_layout,
+                            std::vector<MetaWidget *>       &collected_widgets,
+                            const std::optional<std::regex> &collapse_regex)
 {
   CategoryNode               *current = &node;
   std::vector<CategoryNode *> chain;
 
-  // build flatten chain correctly
   while (current)
   {
     chain.push_back(current);
@@ -118,7 +114,6 @@ void render_category_merged(CategoryNode              &node,
     current = current->children.begin()->second.get();
   }
 
-  // build title
   std::string title;
   for (auto *n : chain)
   {
@@ -130,11 +125,13 @@ void render_category_merged(CategoryNode              &node,
   }
 
   auto *section = new CollapsibleSection(title.c_str());
+
+  if (collapse_regex && std::regex_search(title, *collapse_regex))
+    section->set_expanded(false);
+
   parent_layout->addWidget(section);
 
   QVBoxLayout *layout = section->content_layout;
-
-  // render attributes
 
   for (auto *n : chain)
     for (auto *p_attr : n->attributes)
@@ -144,21 +141,19 @@ void render_category_merged(CategoryNode              &node,
       collected_widgets.push_back(w);
     }
 
-  // recurse ONLY from last node
   CategoryNode *last = chain.back();
 
   for (auto &[name, child] : last->children)
-    render_category_merged(*child, layout, collected_widgets);
+    render_category_merged(*child, layout, collected_widgets, collapse_regex);
 }
 
-MetaWidget *render(AttributeContainer             &container,
-                   CategoryPolicy                  category_policy,
-                   const std::string              &root_category_name,
-                   const std::vector<std::string> &insertion_order,
-                   QWidget                        *parent)
+MetaWidget *render(AttributeContainer              &container,
+                   CategoryPolicy                   category_policy,
+                   const std::string               &root_category_name,
+                   const std::vector<std::string>  &insertion_order,
+                   const std::optional<std::regex> &collapse_regex,
+                   QWidget                         *parent)
 {
-  // --- Build node tree
-
   CategoryNode root;
 
   if (root_category_name.empty()) root.name = META_ROOT_CATEGORY;
@@ -185,8 +180,6 @@ MetaWidget *render(AttributeContainer             &container,
     has_no_categorys &= category.empty();
   }
 
-  // --- Render
-
   MetaWidget *container_widget = make_meta_widget_vbox(parent);
   auto       *layout = static_cast<QVBoxLayout *>(container_widget->layout());
 
@@ -195,35 +188,23 @@ MetaWidget *render(AttributeContainer             &container,
   switch (category_policy)
   {
   case CategoryPolicy::CP_TREE:
-  {
     render_category(root, layout, collected_widgets);
-  }
-  break;
+    break;
 
   case CategoryPolicy::CP_MERGED:
-  {
-    render_category_merged(root, layout, collected_widgets);
-  }
-  break;
+    render_category_merged(root, layout, collected_widgets, collapse_regex);
+    break;
 
   case CategoryPolicy::CP_SMART:
-  {
-    // switch to flat view if no category is defined
     if (has_no_categorys)
       render_flat(root, layout, collected_widgets);
     else
-      render_category_merged(root, layout, collected_widgets);
-  }
-  break;
+      render_category_merged(root, layout, collected_widgets, collapse_regex);
+    break;
 
   case CategoryPolicy::CP_FLAT:
-  default:
-  {
-    render_flat(root, layout, collected_widgets);
+  default: render_flat(root, layout, collected_widgets); break;
   }
-  }
-
-  // --- Pass-through signals
 
   for (MetaWidget *w : collected_widgets)
   {
@@ -242,8 +223,6 @@ MetaWidget *render(AttributeContainer             &container,
                      container_widget,
                      &MetaWidget::edit_ended);
   }
-
-  //--- Output
 
   return container_widget;
 }

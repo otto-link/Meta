@@ -2,6 +2,8 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
+#include <regex>
+
 #include <QVBoxLayout>
 
 #include "meta/core/abstract_attribute.hpp"
@@ -46,10 +48,12 @@ void render_group_merged(CategoryNode              &node,
                          QVBoxLayout               *parent_layout,
                          std::vector<MetaWidget *> &collected_widgets);
 
-MetaWidget *render(meta::AttributeContainer &container,
-                   CategoryPolicy     group_policy = CategoryPolicy::CP_SMART,
-                   const std::string &root_group_name = "",
-                   const std::vector<std::string> &insertion_order = {},
-                   QWidget                        *parent = nullptr);
+MetaWidget *render(
+    meta::AttributeContainer        &container,
+    CategoryPolicy                   group_policy = CategoryPolicy::CP_SMART,
+    const std::string               &root_group_name = "",
+    const std::vector<std::string>  &insertion_order = {},
+    const std::optional<std::regex> &collapse_regex = std::nullopt,
+    QWidget                         *parent = nullptr);
 
 } // namespace meta::qt

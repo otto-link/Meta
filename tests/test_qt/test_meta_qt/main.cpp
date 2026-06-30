@@ -546,7 +546,7 @@ int main(int argc, char *argv[])
 
   meta::ContainerGroup group; // watch for lifetime...
 
-  if (false)
+  if (true)
   {
     // Create multiple "views" / contexts
     auto &node_settings = group.add("node_settings");
@@ -583,9 +583,13 @@ int main(int argc, char *argv[])
 
     // generate widget
 
+    std::regex collapse_re("^Cat 1");
+
     meta::qt::MetaWidget *widget = meta::qt::render(
         group,
-        meta::qt::CategoryPolicy::CP_MERGED);
+        meta::qt::CategoryPolicy::CP_MERGED,
+        "",
+        collapse_re);
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_started,
