@@ -7,10 +7,10 @@
 #include "meta/macrologger.h"
 #include "meta_common.hpp"
 
-#include "meta_qt/collapsible_section.hpp"
 #include "meta_qt/container_widget.hpp"
 #include "meta_qt/meta_widget.hpp"
 #include "meta_qt/widget_renderer.hpp"
+#include "meta_qt/widgets/collapsible_section.hpp"
 
 namespace meta::qt
 {
