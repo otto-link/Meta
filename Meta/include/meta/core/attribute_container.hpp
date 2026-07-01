@@ -299,7 +299,7 @@ private:
    * @brief Removes stale entries from insertion_order_ that no longer exist
    *        in attributes_ (e.g. after external erasure or clear).
    */
-  void compactinsertion_order_();
+  void compact_insertion_order();
 };
 
 // -----------------------------------------------------------------------------

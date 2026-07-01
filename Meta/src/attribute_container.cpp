@@ -34,10 +34,10 @@ ConstAttrIterator AttributeContainer::cend() const
 void AttributeContainer::clear()
 {
   attributes_.clear();
-  compactinsertion_order_();
+  compact_insertion_order();
 }
 
-void AttributeContainer::compactinsertion_order_()
+void AttributeContainer::compact_insertion_order()
 {
   insertion_order_.erase(std::remove_if(insertion_order_.begin(),
                                         insertion_order_.end(),
