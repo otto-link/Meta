@@ -617,7 +617,7 @@ int main(int argc, char *argv[])
         [&group]()
         {
           meta::qt::ContainerRenderOptions options;
-          options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+          options.category_policy = meta::qt::CategoryPolicy::CP_TREE;
           options.collapse_regex = std::regex("^Cat 1");
           meta::qt::MetaWidget *widget = meta::qt::render(group, options);
           widget->show();
