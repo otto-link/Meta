@@ -44,7 +44,11 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
     const bool is_points = (widget_type == "PointsEditor");
     const bool is_path = (widget_type == "PathEditor");
 
-    if (is_points || is_path)
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (is_points || is_path)
     {
       if (!label_txt.empty())
         layout->addWidget(

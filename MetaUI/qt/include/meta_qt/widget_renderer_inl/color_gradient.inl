@@ -38,7 +38,11 @@ template <> struct WidgetRenderer<meta::ColorGradient>
 
     if (widget_type.empty()) widget_type = "GradientEditor";
 
-    if (widget_type == "GradientEditor") // --- GradientEditor
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (widget_type == "GradientEditor") // --- GradientEditor
     {
       if (!label_txt.empty())
         layout->addWidget(

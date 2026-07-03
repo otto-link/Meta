@@ -47,7 +47,11 @@ template <> struct WidgetRenderer<float>
 
     if (widget_type.empty()) widget_type = "Input";
 
-    if (widget_type == "Input") // --- Input
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (widget_type == "Input") // --- Input
     {
       // --- INPUT
 

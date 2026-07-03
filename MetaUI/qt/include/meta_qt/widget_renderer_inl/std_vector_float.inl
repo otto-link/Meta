@@ -40,7 +40,11 @@ template <> struct WidgetRenderer<std::vector<float>>
     if (!label_txt.empty())
       layout->addWidget(new QLabel(QString::fromStdString(label_txt), widget));
 
-    if (widget_type == "CurveEditor") // --- CurveEditor
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (widget_type == "CurveEditor") // --- CurveEditor
     {
       auto *canvas = new CurveCanvas(value,
                                      curve_size,

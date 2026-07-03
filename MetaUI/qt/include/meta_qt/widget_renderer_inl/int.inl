@@ -45,7 +45,11 @@ template <> struct WidgetRenderer<int>
 
     if (widget_type.empty()) widget_type = "Input";
 
-    if (widget_type == "Input")
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (widget_type == "Input")
     {
       // --- INPUT
 

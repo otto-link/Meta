@@ -96,7 +96,11 @@ template <> struct WidgetRenderer<std::string>
     if (!label_txt.empty())
       layout->addWidget(new QLabel(QString::fromStdString(label_txt), widget));
 
-    if (widget_type == "SingleLineText") // --- SingleLineText
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (widget_type == "SingleLineText") // --- SingleLineText
     {
       const std::string placeholder = meta::common::try_get<std::string>(
           attr,

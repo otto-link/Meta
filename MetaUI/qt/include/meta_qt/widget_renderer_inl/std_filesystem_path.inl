@@ -35,7 +35,11 @@ template <> struct WidgetRenderer<std::filesystem::path>
     const bool is_save_file = (widget_type == "SaveFile");
     const bool is_directory = (widget_type == "Directory");
 
-    if (is_open_file || is_save_file || is_directory)
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (is_open_file || is_save_file || is_directory)
     {
       if (!label_txt.empty())
       {
