@@ -43,6 +43,8 @@ void CollapsibleSection::set_expanded(bool new_state)
   toggle_button->setArrowType(new_state ? Qt::DownArrow : Qt::RightArrow);
   QSignalBlocker blocker(toggle_button);
   toggle_button->setChecked(new_state);
+
+  Q_EMIT expanded_state_changed(new_state);
 }
 
 } // namespace meta::qt

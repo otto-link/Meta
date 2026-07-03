@@ -18,9 +18,13 @@ public:
   MetaWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 
 signals:
+  void closed();
   void edit_started();
   void edit_ended();
   void value_changed();
+
+protected:
+  void closeEvent(QCloseEvent *event) override;
 };
 
 MetaWidget *make_meta_widget_grid(QWidget *parent = nullptr);

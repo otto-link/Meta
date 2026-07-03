@@ -74,7 +74,8 @@ void render_flat(CategoryNode              &node,
     render_flat(*child, layout, collected_widgets);
 }
 
-void render_category(CategoryNode              &node,
+void render_category(meta::AttributeContainer  &container,
+                     CategoryNode              &node,
                      QVBoxLayout               *parent_layout,
                      std::vector<MetaWidget *> &collected_widgets)
 {
@@ -82,8 +83,33 @@ void render_category(CategoryNode              &node,
 
   if (!node.name.empty())
   {
-    auto *section = new CollapsibleSection(node.name.c_str());
+    const std::string title = node.name;
+
+    auto *section = new CollapsibleSection(title.c_str());
     parent_layout->addWidget(section);
+
+    // UI state management
+    {
+      auto *state = container.try_add(meta::keys::ui::state, true);
+
+      // apply stored state if available
+      if (state->metadata().contains(title))
+      {
+        bool current_state = state->metadata().value<bool>(title);
+        section->set_expanded(current_state);
+      }
+
+      QObject::connect(
+          section,
+          &CollapsibleSection::expanded_state_changed,
+          [&container, title](bool new_state)
+          {
+            // add or get existing (dummy attribute used as a
+            // metadata container)
+            auto *state = container.try_add(meta::keys::ui::state, true);
+            state->metadata().try_add(title, new_state)->value() = new_state;
+          });
+    }
 
     current_layout = section->content_layout;
   }
@@ -96,10 +122,11 @@ void render_category(CategoryNode              &node,
   }
 
   for (auto &[name, child] : node.children)
-    render_category(*child, current_layout, collected_widgets);
+    render_category(container, *child, current_layout, collected_widgets);
 }
 
-void render_category_merged(CategoryNode                    &node,
+void render_category_merged(meta::AttributeContainer        &container,
+                            CategoryNode                    &node,
                             QVBoxLayout                     *parent_layout,
                             std::vector<MetaWidget *>       &collected_widgets,
                             const std::optional<std::regex> &collapse_regex)
@@ -129,6 +156,29 @@ void render_category_merged(CategoryNode                    &node,
   if (collapse_regex && std::regex_search(title, *collapse_regex))
     section->set_expanded(false);
 
+  // UI state management
+  {
+    auto *state = container.try_add(meta::keys::ui::state, true);
+
+    // apply stored state if available
+    if (state->metadata().contains(title))
+    {
+      bool current_state = state->metadata().value<bool>(title);
+      section->set_expanded(current_state);
+    }
+
+    QObject::connect(
+        section,
+        &CollapsibleSection::expanded_state_changed,
+        [&container, title](bool new_state)
+        {
+          // add or get existing (dummy attribute used as a
+          // metadata container)
+          auto *state = container.try_add(meta::keys::ui::state, true);
+          state->metadata().try_add(title, new_state)->value() = new_state;
+        });
+  }
+
   parent_layout->addWidget(section);
 
   QVBoxLayout *layout = section->content_layout;
@@ -144,7 +194,11 @@ void render_category_merged(CategoryNode                    &node,
   CategoryNode *last = chain.back();
 
   for (auto &[name, child] : last->children)
-    render_category_merged(*child, layout, collected_widgets, collapse_regex);
+    render_category_merged(container,
+                           *child,
+                           layout,
+                           collected_widgets,
+                           collapse_regex);
 }
 
 MetaWidget *render(AttributeContainer    &container,
@@ -185,11 +239,12 @@ MetaWidget *render(AttributeContainer    &container,
   switch (options.category_policy)
   {
   case CategoryPolicy::CP_TREE:
-    render_category(root, layout, collected_widgets);
+    render_category(container, root, layout, collected_widgets);
     break;
 
   case CategoryPolicy::CP_MERGED:
-    render_category_merged(root,
+    render_category_merged(container,
+                           root,
                            layout,
                            collected_widgets,
                            options.collapse_regex);
@@ -199,7 +254,8 @@ MetaWidget *render(AttributeContainer    &container,
     if (has_no_categorys)
       render_flat(root, layout, collected_widgets);
     else
-      render_category_merged(root,
+      render_category_merged(container,
+                             root,
                              layout,
                              collected_widgets,
                              options.collapse_regex);

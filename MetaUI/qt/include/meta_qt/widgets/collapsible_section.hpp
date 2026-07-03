@@ -19,6 +19,9 @@ public:
 
   QVBoxLayout *content_layout;
 
+signals:
+  void expanded_state_changed(bool new_state);
+
 private:
   QToolButton *toggle_button;
   QWidget     *content;

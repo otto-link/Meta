@@ -172,6 +172,40 @@ public:
   }
 
   /**
+   * @brief Creates and inserts an attribute if it does not already exist.
+   *
+   * If an attribute with the specified name already exists, the existing
+   * attribute is returned and no new attribute is created.
+   *
+   * @tparam T Attribute value type.
+   * @param name Name of the attribute.
+   * @param value Value used to initialize the attribute if it is created.
+   * @return Pointer to the existing or newly created attribute.
+   */
+  template <typename T>
+    requires(!StringLike<T>)
+  Attribute<std::decay_t<T>> *try_add(const std::string &name, T &&value)
+  {
+    using ValueType = std::decay_t<T>;
+
+    // Already exists
+    if (auto it = attributes_.find(name); it != attributes_.end())
+      return static_cast<Attribute<ValueType> *>(it->second.get());
+
+    auto attr = std::make_unique<Attribute<ValueType>>(name,
+                                                       std::forward<T>(value));
+
+    auto *ptr = attr.get();
+
+    attributes_.emplace(name, std::move(attr));
+
+    // keep track of insertion order
+    insertion_order_.push_back(name);
+
+    return ptr;
+  }
+
+  /**
    * @brief Creates and inserts a std::string attribute.
    */
   Attribute<std::decay_t<std::string>> *add(const std::string &name,
@@ -189,6 +223,35 @@ public:
 
     if (!inserted)
       throw std::runtime_error("Attribute already exists: " + name);
+
+    // keep track of insertion order
+    insertion_order_.push_back(name);
+
+    return ptr;
+  }
+
+  /**
+   * @brief Creates and inserts a std::string attribute if it does not already
+   * exist.
+   *
+   * @return Pointer to the existing or newly created attribute.
+   */
+  Attribute<std::decay_t<std::string>> *try_add(const std::string &name,
+                                                std::string      &&value)
+  {
+    using ValueType = std::decay_t<std::string>;
+
+    // Already exists
+    if (auto it = attributes_.find(name); it != attributes_.end())
+      return static_cast<Attribute<ValueType> *>(it->second.get());
+
+    auto attr = std::make_unique<Attribute<ValueType>>(
+        name,
+        std::forward<std::string>(value));
+
+    auto *ptr = attr.get();
+
+    attributes_.emplace(name, std::move(attr));
 
     // keep track of insertion order
     insertion_order_.push_back(name);

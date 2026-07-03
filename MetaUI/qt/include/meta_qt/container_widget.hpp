@@ -46,11 +46,13 @@ void render_flat(CategoryNode              &node,
                  QVBoxLayout               *layout,
                  std::vector<MetaWidget *> &collected_widgets);
 
-void render_group(CategoryNode              &node,
-                  QVBoxLayout               *parent_layout,
-                  std::vector<MetaWidget *> &collected_widgets);
+void render_category(meta::AttributeContainer  &container,
+                     CategoryNode              &node,
+                     QVBoxLayout               *parent_layout,
+                     std::vector<MetaWidget *> &collected_widgets);
 
-void render_group_merged(CategoryNode              &node,
+void render_group_merged(meta::AttributeContainer  &container,
+                         CategoryNode              &node,
                          QVBoxLayout               *parent_layout,
                          std::vector<MetaWidget *> &collected_widgets);
 

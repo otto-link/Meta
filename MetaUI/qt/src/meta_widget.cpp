@@ -10,6 +10,16 @@
 namespace meta::qt
 {
 
+// --- CLASS
+
+void MetaWidget::closeEvent(QCloseEvent *event)
+{
+  Q_EMIT closed();
+  QWidget::closeEvent(event);
+}
+
+// --- FUNCTIONS
+
 QLabel *make_error_widget(const AbstractAttribute *p_attr,
                           const std::string       &msg,
                           QWidget                 *parent)
