@@ -64,6 +64,13 @@ public:
   const AttributeContainer &current() const;
 
   /**
+   * @brief Get the name of the active container.
+   * @return The current container name if one is selected, otherwise
+   * std::nullopt.
+   */
+  std::optional<std::string> current_container_name() const;
+
+  /**
    * @brief Remove a container.
    * @return true if removed.
    */
@@ -82,11 +89,9 @@ public:
   const AttributeContainer *find(const std::string &key) const;
 
   /**
-   * @brief Get the name of the active container.
-   * @return The current container name if one is selected, otherwise
-   * std::nullopt.
+   * @brief Returns the attribute names in insertion order.
    */
-  std::optional<std::string> current_container_name() const;
+  const std::vector<std::string> &insertion_order() const;
 
   /**
    * @brief Set the active container.
@@ -95,8 +100,15 @@ public:
   void set_current(const std::string &key);
 
 private:
-  ContainerMap        containers_;
-  AttributeContainer *current_ = nullptr;
+  ContainerMap             containers_;
+  std::vector<std::string> insertion_order_;
+  AttributeContainer      *current_ = nullptr;
+
+  /**
+   * @brief Removes stale entries from insertion_order_ that no longer exist
+   *        in attributes_ (e.g. after external erasure or clear).
+   */
+  void compact_insertion_order();
 };
 
 } // namespace meta

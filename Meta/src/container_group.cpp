@@ -19,6 +19,16 @@ AttributeContainer &ContainerGroup::add(const std::string &key)
   return *it->second;
 }
 
+void ContainerGroup::compact_insertion_order()
+{
+  insertion_order_.erase(std::remove_if(insertion_order_.begin(),
+                                        insertion_order_.end(),
+                                        [this](const std::string &name) {
+                                          return !containers_.contains(name);
+                                        }),
+                         insertion_order_.end());
+}
+
 const std::unordered_map<std::string, std::unique_ptr<AttributeContainer>> &
 ContainerGroup::containers() const
 {
@@ -67,6 +77,8 @@ bool ContainerGroup::erase(const std::string &key)
   if (!current_ && !containers_.empty())
     current_ = containers_.begin()->second.get();
 
+  compact_insertion_order();
+
   return true;
 }
 
@@ -80,6 +92,11 @@ const AttributeContainer *ContainerGroup::find(const std::string &key) const
 {
   auto it = containers_.find(key);
   return it != containers_.end() ? it->second.get() : nullptr;
+}
+
+const std::vector<std::string> &ContainerGroup::insertion_order() const
+{
+  return insertion_order_;
 }
 
 void ContainerGroup::set_current(const std::string &key)
