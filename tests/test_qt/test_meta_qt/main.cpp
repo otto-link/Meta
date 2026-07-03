@@ -605,5 +605,24 @@ int main(int argc, char *argv[])
     widget->show();
   }
 
+  {
+    auto *button = new QPushButton("NEW WIDGET");
+    button->setCheckable(true);
+
+    QObject::connect(
+        button,
+        &QPushButton::toggled,
+        [&group]()
+        {
+          meta::qt::ContainerRenderOptions options;
+          options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+          options.collapse_regex = std::regex("^Cat 1");
+          meta::qt::MetaWidget *widget = meta::qt::render(group, options);
+          widget->show();
+        });
+
+    button->show();
+  }
+
   return app.exec();
 }
