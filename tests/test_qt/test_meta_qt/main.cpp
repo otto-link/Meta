@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
-  const bool base_color_gradient = true;
+  const bool base_color_gradient = false;
 #endif
 
   const bool base_groups = false;
@@ -533,7 +533,7 @@ int main(int argc, char *argv[])
       make_debug_view(sp_attr.get(), add_border);
   }
 
-  if (false)
+  if (true)
   {
     meta::qt::ContainerRenderOptions options;
     options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
