@@ -7,9 +7,14 @@
 namespace meta::presets
 {
 
+Attribute<float> &angle(AttributeContainer &c,
+                        std::string_view    key,
+                        std::string_view    label,
+                        float               value = 0);
+
 Attribute<int> &seed(AttributeContainer &c,
                      std::string_view    key,
                      std::string_view    label,
                      int                 value = 0);
 
-}
+} // namespace meta::presets

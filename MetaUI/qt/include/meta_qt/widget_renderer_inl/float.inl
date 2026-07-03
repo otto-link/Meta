@@ -144,10 +144,8 @@ template <> struct WidgetRenderer<float>
     }
     else if (widget_type == "SliderFloat") // --- SliderFloat
     {
-      // SliderFloat takes value_init for "Reset" - seed it from the current
-      // value.
       auto *slider = new SliderFloat(label_txt,
-                                     /*value_init=*/value,
+                                     value,
                                      min,
                                      max,
                                      plus_minus,

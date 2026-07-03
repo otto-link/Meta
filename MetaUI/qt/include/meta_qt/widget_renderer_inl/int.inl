@@ -165,13 +165,8 @@ template <> struct WidgetRenderer<int>
     }
     else if (widget_type == "SliderInt") // SliderInt
     {
-      auto *slider = new SliderInt(label_txt,
-                                   /*value_init=*/value,
-                                   min,
-                                   max,
-                                   plus_minus,
-                                   format,
-                                   widget);
+      auto *slider =
+          new SliderInt(label_txt, value, min, max, plus_minus, format, widget);
       slider->set_value(value);
       layout->addWidget(slider);
 

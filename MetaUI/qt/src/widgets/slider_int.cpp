@@ -114,14 +114,7 @@ int SliderInt::get_value() const { return this->value; }
 
 std::string SliderInt::get_value_as_string() const
 {
-  try
-  {
-    return std::vformat(this->value_format, std::make_format_args(this->value));
-  }
-  catch (...)
-  {
-    return std::to_string(this->value);
-  }
+  return std::vformat(this->value_format, std::make_format_args(this->value));
 }
 
 void SliderInt::mouseDoubleClickEvent(QMouseEvent *)

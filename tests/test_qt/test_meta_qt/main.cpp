@@ -554,7 +554,7 @@ int main(int argc, char *argv[])
     auto &ui_settings = group.add("ui_settings");
     auto &debug_settings = group.add("debug_settings");
 
-    group.set_current("ui_settings");
+    group.set_current("node_settings");
 
     // Fill node settings
     {
@@ -582,7 +582,8 @@ int main(int argc, char *argv[])
     debug_settings.add("wireframe", false);
     debug_settings.add("draw_bounds", true);
 
-    meta::presets::seed(debug_settings, "seed", "Random Seed");
+    meta::presets::seed(node_settings, "seed", "Random Seed");
+    meta::presets::angle(node_settings, "angle", "Angle");
 
     // generate widget
 

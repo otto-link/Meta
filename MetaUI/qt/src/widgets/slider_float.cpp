@@ -12,6 +12,8 @@
 #include <QMenu>
 #include <QPainter>
 
+#include "meta/macrologger.h"
+
 #include "meta_qt/widgets/helpers.hpp"
 #include "meta_qt/widgets/slider_float.hpp"
 
@@ -115,14 +117,7 @@ float SliderFloat::get_value() const { return this->value; }
 
 std::string SliderFloat::get_value_as_string() const
 {
-  try
-  {
-    return std::vformat(this->value_format, std::make_format_args(this->value));
-  }
-  catch (...)
-  {
-    return std::to_string(this->value);
-  }
+  return std::vformat(this->value_format, std::make_format_args(this->value));
 }
 
 void SliderFloat::mouseDoubleClickEvent(QMouseEvent *)
