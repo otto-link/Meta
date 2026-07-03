@@ -3,6 +3,7 @@
    this software. */
 
 #include <algorithm>
+#include <cmath>
 #include <format>
 #include <random>
 
@@ -20,12 +21,20 @@
 namespace meta::qt
 {
 
+namespace
+{
+// Smallest value considered by the log mapping, avoids log10(0) / negative
+// domain issues when vmin is 0 or slightly negative due to float error.
+constexpr float k_log_epsilon = 1e-6f;
+} // namespace
+
 SliderFloat::SliderFloat(const std::string &label_,
                          float              value_init_,
                          float              vmin_,
                          float              vmax_,
                          bool               add_plus_minus_buttons_,
                          const std::string &value_format_,
+                         bool               log_scale_,
                          QWidget           *parent)
     : QWidget(parent),
       value_init(value_init_),
@@ -33,7 +42,8 @@ SliderFloat::SliderFloat(const std::string &label_,
       vmin(vmin_),
       vmax(vmax_),
       add_plus_minus_buttons(add_plus_minus_buttons_),
-      value_format(value_format_)
+      value_format(value_format_),
+      log_scale(log_scale_)
 {
   this->label = helpers::truncate_string(label_, this->style.label_max_len());
 
@@ -120,12 +130,42 @@ std::string SliderFloat::get_value_as_string() const
   return std::vformat(this->value_format, std::make_format_args(this->value));
 }
 
+// ---------------------------------------------------------------------------
+// Log-scale mapping helpers
+// ---------------------------------------------------------------------------
+
+float SliderFloat::value_to_ratio(float v) const
+{
+  if (!this->log_scale)
+  {
+    const float range = this->vmax - this->vmin;
+    return range > 0.f ? std::clamp((v - this->vmin) / range, 0.f, 1.f) : 0.f;
+  }
+
+  const float lmin = std::log10(std::max(this->vmin, k_log_epsilon));
+  const float lmax = std::log10(std::max(this->vmax, k_log_epsilon));
+  const float lv = std::log10(std::max(v, k_log_epsilon));
+  const float range = lmax - lmin;
+
+  return range > 0.f ? std::clamp((lv - lmin) / range, 0.f, 1.f) : 0.f;
+}
+
+float SliderFloat::ratio_to_value(float r) const
+{
+  r = std::clamp(r, 0.f, 1.f);
+
+  if (!this->log_scale) return this->vmin + r * (this->vmax - this->vmin);
+
+  const float lmin = std::log10(std::max(this->vmin, k_log_epsilon));
+  const float lmax = std::log10(std::max(this->vmax, k_log_epsilon));
+  const float lv = lmin + r * (lmax - lmin);
+
+  return std::pow(10.f, lv);
+}
+
 void SliderFloat::mouseDoubleClickEvent(QMouseEvent *)
 {
-  const bool  is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
-  const float delta = is_bounded ? (this->vmax - this->vmin) /
-                                       float(this->style.button_ticks())
-                                 : 1.f;
+  const bool is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
 
   if (this->is_bar_hovered)
   {
@@ -138,11 +178,37 @@ void SliderFloat::mouseDoubleClickEvent(QMouseEvent *)
   }
   else if (this->is_minus_hovered)
   {
-    if (this->set_value(this->value - delta)) Q_EMIT this->edit_ended();
+    if (this->log_scale)
+    {
+      const float r = this->value_to_ratio(this->value);
+      const float dr = 1.f / float(this->style.button_ticks());
+      if (this->set_value(this->ratio_to_value(r - dr)))
+        Q_EMIT this->edit_ended();
+    }
+    else
+    {
+      const float delta = is_bounded ? (this->vmax - this->vmin) /
+                                           float(this->style.button_ticks())
+                                     : 1.f;
+      if (this->set_value(this->value - delta)) Q_EMIT this->edit_ended();
+    }
   }
   else if (this->is_plus_hovered)
   {
-    if (this->set_value(this->value + delta)) Q_EMIT this->edit_ended();
+    if (this->log_scale)
+    {
+      const float r = this->value_to_ratio(this->value);
+      const float dr = 1.f / float(this->style.button_ticks());
+      if (this->set_value(this->ratio_to_value(r + dr)))
+        Q_EMIT this->edit_ended();
+    }
+    else
+    {
+      const float delta = is_bounded ? (this->vmax - this->vmin) /
+                                           float(this->style.button_ticks())
+                                     : 1.f;
+      if (this->set_value(this->value + delta)) Q_EMIT this->edit_ended();
+    }
   }
 }
 
@@ -154,27 +220,52 @@ void SliderFloat::mouseMoveEvent(QMouseEvent *event)
     return;
   }
 
-  float      ppu;
-  const bool is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
-
-  if (!is_bounded || this->vmin == this->vmax)
-    ppu = PPU_F;
-  else
-    ppu = float(this->rect_bar.width()) / (this->vmax - this->vmin);
-
   const Qt::KeyboardModifiers mods = event->modifiers();
   this->force_edit_ended_emit = false;
 
-  if ((mods & Qt::ControlModifier) && (mods & Qt::ShiftModifier))
-    this->force_edit_ended_emit = true;
-  else if (mods & Qt::ControlModifier)
-    ppu *= PPU_MULT_FINE;
-  else if (mods & Qt::ShiftModifier)
-    ppu /= PPU_MULT_FINE;
+  if (this->log_scale)
+  {
+    // Drag in ratio space (0..1 across the bar) so pixel-to-value
+    // sensitivity is uniform across the whole log range, rather than
+    // dominated by the top decade the way a raw-value drag would be.
+    float ppu = float(this->rect_bar.width());
 
-  const int dx = event->position().toPoint().x() - this->pos_x_before_dragging;
-  const float dv = float(dx) / ppu;
-  this->set_value(this->value_before_dragging + dv);
+    if ((mods & Qt::ControlModifier) && (mods & Qt::ShiftModifier))
+      this->force_edit_ended_emit = true;
+    else if (mods & Qt::ControlModifier)
+      ppu *= PPU_MULT_FINE;
+    else if (mods & Qt::ShiftModifier)
+      ppu /= PPU_MULT_FINE;
+
+    const int dx = event->position().toPoint().x() -
+                   this->pos_x_before_dragging;
+    const float dr = float(dx) / ppu;
+    const float r_before = this->value_to_ratio(this->value_before_dragging);
+
+    this->set_value(this->ratio_to_value(r_before + dr));
+  }
+  else
+  {
+    float      ppu;
+    const bool is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
+
+    if (!is_bounded || this->vmin == this->vmax)
+      ppu = PPU_F;
+    else
+      ppu = float(this->rect_bar.width()) / (this->vmax - this->vmin);
+
+    if ((mods & Qt::ControlModifier) && (mods & Qt::ShiftModifier))
+      this->force_edit_ended_emit = true;
+    else if (mods & Qt::ControlModifier)
+      ppu *= PPU_MULT_FINE;
+    else if (mods & Qt::ShiftModifier)
+      ppu /= PPU_MULT_FINE;
+
+    const int dx = event->position().toPoint().x() -
+                   this->pos_x_before_dragging;
+    const float dv = float(dx) / ppu;
+    this->set_value(this->value_before_dragging + dv);
+  }
 
   QWidget::mouseMoveEvent(event);
 }
@@ -183,10 +274,7 @@ void SliderFloat::mousePressEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton)
   {
-    const bool  is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
-    const float delta = is_bounded ? (this->vmax - this->vmin) /
-                                         float(this->style.button_ticks())
-                                   : 1.f;
+    const bool is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
 
     if (this->is_bar_hovered)
     {
@@ -196,11 +284,37 @@ void SliderFloat::mousePressEvent(QMouseEvent *event)
     }
     else if (this->is_minus_hovered)
     {
-      if (this->set_value(this->value - delta)) Q_EMIT this->edit_ended();
+      if (this->log_scale)
+      {
+        const float r = this->value_to_ratio(this->value);
+        const float dr = 1.f / float(this->style.button_ticks());
+        if (this->set_value(this->ratio_to_value(r - dr)))
+          Q_EMIT this->edit_ended();
+      }
+      else
+      {
+        const float delta = is_bounded ? (this->vmax - this->vmin) /
+                                             float(this->style.button_ticks())
+                                       : 1.f;
+        if (this->set_value(this->value - delta)) Q_EMIT this->edit_ended();
+      }
     }
     else if (this->is_plus_hovered)
     {
-      if (this->set_value(this->value + delta)) Q_EMIT this->edit_ended();
+      if (this->log_scale)
+      {
+        const float r = this->value_to_ratio(this->value);
+        const float dr = 1.f / float(this->style.button_ticks());
+        if (this->set_value(this->ratio_to_value(r + dr)))
+          Q_EMIT this->edit_ended();
+      }
+      else
+      {
+        const float delta = is_bounded ? (this->vmax - this->vmin) /
+                                             float(this->style.button_ticks())
+                                       : 1.f;
+        if (this->set_value(this->value + delta)) Q_EMIT this->edit_ended();
+      }
     }
   }
 }
@@ -240,22 +354,18 @@ void SliderFloat::paintEvent(QPaintEvent *)
 
   if (is_bounded && !this->value_edit->isVisible())
   {
-    const float range = this->vmax - this->vmin;
-    if (range > 0.f)
-    {
-      const float r = (this->value - this->vmin) / range;
-      const int   rcut = int((1.f - r) * float(this->rect_bar.width()));
+    const float r = this->value_to_ratio(this->value);
+    const int   rcut = int((1.f - r) * float(this->rect_bar.width()));
 
-      p.setBrush(c_fill.darker(130));
-      p.setPen(Qt::NoPen);
+    p.setBrush(c_fill.darker(130));
+    p.setPen(Qt::NoPen);
 
-      if (this->add_plus_minus_buttons)
-        p.drawRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1));
-      else
-        p.drawRoundedRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1),
-                          this->style.border_radius(),
-                          this->style.border_radius());
-    }
+    if (this->add_plus_minus_buttons)
+      p.drawRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1));
+    else
+      p.drawRoundedRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1),
+                        this->style.border_radius(),
+                        this->style.border_radius());
   }
 
   // +/- button separators

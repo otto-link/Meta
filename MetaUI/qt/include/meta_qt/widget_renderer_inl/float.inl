@@ -33,6 +33,9 @@ template <> struct WidgetRenderer<float>
     const bool        plus_minus = meta::common::try_get<bool>(attr,
                                                         "ui.plus_minus",
                                                         false);
+    const bool        log_scale = meta::common::try_get<bool>(attr,
+                                                       "ui.log_scale",
+                                                       false);
 
     float &value = attr.value();
 
@@ -150,6 +153,7 @@ template <> struct WidgetRenderer<float>
                                      max,
                                      plus_minus,
                                      format,
+                                     log_scale,
                                      widget);
       slider->set_value(value);
       layout->addWidget(slider);

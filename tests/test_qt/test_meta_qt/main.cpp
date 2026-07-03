@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
   meta::AttributeContainer container;
 
   const bool base_bool = false;
-  const bool base_float = false;
+  const bool base_float = true;
   const bool base_int = false;
 
   const bool base_string = false;
@@ -207,13 +207,22 @@ int main(int argc, char *argv[])
     }
 
     {
-      auto *a = container.add("float_slider_custome", 0.f);
+      auto *a = container.add("float_slider_custom", 0.f);
       a->metadata().add(meta::keys::ui::widget_type, "SliderFloat");
       a->metadata().add(meta::keys::constraints::min, -1.f);
       a->metadata().add(meta::keys::constraints::max, 3.f);
       a->metadata().add(meta::keys::constraints::step, 0.2f);
       a->metadata().add(meta::keys::ui::format, "{:.2f}");
       a->metadata().add("ui.plus_minus", true);
+    }
+
+    {
+      auto *a = container.add("float_slider_log", 0.f);
+      a->metadata().add(meta::keys::ui::widget_type, "SliderFloat");
+      a->metadata().add(meta::keys::constraints::min, 0.001f);
+      a->metadata().add(meta::keys::constraints::max, 100.f);
+      a->metadata().add(meta::keys::ui::format, "{:.3e}");
+      a->metadata().add("ui.log_scale", true);
     }
   }
 
@@ -503,7 +512,8 @@ int main(int argc, char *argv[])
   if (base_color_gradient)
   {
     {
-      auto *a = container.add("ColorGradient", meta::ColorGradient());
+      container.add("ColorGradient", meta::ColorGradient());
+
       container.value<meta::ColorGradient>("ColorGradient")
           .set_presets(generate_random_presets(16));
     }

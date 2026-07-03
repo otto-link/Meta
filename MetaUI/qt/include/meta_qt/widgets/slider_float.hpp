@@ -41,7 +41,8 @@ public:
       float              vmin,
       float              vmax,
       bool               add_plus_minus_buttons,
-      const std::string &value_format, // std::format style, e.g. "{:.3f}"
+      const std::string &value_format, // std::format style, e.g. "{:.3f}",
+      bool               log_scale = false,
       QWidget           *parent = nullptr);
 
   float       get_value() const;
@@ -68,6 +69,9 @@ private:
   void set_is_dragging(bool new_state);
   void update_geometry();
 
+  float value_to_ratio(float v) const;
+  float ratio_to_value(float r) const;
+
   // --- Config (replaces QSX_CONFIG) TODO / use Qt QStyle
   Style style{this};
 
@@ -81,6 +85,7 @@ private:
   float       vmin, vmax;
   bool        add_plus_minus_buttons;
   std::string value_format;
+  bool        log_scale = false;
 
   bool is_dragging = false;
   bool is_hovered = false;
