@@ -16,6 +16,9 @@ AttributeContainer &ContainerGroup::add(const std::string &key)
 
   if (!current_) current_ = it->second.get();
 
+  // keep track of insertion order
+  insertion_order_.push_back(key);
+
   return *it->second;
 }
 

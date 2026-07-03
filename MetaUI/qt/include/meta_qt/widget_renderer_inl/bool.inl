@@ -28,7 +28,11 @@ template <> struct WidgetRenderer<bool>
 
     if (widget_type.empty()) widget_type = "Toggle";
 
-    if (widget_type == "Toggle")
+    if (widget_type == "None") // --- None
+    {
+      return nullptr;
+    }
+    else if (widget_type == "Toggle")
     {
       // --- TOGGLE
 

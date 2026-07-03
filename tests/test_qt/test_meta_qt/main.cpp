@@ -554,6 +554,8 @@ int main(int argc, char *argv[])
     auto &ui_settings = group.add("ui_settings");
     auto &debug_settings = group.add("debug_settings");
 
+    group.set_current("ui_settings");
+
     // Fill node settings
     {
       auto *a = node_settings.add("threshold", 0.5f);

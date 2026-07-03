@@ -25,7 +25,7 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
   root->addWidget(stacked);
 
   // fill containers
-  for (auto &[key, _] : group.containers())
+  for (const auto &key : group.insertion_order())
   {
     combo->addItem(QString::fromStdString(key));
 
@@ -36,7 +36,6 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
   }
 
   // set initial
-  group.set_current(combo->currentText().toStdString());
   sync_stack();
 
   // --- Switching
@@ -85,7 +84,11 @@ void ContainerGroupWidget::sync_stack()
   if (!current_name) return;
 
   int index = combo->findText(QString::fromStdString(*current_name));
-  if (index >= 0) stacked->setCurrentIndex(index);
+  if (index >= 0)
+  {
+    stacked->setCurrentIndex(index);
+    combo->setCurrentIndex(index);
+  }
 }
 
 // --- Function

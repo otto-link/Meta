@@ -91,6 +91,7 @@ void render_category(meta::AttributeContainer  &container,
     // UI state management
     {
       auto *state = container.try_add(meta::keys::ui::state, true);
+      state->metadata().add(meta::keys::ui::widget_type, "None");
 
       // apply stored state if available
       if (state->metadata().contains(title))
@@ -159,6 +160,7 @@ void render_category_merged(meta::AttributeContainer        &container,
   // UI state management
   {
     auto *state = container.try_add(meta::keys::ui::state, true);
+    state->metadata().try_add(meta::keys::ui::widget_type, "None");
 
     // apply stored state if available
     if (state->metadata().contains(title))
@@ -187,8 +189,12 @@ void render_category_merged(meta::AttributeContainer        &container,
     for (auto *p_attr : n->attributes)
     {
       MetaWidget *w = meta::qt::render(p_attr);
-      layout->addWidget(w);
-      collected_widgets.push_back(w);
+
+      if (w) // 'None' widget is possible
+      {
+        layout->addWidget(w);
+        collected_widgets.push_back(w);
+      }
     }
 
   CategoryNode *last = chain.back();
