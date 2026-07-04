@@ -4,6 +4,7 @@
 #include "meta/serialization/attribute_factory.hpp"
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute_container.hpp"
+#include "meta/logger.hpp"
 
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
 #include "meta/ext/color_gradient/color_gradient.hpp"
@@ -16,13 +17,25 @@ std::unique_ptr<AbstractAttribute> AttributeFactory::create(
     const std::string &name,
     const std::string &attr_name) const
 {
+  Logger::log()->trace("AttributeFactory::create: type='{}', name='{}'",
+                       name,
+                       attr_name);
+
   auto it = registry_.find(name);
-  if (it == registry_.end()) return nullptr;
+  if (it == registry_.end())
+  {
+    Logger::log()->trace("AttributeFactory::create: unknown type '{}'", name);
+    return nullptr;
+  }
+
+  Logger::log()->trace("AttributeFactory::create: success '{}'", name);
   return it->second(attr_name);
 }
 
 void register_builtin_types()
 {
+  Logger::log()->trace("register_builtin_types: start");
+
   META_REGISTER_ATTRIBUTE_TYPE(int);
   META_REGISTER_ATTRIBUTE_TYPE(float);
   META_REGISTER_ATTRIBUTE_TYPE(double);
@@ -45,6 +58,8 @@ void register_builtin_types()
   META_REGISTER_ATTRIBUTE_TYPE(std::vector<std::pair<int, std::string>>);
 
 #ifdef META_ENABLE_GLM_TYPES
+  Logger::log()->trace("register_builtin_types: GLM enabled");
+
   META_REGISTER_ATTRIBUTE_TYPE(glm::vec2);
   META_REGISTER_ATTRIBUTE_TYPE(glm::vec3);
   META_REGISTER_ATTRIBUTE_TYPE(glm::vec4);
@@ -63,8 +78,11 @@ void register_builtin_types()
 #endif
 
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
+  Logger::log()->trace("register_builtin_types: ColorGradient enabled");
   META_REGISTER_ATTRIBUTE_TYPE(meta::ColorGradient);
 #endif
+
+  Logger::log()->trace("register_builtin_types: done");
 }
 
 } // namespace meta
