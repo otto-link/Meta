@@ -1,11 +1,12 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
-
 #include <algorithm>
 
+#include <QAbstractItemView>
 #include <QInputDialog>
 #include <QLineEdit>
+#include <QMenu>
 #include <QMessageBox>
 #include <QSignalBlocker>
 #include <QVBoxLayout>
@@ -32,6 +33,15 @@ PresetComboBox::PresetComboBox(SnapshotManager *snapshot_manager_,
                 this,
                 &PresetComboBox::on_index_axtivated);
 
+  // --- Context menu for deletion
+
+  this->combo->view()->setContextMenuPolicy(Qt::CustomContextMenu);
+
+  this->connect(this->combo->view(),
+                &QWidget::customContextMenuRequested,
+                this,
+                &PresetComboBox::on_context_menu_requested);
+
   this->populate_combo();
 }
 
@@ -50,6 +60,7 @@ void PresetComboBox::set_current_preset(const std::string &name)
     LOG_ERROR("PresetComboBox: no such preset '%s'", name.c_str());
     return;
   }
+
   this->populate_combo(name);
 }
 
@@ -127,20 +138,71 @@ void PresetComboBox::save_new_preset()
   Q_EMIT this->preset_saved(name);
 }
 
+void PresetComboBox::on_context_menu_requested(const QPoint &pos)
+{
+  const int index = this->combo->view()->indexAt(pos).row();
+  if (index < 0) return;
+
+  const std::string name = this->combo->itemText(index).toStdString();
+
+  // --- ignore special entries
+  if (name.empty() || name == "──────────" ||
+      index == PresetComboBox::save_action_index)
+    return;
+
+  QMenu menu(this);
+
+  QAction *delete_action = menu.addAction(tr("Delete preset"));
+
+  QAction *selected = menu.exec(this->combo->mapToGlobal(pos));
+
+  if (selected == delete_action) this->delete_preset(name);
+}
+
+void PresetComboBox::delete_preset(const std::string &name)
+{
+  if (name == "default")
+  {
+    QMessageBox::warning(this,
+                         tr("Cannot delete preset"),
+                         tr("The default preset cannot be deleted."));
+    return;
+  }
+
+  if (!this->snapshot_manager->has(name)) return;
+
+  const auto ret = QMessageBox::question(
+      this,
+      tr("Delete preset"),
+      tr("Are you sure you want to delete \"%1\"?")
+          .arg(QString::fromStdString(name)));
+
+  if (ret != QMessageBox::Yes) return;
+
+  this->snapshot_manager->erase(name);
+
+  LOG_INFO("PresetComboBox: deleted preset '%s'", name.c_str());
+
+  if (this->current_preset == name) this->current_preset.clear();
+
+  this->populate_combo(this->current_preset);
+
+  Q_EMIT this->preset_deleted(name);
+}
+
 void PresetComboBox::populate_combo(const std::string &select_name)
 {
   const QSignalBlocker blocker(this->combo);
 
   this->combo->clear();
 
-  // --- Save preset (index 0)
-
+  // --- Save preset entry
   this->combo->addItem(tr("[Save preset...]"));
 
   std::vector<std::string> names = this->snapshot_manager->names();
   std::sort(names.begin(), names.end());
 
-  // Pull "default" to the front
+  // Pull "default" to front
   auto it = std::find(names.begin(), names.end(), "default");
   if (it != names.end())
   {
@@ -150,8 +212,6 @@ void PresetComboBox::populate_combo(const std::string &select_name)
 
   int default_index = -1;
 
-  // --- Presets
-
   for (const std::string &name : names)
   {
     if (name == "default") default_index = this->combo->count();
@@ -159,16 +219,14 @@ void PresetComboBox::populate_combo(const std::string &select_name)
     this->combo->addItem(QString::fromStdString(name));
   }
 
-  // --- Separator AFTER default (if it exists)
-
+  // --- separator
   const int sep_index = default_index >= 0 ? default_index + 1
                                            : this->combo->count();
 
   this->combo->insertItem(sep_index, "──────────");
-  this->combo->setItemData(sep_index, 0, Qt::UserRole - 1); // disable selection
+  this->combo->setItemData(sep_index, 0, Qt::UserRole - 1);
 
-  // --- Delection logic
-
+  // --- selection logic
   const std::string &target = select_name.empty() ? this->current_preset
                                                   : select_name;
 
@@ -177,6 +235,7 @@ void PresetComboBox::populate_combo(const std::string &select_name)
   if (!target.empty())
   {
     const int found = this->combo->findText(QString::fromStdString(target));
+
     if (found >= 0) index_to_select = found;
   }
 

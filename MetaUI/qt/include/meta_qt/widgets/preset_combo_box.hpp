@@ -51,11 +51,17 @@ signals:
   /// Emitted after a new preset has been successfully saved.
   void preset_saved(std::string name);
 
+  /// Emitted after a preset has been deleted.
+  void preset_deleted(std::string name);
+
 private slots:
+  void on_context_menu_requested(const QPoint &pos);
   void on_index_axtivated(int index);
 
 private:
+  void delete_preset(const std::string &name);
   void save_new_preset();
+
   void populate_combo(const std::string &select_name = {});
 
   SnapshotManager                *snapshot_manager = nullptr;
