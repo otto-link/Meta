@@ -35,24 +35,16 @@ class AbstractAttribute : public MetaObject
 public:
   virtual ~AbstractAttribute() = default;
 
-  /**
-   * @brief Returns the attribute name.
-   */
+  /// Returns the attribute name.
   virtual const std::string &name() const = 0;
 
-  /**
-   * @brief Returns the C++ type identifier of the stored value.
-   */
+  /// Returns the C++ type identifier of the stored value.
   virtual std::type_index type() const = 0;
 
-  /**
-   * @brief Returns a mutable pointer to the underlying value.
-   */
+  /// Returns a mutable pointer to the underlying value.
   virtual void *raw_ptr() = 0;
 
-  /**
-   * @brief Returns a const pointer to the underlying value.
-   */
+  /// Returns a const pointer to the underlying value.
   virtual const void *raw_ptr() const = 0;
 
   /**
@@ -61,24 +53,16 @@ public:
    */
   virtual bool set_from_any(const std::any &value) = 0;
 
-  /**
-   * @brief Returns the value as a type-erased std::any.
-   */
+  /// Returns the value as a type-erased std::any.
   virtual std::any to_any() const = 0;
 
-  /**
-   * @brief Returns a human-readable string representation.
-   */
+  /// Returns a human-readable string representation.
   virtual std::string to_string() const = 0;
 
-  /**
-   * @brief Serializes the attribute to JSON.
-   */
+  /// Serializes the attribute to JSON.
   virtual nlohmann::json json_to() const = 0;
 
-  /**
-   * @brief Deserializes the attribute from JSON.
-   */
+  /// Deserializes the attribute from JSON.
   virtual void json_from(const nlohmann::json &j) = 0;
 
   /**
