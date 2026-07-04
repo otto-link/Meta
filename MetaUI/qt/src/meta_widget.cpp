@@ -20,12 +20,17 @@ void MetaWidget::closeEvent(QCloseEvent *event)
 
 const std::function<void()> &MetaWidget::get_sync_from_model() const
 {
-  return sync_from_model;
+  return sync_from_model_;
 }
 
 void MetaWidget::set_sync_from_model(std::function<void()> callback)
 {
-  sync_from_model = std::move(callback);
+  sync_from_model_ = std::move(callback);
+}
+
+void MetaWidget::sync_from_model_widget()
+{
+  if (sync_from_model_) sync_from_model_();
 }
 
 // --- FUNCTIONS

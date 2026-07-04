@@ -12,34 +12,77 @@
 namespace meta::qt
 {
 
+/**
+ * @brief Base widget used in the Meta Qt system.
+ *
+ * Provides lifecycle signals and a model synchronization callback.
+ */
 class MetaWidget : public QWidget
 {
   Q_OBJECT
 
 public:
+  /**
+   * @brief Construct a MetaWidget.
+   */
   MetaWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 
-  void set_sync_from_model(std::function<void()> callback);
-
+  /**
+   * @brief Get sync-from-model callback.
+   */
   const std::function<void()> &get_sync_from_model() const;
 
+  /**
+   * @brief Set callback used to sync widget from model.
+   */
+  void set_sync_from_model(std::function<void()> callback);
+
+  /**
+   * @brief Call the sync-from-model callback if it exists.
+   */
+  void sync_from_model_widget();
+
 signals:
+  /** @brief Emitted when widget is closed. */
   void closed();
+
+  /** @brief Emitted when editing starts. */
   void edit_started();
+
+  /** @brief Emitted when editing ends. */
   void edit_ended();
+
+  /** @brief Emitted when value changes. */
   void value_changed();
 
 protected:
+  /**
+   * @brief Handle close event.
+   */
   void closeEvent(QCloseEvent *event) override;
 
 private:
-  std::function<void()> sync_from_model;
+  std::function<void()> sync_from_model_;
 };
 
+/**
+ * @brief Create a MetaWidget arranged in a grid layout.
+ */
 MetaWidget *make_meta_widget_grid(QWidget *parent = nullptr);
+
+/**
+ * @brief Create a MetaWidget arranged in a horizontal layout.
+ */
 MetaWidget *make_meta_widget_hbox(QWidget *parent = nullptr);
+
+/**
+ * @brief Create a MetaWidget arranged in a vertical layout.
+ */
 MetaWidget *make_meta_widget_vbox(QWidget *parent = nullptr);
 
+/**
+ * @brief Create a QLabel showing an error message for an attribute.
+ */
 QLabel *make_error_widget(const AbstractAttribute *p_attr,
                           const std::string       &msg = "",
                           QWidget                 *parent = nullptr);
