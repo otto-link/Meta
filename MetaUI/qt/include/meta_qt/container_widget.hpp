@@ -14,49 +14,62 @@
 namespace meta::qt
 {
 
+/// Policy used to organize attribute categories in the UI.
 enum CategoryPolicy
 {
-  CP_FLAT,
-  CP_TREE,
-  CP_MERGED,
-  CP_SMART
+  CP_FLAT,   ///< No hierarchy, all attributes in a single list
+  CP_TREE,   ///< Strict tree hierarchy based on attribute paths
+  CP_MERGED, ///< Merge similar categories into shared groups
+  CP_SMART   ///< Heuristic-based hybrid organization
 };
 
+/// Options controlling how attribute containers are rendered.
 struct ContainerRenderOptions
 {
-  CategoryPolicy            category_policy = CategoryPolicy::CP_SMART;
-  std::string               root_category_name = "";
-  std::vector<std::string>  insertion_order = {};
-  std::optional<std::regex> collapse_regex = std::nullopt;
+  // clang-format off
+  CategoryPolicy category_policy = CategoryPolicy::CP_SMART; ///< Category organization strategy
+  std::string root_category_name = "";                       ///< Optional root category label
+  std::vector<std::string> insertion_order = {};             ///< Explicit ordering of categories
+  std::optional<std::regex> collapse_regex = std::nullopt;   ///< Regex used to collapse categories
+  // clang-format on
 };
 
+/// Node representing a category in the attribute hierarchy.
 struct CategoryNode
 {
-  std::string                                          name;
-  std::vector<meta::AbstractAttribute *>               attributes;
-  std::map<std::string, std::unique_ptr<CategoryNode>> children;
+  // clang-format off
+  std::string name;                                              ///< Category name
+  std::vector<meta::AbstractAttribute *> attributes;             ///< Attributes in this category
+  std::map<std::string, std::unique_ptr<CategoryNode>> children; ///< Subcategories
+  // clang-format on
 };
 
+/// Inserts an attribute into the category tree using a hierarchical path.
 void insert_attribute(CategoryNode            &root,
                       const std::string       &path,
                       meta::AbstractAttribute *p_attr);
 
+/// Computes a flattened string path for a category node.
 std::string compute_flattened_path(CategoryNode *node);
 
+/// Renders a flat list of attributes into a Qt layout.
 void render_flat(CategoryNode              &node,
                  QVBoxLayout               *layout,
                  std::vector<MetaWidget *> &collected_widgets);
 
+/// Renders a category tree using hierarchical grouping.
 void render_category(meta::AttributeContainer  &container,
                      CategoryNode              &node,
                      QVBoxLayout               *parent_layout,
                      std::vector<MetaWidget *> &collected_widgets);
 
+/// Renders attributes grouped into merged categories.
 void render_group_merged(meta::AttributeContainer  &container,
                          CategoryNode              &node,
                          QVBoxLayout               *parent_layout,
                          std::vector<MetaWidget *> &collected_widgets);
 
+/// Main entry point for rendering an attribute container into widgets.
 MetaWidget *render(meta::AttributeContainer &container,
                    ContainerRenderOptions    options = ContainerRenderOptions{},
                    SnapshotManager          *p_snapshot_manager = nullptr,
