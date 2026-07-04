@@ -12,17 +12,13 @@
 namespace meta
 {
 
-/**
- * @brief Typename for ColorGradient.
- */
+/// Typename for ColorGradient.
 template <> struct TypeName<meta::ColorGradient>
 {
   static constexpr std::string_view name = "meta::ColorGradient";
 };
 
-/**
- * @brief Traits specialization for ColorGradient serialization and formatting.
- */
+/// Traits specialization for ColorGradient serialization and formatting.
 template <> struct AttributeTraits<ColorGradient>
 {
   static std::string to_string(const ColorGradient &v)

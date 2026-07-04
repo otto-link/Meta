@@ -32,14 +32,10 @@ namespace meta
 using AttrContainerType =
     std::unordered_map<std::string, std::unique_ptr<AbstractAttribute>>;
 
-/**
- * @brief Mutable iterator over attributes.
- */
+/// Mutable iterator over attributes.
 using AttrIterator = AttrContainerType::iterator;
 
-/**
- * @brief Const iterator over attributes.
- */
+/// Const iterator over attributes.
 using ConstAttrIterator = AttrContainerType::const_iterator;
 
 template <typename T>
@@ -65,81 +61,55 @@ public:
   // Capacity
   // -------------------------------------------------------------------------
 
-  /**
-   * @brief Returns true if no attributes are stored.
-   */
+  /// Returns true if no attributes are stored.
   bool empty() const noexcept;
 
-  /**
-   * @brief Returns number of stored attributes.
-   */
+  /// Returns number of stored attributes.
   std::size_t size() const noexcept;
 
   // -------------------------------------------------------------------------
   // Iteration
   // -------------------------------------------------------------------------
 
-  /**
-   * @brief Iterator to first attribute.
-   */
+  /// Iterator to first attribute.
   AttrIterator begin();
 
-  /**
-   * @brief Iterator to end.
-   */
+  /// Iterator to end.
   AttrIterator end();
 
-  /**
-   * @brief Const iterator to first attribute.
-   */
+  /// Const iterator to first attribute.
   ConstAttrIterator begin() const;
 
-  /**
-   * @brief Const iterator to end.
-   */
+  /// Const iterator to end.
   ConstAttrIterator end() const;
 
-  /**
-   * @brief Const iterator to first attribute (explicit).
-   */
+  /// Const iterator to first attribute (explicit).
   ConstAttrIterator cbegin() const;
 
-  /**
-   * @brief Const iterator to end (explicit).
-   */
+  /// Const iterator to end (explicit).
   ConstAttrIterator cend() const;
 
   // -------------------------------------------------------------------------
   // Lookup
   // -------------------------------------------------------------------------
 
-  /**
-   * @brief Returns true if an attribute exists.
-   */
+  /// Returns true if an attribute exists.
   bool contains(const std::string &name) const;
 
-  /**
-   * @brief Returns true if all keys exist in the container.
-   */
+  /// Returns true if all keys exist in the container.
   bool contains_all_keys(const std::vector<std::string> &keys);
 
-  /**
-   * @brief Finds an attribute by name.
-   */
+  /// Finds an attribute by name.
   AbstractAttribute *find(const std::string &name);
 
-  /**
-   * @brief Finds an attribute by name (const).
-   */
+  /// Finds an attribute by name (const).
   const AbstractAttribute *find(const std::string &name) const;
 
   // -------------------------------------------------------------------------
   // Modification
   // -------------------------------------------------------------------------
 
-  /**
-   * @brief Removes all attributes.
-   */
+  /// Removes all attributes.
   void clear();
 
   /**
@@ -205,9 +175,7 @@ public:
     return ptr;
   }
 
-  /**
-   * @brief Creates and inserts a std::string attribute.
-   */
+  /// Creates and inserts a std::string attribute.
   Attribute<std::decay_t<std::string>> *add(const std::string &name,
                                             std::string      &&value)
   {
@@ -263,9 +231,7 @@ public:
   // Accessors
   // -------------------------------------------------------------------------
 
-  /**
-   * @brief Returns the attribute names in insertion order.
-   */
+  /// Returns the attribute names in insertion order.
   const std::vector<std::string> &insertion_order() const;
 
   /**
@@ -342,9 +308,7 @@ public:
   // Serialization
   // -------------------------------------------------------------------------
 
-  /**
-   * @brief Serializes container to JSON.
-   */
+  /// Serializes container to JSON.
   nlohmann::json json_to() const;
 
   /**

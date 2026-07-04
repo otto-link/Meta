@@ -29,19 +29,13 @@ namespace meta
  */
 template <typename T> struct AttributeTraits
 {
-  /**
-   * @brief Convert value to human-readable string.
-   */
+  /// Convert value to human-readable string.
   static std::string to_string(const T &value) { return std::to_string(value); }
 
-  /**
-   * @brief Convert value to JSON representation.
-   */
+  /// Convert value to JSON representation.
   static nlohmann::json json_to(const T &value) { return value; }
 
-  /**
-   * @brief Convert JSON back to value.
-   */
+  /// Convert JSON back to value.
   static T json_from(const nlohmann::json &j) { return j.get<T>(); }
 };
 

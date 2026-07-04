@@ -11,9 +11,7 @@
 namespace meta
 {
 
-/**
- * @brief A color stop in a gradient.
- */
+/// A color stop in a gradient.
 struct Stop
 {
   /// Position in the range [0, 1].
@@ -23,9 +21,7 @@ struct Stop
   std::array<float, 4> color;
 };
 
-/**
- * @brief A named color gradient preset.
- */
+/// A named color gradient preset.
 struct Preset
 {
   /// Preset name.
@@ -35,15 +31,11 @@ struct Preset
   std::vector<Stop> stops;
 };
 
-/**
- * @brief Editable color gradient with optional presets.
- */
+/// Editable color gradient with optional presets.
 class ColorGradient
 {
 public:
-  /**
-   * @brief Constructs a default black-to-white gradient.
-   */
+  /// Constructs a default black-to-white gradient.
   ColorGradient() = default;
 
   /**
@@ -60,29 +52,19 @@ public:
    */
   nlohmann::json json_to() const;
 
-  /**
-   * @brief Returns the available presets.
-   */
+  /// Returns the available presets.
   const std::vector<Preset> &presets() const;
 
-  /**
-   * @brief Sets the gradient stops.
-   */
+  /// Sets the gradient stops.
   void set_value(const std::vector<Stop> &new_value);
 
-  /**
-   * @brief Sets the available presets.
-   */
+  /// Sets the available presets.
   void set_presets(const std::vector<Preset> &new_presets);
 
-  /**
-   * @brief Returns the gradient stops.
-   */
+  /// Returns the gradient stops.
   const std::vector<Stop> &value() const;
 
-  /**
-   * @brief Returns the gradient stops.
-   */
+  /// Returns the gradient stops.
   std::vector<Stop> &value();
 
 private:

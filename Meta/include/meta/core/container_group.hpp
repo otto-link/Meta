@@ -47,19 +47,13 @@ public:
    */
   const ContainerMap &containers() const;
 
-  /**
-   * @brief Check whether a container exists.
-   */
+  /// Check whether a container exists.
   bool contains(const std::string &key) const;
 
-  /**
-   * @brief Return the active container.
-   */
+  /// Return the active container.
   AttributeContainer &current();
 
-  /**
-   * @brief Return the active container.
-   */
+  /// Return the active container.
   const AttributeContainer &current() const;
 
   /**
@@ -87,9 +81,7 @@ public:
    */
   const AttributeContainer *find(const std::string &key) const;
 
-  /**
-   * @brief Returns the attribute names in insertion order.
-   */
+  /// Returns the attribute names in insertion order.
   const std::vector<std::string> &insertion_order() const;
 
   /**

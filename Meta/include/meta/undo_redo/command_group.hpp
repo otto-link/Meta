@@ -17,9 +17,7 @@
 namespace meta
 {
 
-/**
- * @brief Command that groups multiple commands into a single undo/redo step.
- */
+/// Command that groups multiple commands into a single undo/redo step.
 class CommandGroup : public ICommand
 {
 public:

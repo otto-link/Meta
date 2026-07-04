@@ -16,9 +16,7 @@
 namespace meta
 {
 
-/**
- * @brief Traits specialization for glm::vec2 serialization and formatting.
- */
+/// Traits specialization for glm::vec2 serialization and formatting.
 template <> struct AttributeTraits<glm::vec2>
 {
   static std::string to_string(const glm::vec2 &v)
@@ -37,9 +35,7 @@ template <> struct AttributeTraits<glm::vec2>
   }
 };
 
-/**
- * @brief Traits specialization for glm::vec3 serialization and formatting.
- */
+/// Traits specialization for glm::vec3 serialization and formatting.
 template <> struct AttributeTraits<glm::vec3>
 {
   static std::string to_string(const glm::vec3 &v)
@@ -61,9 +57,7 @@ template <> struct AttributeTraits<glm::vec3>
   }
 };
 
-/**
- * @brief Traits specialization for glm::vec4 serialization and formatting.
- */
+/// Traits specialization for glm::vec4 serialization and formatting.
 template <> struct AttributeTraits<glm::vec4>
 {
   static std::string to_string(const glm::vec4 &v)
@@ -86,9 +80,7 @@ template <> struct AttributeTraits<glm::vec4>
   }
 };
 
-/**
- * @brief Traits specialization for glm::ivec2 serialization and formatting.
- */
+/// Traits specialization for glm::ivec2 serialization and formatting.
 template <> struct AttributeTraits<glm::ivec2>
 {
   static std::string to_string(const glm::ivec2 &v)
@@ -107,9 +99,7 @@ template <> struct AttributeTraits<glm::ivec2>
   }
 };
 
-/**
- * @brief Traits specialization for glm::ivec3 serialization and formatting.
- */
+/// Traits specialization for glm::ivec3 serialization and formatting.
 template <> struct AttributeTraits<glm::ivec3>
 {
   static std::string to_string(const glm::ivec3 &v)
@@ -129,9 +119,7 @@ template <> struct AttributeTraits<glm::ivec3>
   }
 };
 
-/**
- * @brief Traits specialization for glm::ivec4 serialization and formatting.
- */
+/// Traits specialization for glm::ivec4 serialization and formatting.
 template <> struct AttributeTraits<glm::ivec4>
 {
   static std::string to_string(const glm::ivec4 &v)

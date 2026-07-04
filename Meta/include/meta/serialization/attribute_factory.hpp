@@ -43,9 +43,7 @@ public:
   using CreateFn =
       std::function<std::unique_ptr<AbstractAttribute>(const std::string &)>;
 
-  /**
-   * @brief Access singleton instance.
-   */
+  /// Access singleton instance.
   static AttributeFactory &instance()
   {
     static AttributeFactory r;

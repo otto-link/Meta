@@ -16,9 +16,7 @@
 namespace meta
 {
 
-/**
- * @brief Traits specialization for std::string serialization and formatting.
- */
+/// Traits specialization for std::string serialization and formatting.
 template <> struct AttributeTraits<std::string>
 {
   static std::string to_string(const std::string &v) { return v; }
@@ -54,9 +52,7 @@ template <> struct AttributeTraits<std::filesystem::path>
 //  Generic vector traits
 // ---------------------------
 
-/**
- * @brief Traits specialization for std::vector serialization and formatting.
- */
+/// Traits specialization for std::vector serialization and formatting.
 template <typename T> struct AttributeTraits<std::vector<T>>
 {
   static std::string to_string(const std::vector<T> &v)
@@ -151,9 +147,7 @@ struct AttributeTraits<std::vector<std::pair<T, U>>>
 //  Generic map trait
 // ---------------------------
 
-/**
- * @brief Traits specialization for std::map serialization and formatting.
- */
+/// Traits specialization for std::map serialization and formatting.
 template <typename K, typename V> struct AttributeTraits<std::map<K, V>>
 {
   using value_type = std::map<K, V>;

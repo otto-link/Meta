@@ -27,14 +27,10 @@ namespace meta
 
 class AttributeContainer;
 
-/**
- * @brief Serialize attribute metadata to JSON.
- */
+/// Serialize attribute metadata to JSON.
 nlohmann::json serialize_metadata(const AttributeContainer &m);
 
-/**
- * @brief Deserialize attribute metadata from JSON.
- */
+/// Deserialize attribute metadata from JSON.
 void deserialize_metadata(AttributeContainer &m, const nlohmann::json &j);
 
 // -----------------------------------------------------------------------------
@@ -63,24 +59,16 @@ public:
   {
   }
 
-  /**
-   * @brief Get attribute name.
-   */
+  /// Get attribute name.
   const std::string &name() const override { return name_; }
 
-  /**
-   * @brief Get runtime type information of stored value.
-   */
+  /// Get runtime type information of stored value.
   std::type_index type() const override { return typeid(T); }
 
-  /**
-   * @brief Get mutable pointer to stored value.
-   */
+  /// Get mutable pointer to stored value.
   void *raw_ptr() override { return &value_; }
 
-  /**
-   * @brief Get const pointer to stored value.
-   */
+  /// Get const pointer to stored value.
   const void *raw_ptr() const override { return &value_; }
 
   /**
@@ -97,24 +85,16 @@ public:
     return true;
   }
 
-  /**
-   * @brief Convert value to std::any.
-   */
+  /// Convert value to std::any.
   std::any to_any() const override { return value_; }
 
-  /**
-   * @brief Access mutable value.
-   */
+  /// Access mutable value.
   T &value() { return value_; }
 
-  /**
-   * @brief Access const value.
-   */
+  /// Access const value.
   const T &value() const { return value_; }
 
-  /**
-   * @brief Convert value to human-readable string.
-   */
+  /// Convert value to human-readable string.
   std::string to_string() const override
   {
     return AttributeTraits<T>::to_string(value_);

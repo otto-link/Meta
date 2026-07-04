@@ -48,9 +48,7 @@ public:
    */
   void erase(const std::string &name);
 
-  /**
-   * @brief Remove all saved snapshots.
-   */
+  /// Remove all saved snapshots.
   void clear();
 
   /**

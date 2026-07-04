@@ -47,14 +47,10 @@ class AttributeContainer;
 class MetaObject
 {
 public:
-  /**
-   * @brief Construct a MetaObject with an empty metadata container.
-   */
+  /// Construct a MetaObject with an empty metadata container.
   MetaObject();
 
-  /**
-   * @brief Default destructor.
-   */
+  /// Default destructor.
   ~MetaObject() = default;
 
   /**
