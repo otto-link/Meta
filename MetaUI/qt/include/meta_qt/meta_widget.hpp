@@ -2,6 +2,8 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #pragma once
+#include <functional>
+
 #include <QLabel>
 #include <QWidget>
 
@@ -17,6 +19,10 @@ class MetaWidget : public QWidget
 public:
   MetaWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 
+  void set_sync_from_model(std::function<void()> callback);
+
+  const std::function<void()> &get_sync_from_model() const;
+
 signals:
   void closed();
   void edit_started();
@@ -25,6 +31,9 @@ signals:
 
 protected:
   void closeEvent(QCloseEvent *event) override;
+
+private:
+  std::function<void()> sync_from_model;
 };
 
 MetaWidget *make_meta_widget_grid(QWidget *parent = nullptr);

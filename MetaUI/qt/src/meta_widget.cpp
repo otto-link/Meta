@@ -18,6 +18,16 @@ void MetaWidget::closeEvent(QCloseEvent *event)
   QWidget::closeEvent(event);
 }
 
+const std::function<void()> &MetaWidget::get_sync_from_model() const
+{
+  return sync_from_model;
+}
+
+void MetaWidget::set_sync_from_model(std::function<void()> callback)
+{
+  sync_from_model = std::move(callback);
+}
+
 // --- FUNCTIONS
 
 QLabel *make_error_widget(const AbstractAttribute *p_attr,
