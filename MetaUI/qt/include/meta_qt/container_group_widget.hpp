@@ -15,30 +15,34 @@
 namespace meta::qt
 {
 
+/// Widget that displays and edits a ContainerGroup using a stacked UI.
 class ContainerGroupWidget : public MetaWidget
 {
 public:
+  /// Construct a ContainerGroupWidget.
   ContainerGroupWidget(
       meta::ContainerGroup  &group,
       ContainerRenderOptions options = ContainerRenderOptions{},
       QWidget               *parent = nullptr);
 
 private:
+  /// Build a widget for a single container entry.
   QWidget *build_container_widget(const std::string &key);
 
+  /// Synchronize combo box selection with stacked widget page.
   void sync_stack();
 
 private:
-  meta::ContainerGroup  &group;
-  ContainerRenderOptions options;
+  meta::ContainerGroup  &group;   /// Underlying container group
+  ContainerRenderOptions options; /// Rendering options
 
-  QComboBox      *combo = nullptr;
-  QStackedWidget *stacked = nullptr;
+  QComboBox      *combo = nullptr;   /// Selector for container keys
+  QStackedWidget *stacked = nullptr; /// Stacked pages for each container
 
-  std::unordered_map<std::string, QWidget *> pages;
+  std::unordered_map<std::string, QWidget *> pages; /// Cached page widgets
 };
 
-// wrapper
+/// Render a ContainerGroup into a MetaWidget.
 MetaWidget *render(meta::ContainerGroup  &group,
                    ContainerRenderOptions options = ContainerRenderOptions{},
                    QWidget               *parent = nullptr);

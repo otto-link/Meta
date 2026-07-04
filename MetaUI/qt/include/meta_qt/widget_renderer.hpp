@@ -14,8 +14,10 @@
 namespace meta::qt
 {
 
+/// Fallback widget renderer for unsupported types.
 template <typename T> struct WidgetRenderer
 {
+  /// Render an attribute of unsupported type as an error widget.
   static MetaWidget *render(Attribute<T> &attr, QWidget *parent)
   {
     std::string msg;
@@ -35,18 +37,19 @@ template <typename T> struct WidgetRenderer
   }
 };
 
-// helper
+/// Helper: render a typed attribute into a MetaWidget.
 template <typename T>
 MetaWidget *render(Attribute<T> &attr, QWidget *parent = nullptr)
 {
   return WidgetRenderer<T>::render(attr, parent);
 }
 
+/// Render a runtime-typed attribute into a MetaWidget.
 MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent = nullptr);
 
 } // namespace meta::qt
 
-// /!\ also update widget_renderer.cpp
+/// /!\ also update widget_renderer.cpp
 
 #include "meta_qt/widget_renderer_inl/bool.inl"
 #include "meta_qt/widget_renderer_inl/float.inl"
