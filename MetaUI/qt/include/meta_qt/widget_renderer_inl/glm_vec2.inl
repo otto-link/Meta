@@ -26,9 +26,7 @@ template <> struct WidgetRenderer<glm::vec2>
     const bool        show_grid = meta::common::try_get<bool>(attr,
                                                        "ui.show_grid",
                                                        true);
-    const bool        locked_xy = meta::common::try_get<bool>(attr,
-                                                       "ui.locked_xy",
-                                                       false);
+    bool locked_xy = meta::common::try_get<bool>(attr, "ui.locked_xy", false);
     const std::string x_label = meta::common::try_get<std::string>(attr,
                                                                    "ui.label_x",
                                                                    "x");
@@ -37,6 +35,19 @@ template <> struct WidgetRenderer<glm::vec2>
                                                                    "y");
 
     const int decimals = meta::common::try_get_format_decimals(format);
+
+    // --- UI state management
+
+    auto *state = attr.metadata().try_add(meta::keys::ui::state, true);
+    state->metadata().try_add(meta::keys::ui::widget_type, "None");
+
+    // either add with current input state 'locked_xy' or override
+    // current 'locked_xy' with metadata
+    locked_xy = state->metadata()
+                    .try_add(widget_type + ".locked_xy", locked_xy)
+                    ->value();
+
+    // --- Generate widget
 
     glm::vec2 &value = attr.value();
 
@@ -425,15 +436,21 @@ template <> struct WidgetRenderer<glm::vec2>
       // --- Sync helpers
 
       widget->set_sync_from_model(
-          [&value, canvas, mag_spin, angle_spin]()
+          [state, widget_type, &value, canvas, mag_spin, angle_spin, lock_cb]()
           {
             float mag = glm::length(value);
             float deg = (mag > 1e-6f)
                             ? std::atan2(value.y, value.x) * 180.f / float(M_PI)
                             : 45.f;
+            bool  stored_locked_state = state->metadata().value<bool>(
+                widget_type + ".locked_xy");
 
-            canvas->set_magnitude(mag);
-            canvas->set_angle_deg(deg);
+            {
+              QSignalBlocker b(canvas);
+              canvas->set_locked(stored_locked_state);
+              canvas->set_magnitude(mag);
+              canvas->set_angle_deg(deg);
+            }
 
             {
               QSignalBlocker b(mag_spin);
@@ -443,6 +460,11 @@ template <> struct WidgetRenderer<glm::vec2>
             {
               QSignalBlocker b(angle_spin);
               angle_spin->setValue(deg);
+            }
+
+            {
+              QSignalBlocker b(lock_cb);
+              lock_cb->setChecked(stored_locked_state);
             }
           });
 
@@ -481,10 +503,13 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(lock_cb,
                        &QCheckBox::toggled,
                        widget,
-                       [canvas, angle_spin](bool checked)
+                       [state, widget_type, canvas, angle_spin](bool checked)
                        {
                          canvas->set_locked(checked);
                          angle_spin->setEnabled(!checked);
+
+                         state->metadata().value<bool>(widget_type +
+                                                       ".locked_xy") = checked;
                        });
 
       // --- Graph signals
@@ -584,7 +609,7 @@ template <> struct WidgetRenderer<glm::vec2>
       // --- Connections
 
       widget->set_sync_from_model(
-          [&value, slider_x, slider_y, lock_btn]()
+          [state, widget_type, &value, slider_x, slider_y, lock_btn]()
           {
             {
               QSignalBlocker b(slider_x);
@@ -594,6 +619,12 @@ template <> struct WidgetRenderer<glm::vec2>
             {
               QSignalBlocker b(slider_y);
               slider_y->set_value(value.y);
+            }
+
+            {
+              QSignalBlocker b(lock_btn);
+              lock_btn->setChecked(
+                  state->metadata().value<bool>(widget_type + ".locked_xy"));
             }
 
             slider_y->setEnabled(!lock_btn->isChecked());
@@ -646,30 +677,38 @@ template <> struct WidgetRenderer<glm::vec2>
                        });
 
       // Lock toggle
-      QObject::connect(
-          lock_btn,
-          &QPushButton::toggled,
-          widget,
-          [&value, slider_x, slider_y, lock_btn, update_lock_style, widget](
-              bool locked)
-          {
-            update_lock_style(locked);
-            slider_y->setEnabled(!locked);
+      QObject::connect(lock_btn,
+                       &QPushButton::toggled,
+                       widget,
+                       [state,
+                        widget_type,
+                        &value,
+                        slider_x,
+                        slider_y,
+                        lock_btn,
+                        update_lock_style,
+                        widget](bool locked)
+                       {
+                         update_lock_style(locked);
+                         slider_y->setEnabled(!locked);
 
-            if (locked)
-            {
-              // Snap Y to current X immediately
-              value.y = value.x;
-              {
-                QSignalBlocker b(slider_y);
-                slider_y->set_value(value.x);
-              }
-            }
+                         if (locked)
+                         {
+                           // Snap Y to current X immediately
+                           value.y = value.x;
+                           {
+                             QSignalBlocker b(slider_y);
+                             slider_y->set_value(value.x);
+                           }
+                         }
 
-            Q_EMIT widget->edit_started();
-            Q_EMIT widget->value_changed();
-            Q_EMIT widget->edit_ended();
-          });
+                         state->metadata().value<bool>(widget_type +
+                                                       ".locked_xy") = locked;
+
+                         Q_EMIT widget->edit_started();
+                         Q_EMIT widget->value_changed();
+                         Q_EMIT widget->edit_ended();
+                       });
     }
     else // --- ERROR
     {

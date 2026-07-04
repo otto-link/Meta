@@ -23,18 +23,14 @@ VectorCanvas::VectorCanvas(glm::vec2 &value,
                            QWidget   *parent)
     : QWidget(parent), value_(value), k_max_(k_max), locked_(locked)
 {
+  magnitude_ = std::sqrt(value_.x * value_.x + value_.y * value_.y);
+
   // Bootstrap polar from the initial value.
   if (locked_)
-  {
-    magnitude_ = value_.x; // kx == ky assumed
     angle_deg_ = 45.f;
-  }
   else
-  {
-    magnitude_ = std::sqrt(value_.x * value_.x + value_.y * value_.y);
     angle_deg_ = (magnitude_ > 1e-6f) ? std::atan2(value_.y, value_.x) * RAD2DEG
                                       : 45.f;
-  }
 
   setFixedSize(180, 180);
   setCursor(Qt::CrossCursor);
