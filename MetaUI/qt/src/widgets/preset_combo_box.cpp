@@ -11,7 +11,7 @@
 #include <QSignalBlocker>
 #include <QVBoxLayout>
 
-#include "meta/macrologger.h"
+#include "meta/logger.hpp"
 
 #include "meta_qt/widgets/preset_combo_box.hpp"
 
@@ -57,7 +57,7 @@ void PresetComboBox::set_current_preset(const std::string &name)
 {
   if (!this->snapshot_manager->has(name))
   {
-    LOG_ERROR("PresetComboBox: no such preset '%s'", name.c_str());
+    Logger::log()->error("PresetComboBox: no such preset '{}'", name);
     return;
   }
 
@@ -81,8 +81,9 @@ void PresetComboBox::on_index_axtivated(int index)
 
   if (!this->snapshot_manager->has(name))
   {
-    LOG_ERROR("PresetComboBox: selected preset '%s' no longer exists",
-              name.c_str());
+    Logger::log()->error("PresetComboBox::on_index_axtivated: selected preset "
+                         "'{}' no longer exists",
+                         name);
     this->populate_combo();
     return;
   }
@@ -126,7 +127,8 @@ void PresetComboBox::save_new_preset()
 
   if (!this->snapshot_provider)
   {
-    LOG_ERROR("PresetComboBox: no snapshot provider set, cannot save preset");
+    Logger::log()->error("PresetComboBox::save_new_preset: no snapshot "
+                         "provider set, cannot save preset");
     this->populate_combo(this->current_preset);
     return;
   }
@@ -181,7 +183,8 @@ void PresetComboBox::delete_preset(const std::string &name)
 
   this->snapshot_manager->erase(name);
 
-  LOG_INFO("PresetComboBox: deleted preset '%s'", name.c_str());
+  Logger::log()->trace("PresetComboBox::delete_preset: deleted preset '{}'",
+                       name);
 
   if (this->current_preset == name) this->current_preset.clear();
 

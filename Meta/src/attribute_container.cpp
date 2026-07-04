@@ -1,14 +1,12 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
-#include <cstddef>
-#include <iostream>
 #include <utility>
 
 #include <nlohmann/json.hpp>
 
 #include "meta/core/attribute_container.hpp"
-#include "meta/macrologger.h"
+#include "meta/logger.hpp"
 #include "meta/serialization/attribute_factory.hpp"
 
 namespace meta
@@ -33,12 +31,17 @@ ConstAttrIterator AttributeContainer::cend() const
 
 void AttributeContainer::clear()
 {
+  Logger::log()->trace("AttributeContainer::clear");
   attributes_.clear();
   compact_insertion_order();
 }
 
 void AttributeContainer::compact_insertion_order()
 {
+  Logger::log()->trace("AttributeContainer::compact_insertion_order");
+
+  attributes_.clear();
+
   insertion_order_.erase(std::remove_if(insertion_order_.begin(),
                                         insertion_order_.end(),
                                         [this](const std::string &name) {
@@ -54,8 +57,11 @@ bool AttributeContainer::contains(const std::string &name) const
 
 bool AttributeContainer::contains_all_keys(const std::vector<std::string> &keys)
 {
+  Logger::log()->trace("AttributeContainer::contains_all_keys: {} keys", keys.size());
+
   for (const auto &key : keys)
-    if (attributes_.find(key) == attributes_.end()) return false;
+    if (attributes_.find(key) == attributes_.end())
+      return false;
 
   return true;
 }
@@ -68,6 +74,8 @@ ConstAttrIterator AttributeContainer::end() const { return attributes_.end(); }
 
 AbstractAttribute *AttributeContainer::find(const std::string &name)
 {
+  Logger::log()->trace("AttributeContainer::find: '{}'", name);
+
   auto it = attributes_.find(name);
   return it == attributes_.end() ? nullptr : it->second.get();
 }
@@ -85,6 +93,8 @@ const std::vector<std::string> &AttributeContainer::insertion_order() const
 
 void AttributeContainer::json_from(const nlohmann::json &j)
 {
+  Logger::log()->trace("AttributeContainer::json_from: {} entries", j.size());
+
   for (auto &[name, value] : j.items())
   {
     auto it = attributes_.find(name);
@@ -92,11 +102,16 @@ void AttributeContainer::json_from(const nlohmann::json &j)
     if (it == attributes_.end())
     {
       const std::string attr_type = value.at("type");
+
+      Logger::log()->trace("json_from: creating attribute '{}' of type '{}'",
+                           name,
+                           attr_type);
+
       auto new_attr = AttributeFactory::instance().create(attr_type, name);
 
       if (!new_attr)
       {
-        LOG_ERROR("Unknown attribute type: %s", attr_type.c_str());
+        Logger::log()->error("Unknown attribute type: '{}'", attr_type);
         continue;
       }
 
@@ -105,6 +120,10 @@ void AttributeContainer::json_from(const nlohmann::json &j)
 
       it = insert_it;
     }
+    else
+    {
+      Logger::log()->trace("json_from: updating attribute '{}'", name);
+    }
 
     it->second->json_from(value);
   }
@@ -112,6 +131,8 @@ void AttributeContainer::json_from(const nlohmann::json &j)
 
 nlohmann::json AttributeContainer::json_to() const
 {
+  Logger::log()->trace("AttributeContainer::json_to");
+
   nlohmann::json j;
 
   for (const auto &[name, attr] : attributes_)
@@ -129,11 +150,13 @@ std::size_t AttributeContainer::size() const noexcept
 
 void deserialize_metadata(AttributeContainer &m, const nlohmann::json &j)
 {
+  Logger::log()->trace("deserialize_metadata");
   m.json_from(j);
 }
 
 nlohmann::json serialize_metadata(const AttributeContainer &m)
 {
+  Logger::log()->trace("serialize_metadata");
   return m.json_to();
 }
 

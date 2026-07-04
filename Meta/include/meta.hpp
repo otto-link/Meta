@@ -3,6 +3,8 @@
    this software. */
 #pragma once
 
+#include "meta/logger.hpp"
+
 #include "meta/core/abstract_attribute.hpp"
 #include "meta/core/attribute.hpp"
 #include "meta/core/attribute_container.hpp"

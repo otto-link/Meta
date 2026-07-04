@@ -4,7 +4,7 @@
 #include <optional>
 #include <regex>
 
-#include "meta/macrologger.h"
+#include "meta/logger.hpp"
 #include "meta_common.hpp"
 
 #include "meta_qt/container_widget.hpp"
@@ -233,8 +233,9 @@ MetaWidget *render(AttributeContainer    &container,
 
     if (!attr)
     {
-      LOG_ERROR("render: attribute '%s' not found in container, skipping",
-                name.c_str());
+      Logger::log()->error(
+          "render: attribute '{}' not found in container, skipping",
+          name);
       continue;
     }
 

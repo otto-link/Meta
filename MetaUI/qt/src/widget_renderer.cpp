@@ -2,7 +2,7 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #include "meta_qt/widget_renderer.hpp"
-#include "meta/macrologger.h"
+#include "meta/logger.hpp"
 
 namespace meta::qt
 {
@@ -11,7 +11,7 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
 {
   if (!p_attr)
   {
-    LOG_ERROR("incoming p_attr is nullptr");
+    Logger::log()->error("incoming p_attr is nullptr");
     return nullptr;
   }
 
@@ -91,7 +91,8 @@ MetaWidget *render(AbstractAttribute *p_attr, QWidget *parent)
   }
 #endif
 
-  LOG_ERROR("attribute type not supported %s", p_attr->type().name());
+  Logger::log()->error("attribute type not supported '{}'",
+                       p_attr->type().name());
 
   return nullptr;
 }

@@ -11,7 +11,7 @@
 #include <QMenu>
 #include <QPainter>
 
-#include "meta/macrologger.h"
+#include "meta/logger.hpp"
 
 #include "meta_qt/widgets/helpers.hpp"
 #include "meta_qt/widgets/slider_int.hpp"

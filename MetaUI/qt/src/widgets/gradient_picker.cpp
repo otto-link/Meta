@@ -15,7 +15,7 @@
 #include <QScrollBar>
 #include <QVBoxLayout>
 
-#include "meta/macrologger.h"
+#include "meta/logger.hpp"
 #include "meta_qt/widgets/gradient_picker.hpp"
 
 namespace meta::qt

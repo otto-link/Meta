@@ -3,6 +3,19 @@ cmake_minimum_required(VERSION 3.22)
 project(meta-root)
 
 # -----------------------------------------------------------------------------
+# Build type (Debug|Release|RelWithDebInfo)
+# -----------------------------------------------------------------------------
+
+# default for single-config generators
+set(DEFAULT_BUILD_TYPE "Release")
+
+if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE
+      "${DEFAULT_BUILD_TYPE}"
+      CACHE STRING "Build type" FORCE)
+endif()
+
+# -----------------------------------------------------------------------------
 # Core options
 # -----------------------------------------------------------------------------
 
@@ -30,6 +43,7 @@ message(
 message(STATUS "│ META_ENABLE_FTXUI_UI:             ${META_ENABLE_FTXUI_UI}")
 message(STATUS "│ META_ENABLE_QT_UI:                ${META_ENABLE_QT_UI}")
 message(STATUS "│ META_ENABLE_TESTS:                ${META_ENABLE_TESTS}")
+message(STATUS "│ CMAKE_BUILD_TYPE:                 ${CMAKE_BUILD_TYPE}")
 message(STATUS "└─────────────────────────────────────")
 
 # -----------------------------------------------------------------------------
@@ -60,6 +74,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 # -----------------------------------------------------------------------------
 
 find_package(nlohmann_json REQUIRED)
+find_package(spdlog REQUIRED)
 
 if(META_ENABLE_GLM_TYPES)
   find_package(glm REQUIRED)

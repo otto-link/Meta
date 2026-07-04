@@ -2,12 +2,15 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #include "meta/core/container_group.hpp"
+#include "meta/logger.hpp"
 
 namespace meta
 {
 
 AttributeContainer &ContainerGroup::add(const std::string &key)
 {
+  Logger::log()->trace("ContainerGroup::add: key = {}", key);
+
   auto [it, inserted] = containers_.try_emplace(
       key,
       std::make_unique<AttributeContainer>());

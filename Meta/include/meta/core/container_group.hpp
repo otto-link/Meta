@@ -15,7 +15,6 @@
 
 #include "meta/core/attribute_container.hpp"
 #include "meta/core/meta_object.hpp"
-#include "meta/macrologger.h"
 
 namespace meta
 {
