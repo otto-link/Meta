@@ -15,11 +15,18 @@ AttributeContainer &ContainerGroup::add(const std::string &key)
       key,
       std::make_unique<AttributeContainer>());
 
-  if (!inserted) throw std::runtime_error("Container already exists: " + key);
+  if (!inserted)
+  {
+    Logger::log()->trace("ContainerGroup::add: key already exists = {}", key);
+    throw std::runtime_error("Container already exists: " + key);
+  }
 
-  if (!current_) current_ = it->second.get();
+  if (!current_)
+  {
+    Logger::log()->trace("ContainerGroup::add: setting current to '{}'", key);
+    current_ = it->second.get();
+  }
 
-  // keep track of insertion order
   insertion_order_.push_back(key);
 
   return *it->second;
@@ -27,6 +34,8 @@ AttributeContainer &ContainerGroup::add(const std::string &key)
 
 void ContainerGroup::compact_insertion_order()
 {
+  Logger::log()->trace("ContainerGroup::compact_insertion_order");
+
   insertion_order_.erase(std::remove_if(insertion_order_.begin(),
                                         insertion_order_.end(),
                                         [this](const std::string &name) {
@@ -48,14 +57,22 @@ bool ContainerGroup::contains(const std::string &key) const
 
 AttributeContainer &ContainerGroup::current()
 {
-  if (!current_) throw std::runtime_error("No current container selected");
+  if (!current_)
+  {
+    Logger::log()->trace("ContainerGroup::current: no current container");
+    throw std::runtime_error("No current container selected");
+  }
 
   return *current_;
 }
 
 const AttributeContainer &ContainerGroup::current() const
 {
-  if (!current_) throw std::runtime_error("No current container selected");
+  if (!current_)
+  {
+    Logger::log()->trace("ContainerGroup::current const: no current container");
+    throw std::runtime_error("No current container selected");
+  }
 
   return *current_;
 }
@@ -72,16 +89,31 @@ std::optional<std::string> ContainerGroup::current_container_name() const
 
 bool ContainerGroup::erase(const std::string &key)
 {
+  Logger::log()->trace("ContainerGroup::erase: key = {}", key);
+
   auto it = containers_.find(key);
 
-  if (it == containers_.end()) return false;
+  if (it == containers_.end())
+  {
+    Logger::log()->trace("ContainerGroup::erase: key not found = {}", key);
+    return false;
+  }
 
-  if (current_ == it->second.get()) current_ = nullptr;
+  const bool was_current = (current_ == it->second.get());
 
   containers_.erase(it);
 
+  if (was_current)
+  {
+    Logger::log()->trace("ContainerGroup::erase: current container erased");
+    current_ = nullptr;
+  }
+
   if (!current_ && !containers_.empty())
+  {
     current_ = containers_.begin()->second.get();
+    Logger::log()->trace("ContainerGroup::erase: new current auto-selected");
+  }
 
   compact_insertion_order();
 
@@ -107,11 +139,18 @@ const std::vector<std::string> &ContainerGroup::insertion_order() const
 
 void ContainerGroup::set_current(const std::string &key)
 {
+  Logger::log()->trace("ContainerGroup::set_current: key = {}", key);
+
   auto *container = find(key);
 
-  if (!container) throw std::runtime_error("Container does not exist: " + key);
+  if (!container)
+  {
+    Logger::log()->trace("ContainerGroup::set_current: invalid key = {}", key);
+    throw std::runtime_error("Container does not exist: " + key);
+  }
 
   current_ = container;
+  Logger::log()->trace("ContainerGroup::set_current: success = {}", key);
 }
 
 } // namespace meta

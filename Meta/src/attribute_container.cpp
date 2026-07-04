@@ -57,11 +57,11 @@ bool AttributeContainer::contains(const std::string &name) const
 
 bool AttributeContainer::contains_all_keys(const std::vector<std::string> &keys)
 {
-  Logger::log()->trace("AttributeContainer::contains_all_keys: {} keys", keys.size());
+  Logger::log()->trace("AttributeContainer::contains_all_keys: {} keys",
+                       keys.size());
 
   for (const auto &key : keys)
-    if (attributes_.find(key) == attributes_.end())
-      return false;
+    if (attributes_.find(key) == attributes_.end()) return false;
 
   return true;
 }
