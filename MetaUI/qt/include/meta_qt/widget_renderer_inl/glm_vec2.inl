@@ -77,6 +77,20 @@ template <> struct WidgetRenderer<glm::vec2>
 
       layout->addLayout(row);
 
+      widget->set_sync_from_model(
+          [&value, spinbox_x, spinbox_y, min, max]()
+          {
+            {
+              QSignalBlocker b(spinbox_x);
+              spinbox_x->setValue(std::clamp(value.x, min, max));
+            }
+
+            {
+              QSignalBlocker b(spinbox_y);
+              spinbox_y->setValue(std::clamp(value.y, min, max));
+            }
+          });
+
       QObject::connect(spinbox_x,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
@@ -132,6 +146,13 @@ template <> struct WidgetRenderer<glm::vec2>
         btn_row->addWidget(btn);
       }
       layout->addLayout(btn_row);
+
+      widget->set_sync_from_model(
+          [&value, canvas]()
+          {
+            QSignalBlocker blocker(canvas);
+            canvas->set_value(value);
+          });
 
       // Fires on every drag step — edit_started + value_changed only.
       QObject::connect(canvas,
@@ -230,6 +251,26 @@ template <> struct WidgetRenderer<glm::vec2>
       };
 
       set_active(initially_active);
+
+      widget->set_sync_from_model(
+          [&value, bar, toggle_btn, set_active]()
+          {
+            const bool active = !(value.x == -1.f && value.y == 0.f);
+
+            set_active(active);
+
+            {
+              QSignalBlocker b(toggle_btn);
+              toggle_btn->setChecked(active);
+              toggle_btn->setText(active ? QObject::tr("On")
+                                         : QObject::tr("Off"));
+            }
+
+            {
+              QSignalBlocker b(bar);
+              bar->set_value(value);
+            }
+          });
 
       // Toggle
       QObject::connect(toggle_btn,
@@ -383,6 +424,28 @@ template <> struct WidgetRenderer<glm::vec2>
 
       // --- Sync helpers
 
+      widget->set_sync_from_model(
+          [&value, canvas, mag_spin, angle_spin]()
+          {
+            float mag = glm::length(value);
+            float deg = (mag > 1e-6f)
+                            ? std::atan2(value.y, value.x) * 180.f / float(M_PI)
+                            : 45.f;
+
+            canvas->set_magnitude(mag);
+            canvas->set_angle_deg(deg);
+
+            {
+              QSignalBlocker b(mag_spin);
+              mag_spin->setValue(mag);
+            }
+
+            {
+              QSignalBlocker b(angle_spin);
+              angle_spin->setValue(deg);
+            }
+          });
+
       // Canvas → spinboxes (keep in sync after drag)
       QObject::connect(canvas,
                        &VectorCanvas::magnitude_changed,
@@ -519,6 +582,22 @@ template <> struct WidgetRenderer<glm::vec2>
       layout->addLayout(row);
 
       // --- Connections
+
+      widget->set_sync_from_model(
+          [&value, slider_x, slider_y, lock_btn]()
+          {
+            {
+              QSignalBlocker b(slider_x);
+              slider_x->set_value(value.x);
+            }
+
+            {
+              QSignalBlocker b(slider_y);
+              slider_y->set_value(value.y);
+            }
+
+            slider_y->setEnabled(!lock_btn->isChecked());
+          });
 
       // slider_x changed
       QObject::connect(slider_x,

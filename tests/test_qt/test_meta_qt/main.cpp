@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
   meta::AttributeContainer container;
 
   const bool base_bool = false;
-  const bool base_float = true;
+  const bool base_float = false;
   const bool base_int = false;
 
   const bool base_string = false;
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
-  const bool base_color_gradient = false;
+  const bool base_color_gradient = true;
 #endif
 
   const bool base_groups = false;
@@ -414,51 +414,54 @@ int main(int argc, char *argv[])
 
   if (base_glm_vec)
   {
+    if (true) // vec2
     {
-      container.add("glm::vec2_free", glm::vec2(16, 32));
-    }
+      {
+        container.add("glm::vec2_free", glm::vec2(16, 32));
+      }
 
-    {
-      auto *a = container.add("glm::vec2_constrained", glm::vec2(16.f, 32.f));
-      a->metadata().add(meta::keys::constraints::min, -1.f);
-      a->metadata().add(meta::keys::constraints::max, 64.f);
-      a->metadata().add(meta::keys::constraints::step, 0.1f);
-      a->metadata().add(meta::keys::ui::format, "{:.2f}");
-    }
+      {
+        auto *a = container.add("glm::vec2_constrained", glm::vec2(16.f, 32.f));
+        a->metadata().add(meta::keys::constraints::min, -1.f);
+        a->metadata().add(meta::keys::constraints::max, 64.f);
+        a->metadata().add(meta::keys::constraints::step, 0.1f);
+        a->metadata().add(meta::keys::ui::format, "{:.2f}");
+      }
 
-    {
-      auto *a = container.add("glm::vec2_xy", glm::vec2(16.f, 32.f));
-      a->metadata().add(meta::keys::ui::widget_type, "XYCanvas");
-      a->metadata().add(meta::keys::constraints::min, -1.f);
-      a->metadata().add(meta::keys::constraints::max, 64.f);
-    }
+      {
+        auto *a = container.add("glm::vec2_xy", glm::vec2(16.f, 32.f));
+        a->metadata().add(meta::keys::ui::widget_type, "XYCanvas");
+        a->metadata().add(meta::keys::constraints::min, -1.f);
+        a->metadata().add(meta::keys::constraints::max, 64.f);
+      }
 
-    {
-      auto *a = container.add("glm::vec2_vector", glm::vec2(16.f, 32.f));
-      a->metadata().add(meta::keys::ui::widget_type, "VectorEditor");
-      a->metadata().add(meta::keys::constraints::min, 0.f);
-      a->metadata().add(meta::keys::constraints::max, 128.f);
-      a->metadata().add("ui.locked_xy", true);
-    }
+      {
+        auto *a = container.add("glm::vec2_vector", glm::vec2(16.f, 32.f));
+        a->metadata().add(meta::keys::ui::widget_type, "VectorEditor");
+        a->metadata().add(meta::keys::constraints::min, 0.f);
+        a->metadata().add(meta::keys::constraints::max, 128.f);
+        a->metadata().add("ui.locked_xy", true);
+      }
 
-    {
-      auto *a = container.add("glm::vec2_linked", glm::vec2(16.f, 32.f));
-      a->metadata().add(meta::keys::ui::widget_type, "LinkedSliders");
-      a->metadata().add(meta::keys::constraints::min, 0.f);
-      a->metadata().add(meta::keys::constraints::max, 64.f);
-      a->metadata().add("ui.locked_xy", true);
-      a->metadata().add("ui.label_x", "kx");
-      a->metadata().add("ui.label_y", "ky");
-      a->metadata().add(meta::keys::ui::format, "{:.1f}");
-    }
+      {
+        auto *a = container.add("glm::vec2_linked", glm::vec2(16.f, 32.f));
+        a->metadata().add(meta::keys::ui::widget_type, "LinkedSliders");
+        a->metadata().add(meta::keys::constraints::min, 0.f);
+        a->metadata().add(meta::keys::constraints::max, 64.f);
+        a->metadata().add("ui.locked_xy", true);
+        a->metadata().add("ui.label_x", "kx");
+        a->metadata().add("ui.label_y", "ky");
+        a->metadata().add(meta::keys::ui::format, "{:.1f}");
+      }
 
-    {
-      auto *a = container.add("glm::vec2_range", glm::vec2(0.f, 1.f));
-      a->metadata().add(meta::keys::ui::widget_type, "RangeBar");
-      a->metadata().add(meta::keys::constraints::min, -1.f);
-      a->metadata().add(meta::keys::constraints::max, 2.f);
-      a->metadata().add(meta::keys::constraints::step, 0.1f);
-      a->metadata().add(meta::keys::ui::format, "{:.3f}");
+      {
+        auto *a = container.add("glm::vec2_range", glm::vec2(0.f, 1.f));
+        a->metadata().add(meta::keys::ui::widget_type, "RangeBar");
+        a->metadata().add(meta::keys::constraints::min, -1.f);
+        a->metadata().add(meta::keys::constraints::max, 2.f);
+        a->metadata().add(meta::keys::constraints::step, 0.1f);
+        a->metadata().add(meta::keys::ui::format, "{:.3f}");
+      }
     }
 
     {
@@ -533,12 +536,19 @@ int main(int argc, char *argv[])
       make_debug_view(sp_attr.get(), add_border);
   }
 
+  meta::SnapshotManager snapshots;
+
   if (true)
   {
+    snapshots.save("default", container.json_to());
+    snapshots.save("Some Config.", container.json_to());
+
     meta::qt::ContainerRenderOptions options;
     options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
 
-    meta::qt::MetaWidget *widget = meta::qt::render(container, options);
+    meta::qt::MetaWidget *widget = meta::qt::render(container,
+                                                    options,
+                                                    &snapshots);
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_started,
@@ -550,7 +560,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_ended,
-                     []() { std::cout << "    > edit_changed\n"; });
+                     []() { std::cout << "    > edit_ended\n"; });
 
     widget->show();
   }

@@ -64,6 +64,13 @@ template <> struct WidgetRenderer<std::vector<float>>
       btn_row->addWidget(reset_btn);
       layout->addLayout(btn_row);
 
+      widget->set_sync_from_model(
+          [canvas]()
+          {
+            const QSignalBlocker blocker(canvas);
+            canvas->reset_to_value();
+          });
+
       // propagate canvas changes to the node graph.
       QObject::connect(canvas,
                        &CurveCanvas::curve_changed,

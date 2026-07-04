@@ -11,6 +11,7 @@
 #include "meta_qt/meta_widget.hpp"
 #include "meta_qt/widget_renderer.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
+#include "meta_qt/widgets/preset_combo_box.hpp"
 
 namespace meta::qt
 {
@@ -213,6 +214,7 @@ void render_category_merged(meta::AttributeContainer        &container,
 
 MetaWidget *render(AttributeContainer    &container,
                    ContainerRenderOptions options,
+                   SnapshotManager       *p_snapshot_manager,
                    QWidget               *parent)
 {
   CategoryNode root;
@@ -243,6 +245,22 @@ MetaWidget *render(AttributeContainer    &container,
 
   MetaWidget *container_widget = make_meta_widget_vbox(parent);
   auto       *layout = static_cast<QVBoxLayout *>(container_widget->layout());
+
+  // --- Snapshots
+
+  PresetComboBox *presets;
+
+  if (p_snapshot_manager)
+  {
+    presets = new PresetComboBox(p_snapshot_manager);
+    layout->addWidget(presets);
+
+    // define save snapshot function
+    presets->set_snapshot_provider([&container]()
+                                   { return container.json_to(); });
+  }
+
+  // --- Attribute widgets
 
   std::vector<MetaWidget *> collected_widgets;
 
@@ -291,6 +309,32 @@ MetaWidget *render(AttributeContainer    &container,
                      &MetaWidget::edit_ended,
                      container_widget,
                      &MetaWidget::edit_ended);
+  }
+
+  if (p_snapshot_manager)
+  {
+    QObject::connect(
+        presets,
+        &PresetComboBox::preset_selected,
+        container_widget,
+        [&container,
+         collected_widgets,
+         container_widget](std::string /* name */, nlohmann::json snapshot)
+        {
+          // update model first
+          container.json_from(snapshot);
+
+          // sync all widgets
+          for (MetaWidget *w : collected_widgets)
+          {
+            const QSignalBlocker blocker(w);
+            w->sync_from_model_widget();
+          }
+
+          Q_EMIT container_widget->value_changed();
+          Q_EMIT container_widget->edit_ended();
+        },
+        Qt::DirectConnection);
   }
 
   return container_widget;

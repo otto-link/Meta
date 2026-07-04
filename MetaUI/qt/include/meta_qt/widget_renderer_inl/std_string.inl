@@ -128,6 +128,13 @@ template <> struct WidgetRenderer<std::string>
       row->addWidget(apply_btn);
       layout->addLayout(row);
 
+      widget->set_sync_from_model(
+          [line_edit, &value]()
+          {
+            const QSignalBlocker blocker(line_edit);
+            line_edit->setText(QString::fromStdString(value));
+          });
+
       // stage edits; commit only on Apply / Return.
       auto do_apply = [&value, line_edit, widget]()
       {
@@ -159,6 +166,13 @@ template <> struct WidgetRenderer<std::string>
 
       auto [btn_row, apply_btn] = helpers::make_apply_button(widget);
       layout->addLayout(btn_row);
+
+      widget->set_sync_from_model(
+          [text_edit, &value]()
+          {
+            const QSignalBlocker blocker(text_edit);
+            text_edit->setPlainText(QString::fromStdString(value));
+          });
 
       QObject::connect(apply_btn,
                        &QPushButton::clicked,
@@ -219,6 +233,13 @@ template <> struct WidgetRenderer<std::string>
       auto [btn_row, apply_btn] = helpers::make_apply_button(widget);
       layout->addLayout(btn_row);
 
+      widget->set_sync_from_model(
+          [text_edit, &value]()
+          {
+            const QSignalBlocker blocker(text_edit);
+            text_edit->setPlainText(QString::fromStdString(value));
+          });
+
       QObject::connect(apply_btn,
                        &QPushButton::clicked,
                        widget,
@@ -243,6 +264,23 @@ template <> struct WidgetRenderer<std::string>
       }
       if (current_index >= 0) combo->setCurrentIndex(current_index);
 
+      widget->set_sync_from_model(
+          [combo, &value]()
+          {
+            const QSignalBlocker blocker(combo);
+
+            const QString v = QString::fromStdString(value);
+
+            for (int i = 0; i < combo->count(); ++i)
+            {
+              if (combo->itemText(i) == v)
+              {
+                combo->setCurrentIndex(i);
+                return;
+              }
+            }
+          });
+
       QObject::connect(combo,
                        &QComboBox::currentTextChanged,
                        widget,
@@ -254,7 +292,7 @@ template <> struct WidgetRenderer<std::string>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else if (widget_type == "ButtonGrid") // ---
+    else if (widget_type == "ButtonGrid") // --- ButtonGrid
     {
       int max_cols = 5;
       if (attr.metadata().contains("ui.columns"))
@@ -288,6 +326,23 @@ template <> struct WidgetRenderer<std::string>
         grid->addWidget(btn, i / ncols, i % ncols);
       }
 
+      widget->set_sync_from_model(
+          [group, &value]()
+          {
+            const QSignalBlocker blocker(group);
+
+            const QString v = QString::fromStdString(value);
+
+            for (auto *button : group->buttons())
+            {
+              if (button->text() == v)
+              {
+                button->setChecked(true);
+                return;
+              }
+            }
+          });
+
       QObject::connect(
           group,
           QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
@@ -302,7 +357,7 @@ template <> struct WidgetRenderer<std::string>
 
       layout->addLayout(grid);
     }
-    else // ---
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));

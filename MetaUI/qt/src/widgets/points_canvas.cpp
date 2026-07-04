@@ -423,6 +423,13 @@ int PointsCanvas::segment_hit_test(const QPoint &pos) const
   return best_i;
 }
 
+void PointsCanvas::set_points(const std::vector<glm::vec3> &new_points)
+{
+  points_ = new_points;
+  update();
+  Q_EMIT points_changed();
+}
+
 QPoint PointsCanvas::value_to_canvas(float x, float y) const
 {
   const QRect r = canvas_rect();

@@ -68,6 +68,13 @@ template <> struct WidgetRenderer<float>
 
       layout->addWidget(spinbox);
 
+      widget->set_sync_from_model(
+          [spinbox, &value]()
+          {
+            const QSignalBlocker blocker(spinbox);
+            spinbox->setValue(value);
+          });
+
       QObject::connect(spinbox,
                        &QDoubleSpinBox::valueChanged,
                        spinbox,
@@ -124,6 +131,16 @@ template <> struct WidgetRenderer<float>
         control = dial;
       }
 
+      widget->set_sync_from_model(
+          [control, &value, min, max]()
+          {
+            auto to_int = [min, max](float v) -> int
+            { return static_cast<int>(((v - min) / (max - min)) * 1000); };
+
+            const QSignalBlocker blocker(control);
+            control->setValue(to_int(value));
+          });
+
       QObject::connect(control,
                        &QAbstractSlider::sliderPressed,
                        widget,
@@ -157,6 +174,13 @@ template <> struct WidgetRenderer<float>
                                      widget);
       slider->set_value(value);
       layout->addWidget(slider);
+
+      widget->set_sync_from_model(
+          [slider, &value]()
+          {
+            const QSignalBlocker blocker(slider);
+            slider->set_value(value);
+          });
 
       // Live drag / +- buttons
       QObject::connect(slider,

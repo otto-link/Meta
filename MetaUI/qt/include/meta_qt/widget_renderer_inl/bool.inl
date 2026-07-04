@@ -32,15 +32,17 @@ template <> struct WidgetRenderer<bool>
     {
       return nullptr;
     }
-    else if (widget_type == "Toggle")
+    else if (widget_type == "Toggle") // --- Togglr
     {
-      // --- TOGGLE
-
       auto *button = new QPushButton(label_txt.c_str(), widget);
       layout->addWidget(button, 0, 0);
 
       button->setCheckable(true);
-      button->setChecked(value);
+
+      widget->set_sync_from_model([button, &value]()
+                                  { button->setChecked(value); });
+
+      widget->sync_from_model_widget();
 
       QObject::connect(button,
                        &QPushButton::toggled,
@@ -53,10 +55,8 @@ template <> struct WidgetRenderer<bool>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else if (widget_type == "BinaryButtons")
+    else if (widget_type == "BinaryButtons") // --- BinaryButtons
     {
-      // --- BINARY BUTTONS
-
       int row = 0;
 
       if (!label_txt.empty())
@@ -88,8 +88,14 @@ template <> struct WidgetRenderer<bool>
       button_false->setCheckable(true);
 
       // set the initial state of the buttons based on the attribute value
-      button_true->setChecked(value);
-      button_false->setChecked(!value);
+      widget->set_sync_from_model(
+          [button_true, button_false, &value]()
+          {
+            button_true->setChecked(value);
+            button_false->setChecked(!value);
+          });
+
+      widget->sync_from_model_widget();
 
       // connect the buttons' clicked signals to update the state
       QObject::connect(button_true,
@@ -131,14 +137,16 @@ template <> struct WidgetRenderer<bool>
                          }
                        });
     }
-    else if (widget_type == "Checkbox")
+    else if (widget_type == "Checkbox") // --- Checkbox
     {
-      // --- CHECKBOX
-
       QCheckBox *checkbox = new QCheckBox(label_txt.c_str(), widget);
       layout->addWidget(checkbox, 0, 0);
 
-      checkbox->setChecked(value);
+      widget->set_sync_from_model([checkbox, &value]()
+                                  { checkbox->setChecked(value); });
+
+      widget->sync_from_model_widget();
+
       checkbox->connect(checkbox,
                         &QCheckBox::toggled,
                         checkbox,
@@ -150,7 +158,7 @@ template <> struct WidgetRenderer<bool>
                           Q_EMIT widget->edit_ended();
                         });
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget),

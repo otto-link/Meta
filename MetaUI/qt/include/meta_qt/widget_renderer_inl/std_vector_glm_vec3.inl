@@ -91,6 +91,13 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
 
       // --- Connections
 
+      widget->set_sync_from_model(
+          [&value, canvas]()
+          {
+            QSignalBlocker blocker(canvas);
+            canvas->set_points(value);
+          });
+
       // Live edits (add / move / z scroll) → edit_started + value_changed
       QObject::connect(canvas,
                        &PointsCanvas::points_changed,

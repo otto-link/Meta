@@ -32,7 +32,7 @@ template <> struct WidgetRenderer<glm::vec4>
     {
       return nullptr;
     }
-    else if (widget_type == "Input")
+    else if (widget_type == "Input") // --- Input
     {
       if (!label_txt.empty())
       {
@@ -65,6 +65,30 @@ template <> struct WidgetRenderer<glm::vec4>
       row->addWidget(spinbox_w);
 
       layout->addLayout(row);
+
+      widget->set_sync_from_model(
+          [&value, spinbox_x, spinbox_y, spinbox_z, spinbox_w]()
+          {
+            {
+              QSignalBlocker bx(spinbox_x);
+              spinbox_x->setValue(std::clamp(value.x, 0.f, 1.f));
+            }
+
+            {
+              QSignalBlocker by(spinbox_y);
+              spinbox_y->setValue(std::clamp(value.y, 0.f, 1.f));
+            }
+
+            {
+              QSignalBlocker bz(spinbox_z);
+              spinbox_z->setValue(std::clamp(value.z, 0.f, 1.f));
+            }
+
+            {
+              QSignalBlocker bz(spinbox_w);
+              spinbox_w->setValue(std::clamp(value.w, 0.f, 1.f));
+            }
+          });
 
       QObject::connect(spinbox_x,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
@@ -142,7 +166,7 @@ template <> struct WidgetRenderer<glm::vec4>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else if (widget_type == "ColorPicker")
+    else if (widget_type == "ColorPicker") // --- ColorPicker
     {
       if (!label_txt.empty())
       {
@@ -202,6 +226,13 @@ template <> struct WidgetRenderer<glm::vec4>
 
       layout->addLayout(row);
 
+      widget->set_sync_from_model(
+          [&value, update_button_color, update_hex_label]()
+          {
+            update_button_color(value);
+            update_hex_label(value);
+          });
+
       QObject::connect(color_button,
                        &QPushButton::clicked,
                        widget,
@@ -239,7 +270,7 @@ template <> struct WidgetRenderer<glm::vec4>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));

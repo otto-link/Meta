@@ -63,6 +63,13 @@ template <> struct WidgetRenderer<int>
 
       layout->addWidget(spinbox);
 
+      widget->set_sync_from_model(
+          [spinbox, &value]()
+          {
+            const QSignalBlocker blocker(spinbox);
+            spinbox->setValue(value);
+          });
+
       QObject::connect(spinbox,
                        &QDoubleSpinBox::valueChanged,
                        spinbox,
@@ -94,6 +101,21 @@ template <> struct WidgetRenderer<int>
       }
 
       combo->setCurrentIndex(current_index);
+
+      widget->set_sync_from_model(
+          [combo, &value]()
+          {
+            const QSignalBlocker blocker(combo);
+
+            for (int i = 0; i < combo->count(); ++i)
+            {
+              if (combo->itemData(i).toInt() == value)
+              {
+                combo->setCurrentIndex(i);
+                break;
+              }
+            }
+          });
 
       QObject::connect(combo,
                        QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -142,6 +164,13 @@ template <> struct WidgetRenderer<int>
         control = dial;
       }
 
+      widget->set_sync_from_model(
+          [control, &value]()
+          {
+            const QSignalBlocker blocker(control);
+            control->setValue(value);
+          });
+
       QObject::connect(control,
                        &QAbstractSlider::sliderPressed,
                        widget,
@@ -170,6 +199,13 @@ template <> struct WidgetRenderer<int>
       slider->set_value(value);
       layout->addWidget(slider);
 
+      widget->set_sync_from_model(
+          [slider, &value]()
+          {
+            const QSignalBlocker blocker(slider);
+            slider->set_value(value);
+          });
+
       QObject::connect(slider,
                        &SliderInt::value_changed,
                        widget,
@@ -189,7 +225,7 @@ template <> struct WidgetRenderer<int>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));

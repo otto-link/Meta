@@ -39,7 +39,7 @@ template <> struct WidgetRenderer<std::filesystem::path>
     {
       return nullptr;
     }
-    else if (is_open_file || is_save_file || is_directory)
+    else if (is_open_file || is_save_file || is_directory) // --- Others...
     {
       if (!label_txt.empty())
       {
@@ -57,6 +57,13 @@ template <> struct WidgetRenderer<std::filesystem::path>
                                         ? QObject::tr("No folder selected")
                                         : QObject::tr("No file selected"));
       line_edit->setText(QString::fromStdString(value.string()));
+
+      widget->set_sync_from_model(
+          [line_edit, &value]()
+          {
+            const QSignalBlocker blocker(line_edit);
+            line_edit->setText(QString::fromStdString(value.string()));
+          });
 
       auto *browse_button = new QPushButton(is_directory ? QObject::tr("…")
                                                          : QObject::tr("…"),

@@ -63,6 +63,25 @@ template <> struct WidgetRenderer<glm::vec3>
 
       layout->addLayout(row);
 
+      widget->set_sync_from_model(
+          [&value, spinbox_x, spinbox_y, spinbox_z]()
+          {
+            {
+              QSignalBlocker bx(spinbox_x);
+              spinbox_x->setValue(std::clamp(value.x, 0.f, 1.f));
+            }
+
+            {
+              QSignalBlocker by(spinbox_y);
+              spinbox_y->setValue(std::clamp(value.y, 0.f, 1.f));
+            }
+
+            {
+              QSignalBlocker bz(spinbox_z);
+              spinbox_z->setValue(std::clamp(value.z, 0.f, 1.f));
+            }
+          });
+
       QObject::connect(spinbox_x,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
@@ -172,6 +191,13 @@ template <> struct WidgetRenderer<glm::vec3>
       row->addStretch();
 
       layout->addLayout(row);
+
+      widget->set_sync_from_model(
+          [&value, update_button_color, update_hex_label]()
+          {
+            update_button_color(value);
+            update_hex_label(value);
+          });
 
       QObject::connect(color_button,
                        &QPushButton::clicked,

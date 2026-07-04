@@ -52,7 +52,7 @@ signals:
   void preset_saved(std::string name);
 
 private slots:
-  void on_index_changed(int index);
+  void on_index_axtivated(int index);
 
 private:
   void save_new_preset();

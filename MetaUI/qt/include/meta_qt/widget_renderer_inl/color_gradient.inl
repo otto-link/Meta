@@ -51,6 +51,8 @@ template <> struct WidgetRenderer<meta::ColorGradient>
       auto *picker = new GradientPicker(cga.value(), cga.presets(), widget);
       layout->addWidget(picker);
 
+      widget->set_sync_from_model([picker]() { picker->update(); });
+
       // Live edits
       QObject::connect(picker,
                        &GradientPicker::value_changed,

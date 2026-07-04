@@ -43,7 +43,7 @@ template <> struct WidgetRenderer<glm::ivec2>
     {
       return nullptr;
     }
-    else if (widget_type == "Input")
+    else if (widget_type == "Input") // --- Input
     {
       if (!label_txt.empty())
       {
@@ -87,6 +87,38 @@ template <> struct WidgetRenderer<glm::ivec2>
       row->addWidget(spinbox_y);
 
       layout->addLayout(row);
+
+      widget->set_sync_from_model(
+          [spinbox_x,
+           spinbox_y,
+           &value,
+           min,
+           max,
+           power_of_two,
+           keep_aspect,
+           aspect_ratio]()
+          {
+            int x = std::clamp(value.x, min, max);
+            int y = std::clamp(value.y, min, max);
+
+            if (power_of_two)
+            {
+              x = ceil_power_of_two(x);
+              y = ceil_power_of_two(y);
+            }
+
+            if (keep_aspect) y = int(std::lround(double(x) / aspect_ratio));
+
+            {
+              QSignalBlocker blocker(spinbox_x);
+              spinbox_x->setValue(x);
+            }
+
+            {
+              QSignalBlocker blocker(spinbox_y);
+              spinbox_y->setValue(y);
+            }
+          });
 
       QObject::connect(spinbox_x,
                        qOverload<int>(&QSpinBox::valueChanged),
@@ -151,7 +183,7 @@ template <> struct WidgetRenderer<glm::ivec2>
             });
       }
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));

@@ -28,9 +28,9 @@ PresetComboBox::PresetComboBox(SnapshotManager *snapshot_manager_,
   layout->addWidget(this->combo);
 
   this->connect(this->combo,
-                QOverload<int>::of(&QComboBox::currentIndexChanged),
+                QOverload<int>::of(&QComboBox::activated),
                 this,
-                &PresetComboBox::on_index_changed);
+                &PresetComboBox::on_index_axtivated);
 
   this->populate_combo();
 }
@@ -58,7 +58,7 @@ std::string PresetComboBox::get_current_preset() const
   return this->current_preset;
 }
 
-void PresetComboBox::on_index_changed(int index)
+void PresetComboBox::on_index_axtivated(int index)
 {
   if (index == PresetComboBox::save_action_index)
   {
@@ -132,12 +132,15 @@ void PresetComboBox::populate_combo(const std::string &select_name)
   const QSignalBlocker blocker(this->combo);
 
   this->combo->clear();
-  this->combo->addItem(tr("Save preset..."));
+
+  // --- Save preset (index 0)
+
+  this->combo->addItem(tr("[Save preset...]"));
 
   std::vector<std::string> names = this->snapshot_manager->names();
   std::sort(names.begin(), names.end());
 
-  // Pull "default" to the front, right after "Save preset...", if present.
+  // Pull "default" to the front
   auto it = std::find(names.begin(), names.end(), "default");
   if (it != names.end())
   {
@@ -145,13 +148,32 @@ void PresetComboBox::populate_combo(const std::string &select_name)
     names.insert(names.begin(), "default");
   }
 
+  int default_index = -1;
+
+  // --- Presets
+
   for (const std::string &name : names)
+  {
+    if (name == "default") default_index = this->combo->count();
+
     this->combo->addItem(QString::fromStdString(name));
+  }
+
+  // --- Separator AFTER default (if it exists)
+
+  const int sep_index = default_index >= 0 ? default_index + 1
+                                           : this->combo->count();
+
+  this->combo->insertItem(sep_index, "──────────");
+  this->combo->setItemData(sep_index, 0, Qt::UserRole - 1); // disable selection
+
+  // --- Delection logic
 
   const std::string &target = select_name.empty() ? this->current_preset
                                                   : select_name;
 
   int index_to_select = PresetComboBox::save_action_index;
+
   if (!target.empty())
   {
     const int found = this->combo->findText(QString::fromStdString(target));
@@ -159,7 +181,8 @@ void PresetComboBox::populate_combo(const std::string &select_name)
   }
 
   this->combo->setCurrentIndex(index_to_select);
-  this->current_preset = index_to_select == PresetComboBox::save_action_index
+
+  this->current_preset = (index_to_select == PresetComboBox::save_action_index)
                              ? std::string()
                              : this->combo->itemText(index_to_select)
                                    .toStdString();

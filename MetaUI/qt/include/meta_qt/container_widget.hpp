@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 
 #include "meta/core/abstract_attribute.hpp"
+#include "meta/serialization/snapshot_manager.hpp"
 
 #include "meta_qt/meta_widget.hpp"
 
@@ -58,6 +59,7 @@ void render_group_merged(meta::AttributeContainer  &container,
 
 MetaWidget *render(meta::AttributeContainer &container,
                    ContainerRenderOptions    options = ContainerRenderOptions{},
+                   SnapshotManager          *p_snapshot_manager = nullptr,
                    QWidget                  *parent = nullptr);
 
 } // namespace meta::qt
