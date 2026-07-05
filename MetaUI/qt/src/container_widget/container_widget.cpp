@@ -64,8 +64,13 @@ void render_flat(CategoryNode              &node,
                  QVBoxLayout               *layout,
                  std::vector<MetaWidget *> &collected_widgets)
 {
+  Logger::log()->trace("container_widget::render_flat");
+
   for (auto *p_attr : node.attributes)
   {
+    Logger::log()->trace("container_widget::render_flat: '{}'",
+                         p_attr ? p_attr->name() : std::string("null"));
+
     MetaWidget *w = meta::qt::render(p_attr);
     layout->addWidget(w);
     collected_widgets.push_back(w);
@@ -80,6 +85,8 @@ void render_category(meta::AttributeContainer  &container,
                      QVBoxLayout               *parent_layout,
                      std::vector<MetaWidget *> &collected_widgets)
 {
+  Logger::log()->trace("container_widget::render_category: '{}'", node.name);
+
   QVBoxLayout *current_layout = parent_layout;
 
   if (!node.name.empty())
@@ -88,6 +95,9 @@ void render_category(meta::AttributeContainer  &container,
 
     auto *section = new CollapsibleSection(title.c_str());
     parent_layout->addWidget(section);
+
+    Logger::log()->trace("container_widget::render_category: section '{}'",
+                         title);
 
     // UI state management
     {
@@ -118,6 +128,9 @@ void render_category(meta::AttributeContainer  &container,
 
   for (auto *p_attr : node.attributes)
   {
+    Logger::log()->trace("container_widget::render_category: '{}'",
+                         p_attr ? p_attr->name() : std::string("null"));
+
     MetaWidget *w = meta::qt::render(p_attr);
 
     if (w) // avoid 'None' type widgets
@@ -137,6 +150,8 @@ void render_category_merged(meta::AttributeContainer        &container,
                             std::vector<MetaWidget *>       &collected_widgets,
                             const std::optional<std::regex> &collapse_regex)
 {
+  Logger::log()->trace("container_widget::render_category_merged");
+
   CategoryNode               *current = &node;
   std::vector<CategoryNode *> chain;
 
@@ -160,7 +175,13 @@ void render_category_merged(meta::AttributeContainer        &container,
   auto *section = new CollapsibleSection(title.c_str());
 
   if (collapse_regex && std::regex_search(title, *collapse_regex))
+  {
+    Logger::log()->trace(
+        "container_widget::render_category_merged: auto-collapse '{}'",
+        title);
+
     section->set_expanded(false);
+  }
 
   // UI state management
   {
@@ -193,6 +214,9 @@ void render_category_merged(meta::AttributeContainer        &container,
   for (auto *n : chain)
     for (auto *p_attr : n->attributes)
     {
+      Logger::log()->trace("container_widget::render_category_merged: '{}'",
+                           p_attr ? p_attr->name() : std::string("null"));
+
       MetaWidget *w = meta::qt::render(p_attr);
 
       if (w) // 'None' widget is possible
@@ -217,6 +241,8 @@ MetaWidget *render(AttributeContainer    &container,
                    SnapshotManager       *p_snapshot_manager,
                    QWidget               *parent)
 {
+  Logger::log()->trace("container_widget::render");
+
   CategoryNode root;
 
   if (options.root_category_name.empty()) root.name = META_ROOT_CATEGORY;
@@ -226,6 +252,8 @@ MetaWidget *render(AttributeContainer    &container,
   const std::vector<std::string> &order = options.insertion_order.empty()
                                               ? container.insertion_order()
                                               : options.insertion_order;
+
+  Logger::log()->trace("container_widget::render: {} attributes", order.size());
 
   for (const auto &name : order)
   {
@@ -242,6 +270,10 @@ MetaWidget *render(AttributeContainer    &container,
     const std::string category = meta::common::category(*attr);
     insert_attribute(root, category, attr);
     has_no_categorys &= category.empty();
+
+    Logger::log()->trace("container_widget::render: '{}', category: '{}'",
+                         name,
+                         category);
   }
 
   MetaWidget *container_widget = make_meta_widget_vbox(parent);
@@ -253,6 +285,8 @@ MetaWidget *render(AttributeContainer    &container,
 
   if (p_snapshot_manager)
   {
+    Logger::log()->trace("container_widget::render: enabling presets");
+
     presets = new PresetComboBox(p_snapshot_manager);
     layout->addWidget(presets);
 
@@ -268,10 +302,12 @@ MetaWidget *render(AttributeContainer    &container,
   switch (options.category_policy)
   {
   case CategoryPolicy::CP_TREE:
+    Logger::log()->trace("container_widget::render: tree mode");
     render_category(container, root, layout, collected_widgets);
     break;
 
   case CategoryPolicy::CP_MERGED:
+    Logger::log()->trace("container_widget::render: merged mode");
     render_category_merged(container,
                            root,
                            layout,
@@ -280,6 +316,8 @@ MetaWidget *render(AttributeContainer    &container,
     break;
 
   case CategoryPolicy::CP_SMART:
+    Logger::log()->trace("container_widget::render: smart mode");
+
     if (has_no_categorys)
       render_flat(root, layout, collected_widgets);
     else
@@ -290,8 +328,14 @@ MetaWidget *render(AttributeContainer    &container,
                              options.collapse_regex);
     break;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+
   case CategoryPolicy::CP_FLAT:
+    Logger::log()->trace("container_widget::render: flat mode");
   default: render_flat(root, layout, collected_widgets); break;
+
+#pragma GCC diagnostic pop
   }
 
   for (MetaWidget *w : collected_widgets)
@@ -312,8 +356,13 @@ MetaWidget *render(AttributeContainer    &container,
                      &MetaWidget::edit_ended);
   }
 
+  Logger::log()->trace("container_widget::render: {} widgets created",
+                       collected_widgets.size());
+
   if (p_snapshot_manager)
   {
+    Logger::log()->trace("container_widget::render: presets connection");
+
     QObject::connect(
         presets,
         &PresetComboBox::preset_selected,

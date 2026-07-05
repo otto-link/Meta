@@ -3,6 +3,7 @@
    this software. */
 #include <QVBoxLayout>
 
+#include "meta/logger.hpp"
 #include "meta_qt/container_group_widget.hpp"
 
 namespace meta::qt
@@ -13,6 +14,8 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
                                            QWidget               *parent)
     : MetaWidget(parent), group(group), options(options)
 {
+  Logger::log()->trace("ContainerGroupWidget::ContainerGroupWidget");
+
   auto *root = new QVBoxLayout(this);
   this->setLayout(root);
 
@@ -27,6 +30,10 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
   // fill containers
   for (const auto &key : group.insertion_order())
   {
+    Logger::log()->trace(
+        "ContainerGroupWidget::ContainerGroupWidget: adding page '{}'",
+        key);
+
     combo->addItem(QString::fromStdString(key));
 
     // build widget ONCE
@@ -45,6 +52,9 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
           this,
           [this](const QString &text)
           {
+            Logger::log()->trace("ContainerGroupWidget: switching to '{}'",
+                                 text.toStdString());
+
             this->group.set_current(text.toStdString());
             sync_stack();
           });
@@ -52,9 +62,19 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
 
 QWidget *ContainerGroupWidget::build_container_widget(const std::string &key)
 {
+  Logger::log()->trace("ContainerGroupWidget::build_container_widget: '{}'",
+                       key);
+
   auto *container = group.find(key);
 
-  if (!container) return new QWidget(); // dummy
+  if (!container)
+  {
+    Logger::log()->warn("ContainerGroupWidget::build_container_widget: "
+                        "container '{}' not found",
+                        key);
+
+    return new QWidget(); // dummy
+  }
 
   MetaWidget *container_widget = meta::qt::render(*container, options);
 
@@ -79,15 +99,35 @@ QWidget *ContainerGroupWidget::build_container_widget(const std::string &key)
 
 void ContainerGroupWidget::sync_stack()
 {
+  Logger::log()->trace("ContainerGroupWidget::sync_stack");
+
   std::optional<std::string> current_name = group.current_container_name();
 
-  if (!current_name) return;
+  if (!current_name)
+  {
+    Logger::log()->trace(
+        "ContainerGroupWidget::sync_stack: no current container");
+
+    return;
+  }
 
   int index = combo->findText(QString::fromStdString(*current_name));
+
   if (index >= 0)
   {
+    Logger::log()->trace(
+        "ContainerGroupWidget::sync_stack: current='{}' index={}",
+        *current_name,
+        index);
+
     stacked->setCurrentIndex(index);
     combo->setCurrentIndex(index);
+  }
+  else
+  {
+    Logger::log()->warn(
+        "ContainerGroupWidget::sync_stack: container '{}' not found in combo",
+        *current_name);
   }
 }
 
@@ -97,8 +137,9 @@ MetaWidget *render(meta::ContainerGroup  &group,
                    ContainerRenderOptions options,
                    QWidget               *parent)
 {
-  auto *widget = new ContainerGroupWidget(group, options, parent);
-  return widget;
+  Logger::log()->trace("ContainerGroupWidget::render");
+
+  return new ContainerGroupWidget(group, options, parent);
 }
 
 } // namespace meta::qt
