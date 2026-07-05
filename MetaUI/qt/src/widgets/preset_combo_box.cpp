@@ -22,6 +22,8 @@ PresetComboBox::PresetComboBox(SnapshotManager *snapshot_manager_,
                                QWidget         *parent)
     : QWidget(parent), snapshot_manager(snapshot_manager_)
 {
+  Logger::log()->trace("PresetComboBox::PresetComboBox");
+
   this->combo = new QComboBox(this);
 
   auto *layout = new QVBoxLayout(this);
@@ -48,13 +50,22 @@ PresetComboBox::PresetComboBox(SnapshotManager *snapshot_manager_,
 void PresetComboBox::set_snapshot_provider(
     std::function<nlohmann::json()> provider)
 {
+  Logger::log()->trace("PresetComboBox::set_snapshot_provider");
+
   this->snapshot_provider = std::move(provider);
 }
 
-void PresetComboBox::refresh() { this->populate_combo(this->current_preset); }
+void PresetComboBox::refresh()
+{
+  Logger::log()->trace("PresetComboBox::refresh");
+
+  this->populate_combo(this->current_preset);
+}
 
 void PresetComboBox::set_current_preset(const std::string &name)
 {
+  Logger::log()->trace("PresetComboBox::set_current_preset: '{}'", name);
+
   if (!this->snapshot_manager->has(name))
   {
     Logger::log()->error("PresetComboBox: no such preset '{}'", name);
@@ -71,6 +82,8 @@ std::string PresetComboBox::get_current_preset() const
 
 void PresetComboBox::on_index_axtivated(int index)
 {
+  Logger::log()->trace("PresetComboBox::on_index_axtivated: index={}", index);
+
   if (index == PresetComboBox::save_action_index)
   {
     this->save_new_preset();
@@ -88,12 +101,18 @@ void PresetComboBox::on_index_axtivated(int index)
     return;
   }
 
+  Logger::log()->trace(
+      "PresetComboBox::on_index_axtivated: selected preset '{}'",
+      name);
+
   this->current_preset = name;
   Q_EMIT this->preset_selected(name, this->snapshot_manager->load(name));
 }
 
 void PresetComboBox::save_new_preset()
 {
+  Logger::log()->trace("PresetComboBox::save_new_preset");
+
   bool    ok = false;
   QString text = QInputDialog::getText(this,
                                        tr("Save preset"),
@@ -104,6 +123,8 @@ void PresetComboBox::save_new_preset()
 
   if (!ok || text.trimmed().isEmpty())
   {
+    Logger::log()->trace("PresetComboBox::save_new_preset: cancelled");
+
     this->populate_combo(this->current_preset);
     return;
   }
@@ -120,6 +141,10 @@ void PresetComboBox::save_new_preset()
 
     if (ret != QMessageBox::Yes)
     {
+      Logger::log()->trace(
+          "PresetComboBox::save_new_preset: overwrite cancelled for '{}'",
+          name);
+
       this->populate_combo(this->current_preset);
       return;
     }
@@ -134,6 +159,9 @@ void PresetComboBox::save_new_preset()
   }
 
   this->snapshot_manager->save(name, this->snapshot_provider());
+
+  Logger::log()->trace("PresetComboBox::save_new_preset: saved '{}'", name);
+
   this->current_preset = name;
   this->populate_combo(name);
 
@@ -142,6 +170,8 @@ void PresetComboBox::save_new_preset()
 
 void PresetComboBox::on_context_menu_requested(const QPoint &pos)
 {
+  Logger::log()->trace("PresetComboBox::on_context_menu_requested");
+
   const int index = this->combo->view()->indexAt(pos).row();
   if (index < 0) return;
 
@@ -158,11 +188,20 @@ void PresetComboBox::on_context_menu_requested(const QPoint &pos)
 
   QAction *selected = menu.exec(this->combo->mapToGlobal(pos));
 
-  if (selected == delete_action) this->delete_preset(name);
+  if (selected == delete_action)
+  {
+    Logger::log()->trace(
+        "PresetComboBox::on_context_menu_requested: delete '{}'",
+        name);
+
+    this->delete_preset(name);
+  }
 }
 
 void PresetComboBox::delete_preset(const std::string &name)
 {
+  Logger::log()->trace("PresetComboBox::delete_preset: '{}'", name);
+
   if (name == "default")
   {
     QMessageBox::warning(this,
@@ -179,7 +218,11 @@ void PresetComboBox::delete_preset(const std::string &name)
       tr("Are you sure you want to delete \"%1\"?")
           .arg(QString::fromStdString(name)));
 
-  if (ret != QMessageBox::Yes) return;
+  if (ret != QMessageBox::Yes)
+  {
+    Logger::log()->trace("PresetComboBox::delete_preset: cancelled '{}'", name);
+    return;
+  }
 
   this->snapshot_manager->erase(name);
 
@@ -195,6 +238,9 @@ void PresetComboBox::delete_preset(const std::string &name)
 
 void PresetComboBox::populate_combo(const std::string &select_name)
 {
+  Logger::log()->trace("PresetComboBox::populate_combo: select='{}'",
+                       select_name);
+
   const QSignalBlocker blocker(this->combo);
 
   this->combo->clear();
