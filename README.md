@@ -1,5 +1,87 @@
 # Meta
 
+Meta is a reflection-inspired metadata framework for C++20, enabling runtime inspection and extension of user-defined attributes. It provides a modular system for building data-driven applications with optional UI backends (Qt/FTXUI) and type-safe extensible attribute handling.
+
+# Building Meta (CMake)
+
+## Requirements
+
+* CMake ≥ 3.22
+* C++20 compiler (GCC / Clang / MSVC)
+* Dependencies:
+
+  * `nlohmann_json`
+  * `spdlog`
+  * `glm` *(optional)*
+  * Qt6 *(optional, UI backend)*
+  * FTXUI *(optional, UI backend — stub only)*
+
+## Configure the project
+
+### Basic build (core only)
+
+```bash
+cmake -B build
+cmake --build build -j
+```
+
+This builds:
+
+* Meta core library
+* Default optional features (GLM + gradients enabled by default)
+* Unit tests (enabled by default)
+
+## CMake options
+
+| Option                             | Description                                     | Default |
+| ---------------------------------- | ----------------------------------------------- | ------- |
+| `META_ENABLE_TESTS`                | Build unit tests                                | ON      |
+| `META_ENABLE_GLM_TYPES`            | Enable GLM type support                         | ON      |
+| `META_ENABLE_COLOR_GRADIENT_TYPES` | Enable gradient types                           | ON      |
+| `META_ENABLE_FTXUI_UI`             | Enable FTXUI UI backend *(stub implementation)* | OFF     |
+| `META_ENABLE_QT_UI`                | Enable Qt UI backend                            | OFF     |
+
+> **FTXUI backend is currently a stub used for testing and experimental integration only. It is not a complete UI implementation.**
+
+## Example configurations
+
+### Minimal build
+
+```bash
+cmake -B build -DMETA_ENABLE_TESTS=OFF
+cmake --build build
+```
+
+### Qt backend enabled
+
+```bash
+cmake -B build -DMETA_ENABLE_QT_UI=ON
+cmake --build build
+```
+
+### FTXUI stub (for testing only, but could be extended)
+
+```bash
+cmake -B build -DMETA_ENABLE_FTXUI_UI=ON
+cmake --build build
+```
+
+> This backend currently exists only to validate integration points and shared UI abstractions.
+
+## Build output
+
+```text
+build/bin/
+```
+
+## Design note
+
+Meta is structured as a modular system:
+
+* Core reflection + metadata engine
+* Optional UI backends (Qt, FTXUI stub)
+* Experimental and extensible architecture
+
 ## Extending Meta with a New Built-in Type (Core Source Changes)
 
 To add support for a new type in Meta, follow these steps.
