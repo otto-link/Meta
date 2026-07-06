@@ -2,6 +2,8 @@
 
 Meta is a reflection-inspired metadata framework for C++20, enabling runtime inspection and extension of user-defined attributes. It provides a modular system for building data-driven applications with optional UI backends (Qt/FTXUI) and type-safe extensible attribute handling.
 
+https://github.com/user-attachments/assets/e989df1c-4eca-4f74-a38d-88f4918affb8
+
 # Building Meta (CMake)
 
 ## Requirements
