@@ -1,0 +1,194 @@
+\doxysection{meta Namespace Reference}
+\hypertarget{namespacemeta}{}\label{namespacemeta}\index{meta@{meta}}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacemeta_1_1keys}{keys}}
+\item 
+namespace \mbox{\hyperlink{namespacemeta_1_1presets}{presets}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}}
+\begin{DoxyCompactList}\small\item\em Base class for all attribute types stored in the reflection system. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}
+\begin{DoxyCompactList}\small\item\em Typed runtime attribute with reflection support. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}}
+\begin{DoxyCompactList}\small\item\em Container of named runtime attributes. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1AttributeFactory}{Attribute\+Factory}}
+\begin{DoxyCompactList}\small\item\em Factory for runtime creation of attributes by type name. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmeta_1_1AttributeTraits}{Attribute\+Traits}}
+\begin{DoxyCompactList}\small\item\em Default traits for attribute value conversion. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1ColorGradient}{Color\+Gradient}}
+\begin{DoxyCompactList}\small\item\em Editable color gradient with optional presets. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1CommandGroup}{Command\+Group}}
+\begin{DoxyCompactList}\small\item\em Command that groups multiple commands into a single undo/redo step. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1CommandStack}{Command\+Stack}}
+\begin{DoxyCompactList}\small\item\em Simple undo/redo stack based on \doxylink{classmeta_1_1ICommand}{ICommand}. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1ContainerGroup}{Container\+Group}}
+\begin{DoxyCompactList}\small\item\em Collection of named attribute containers. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}}
+\begin{DoxyCompactList}\small\item\em Abstract interface for reversible operations. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1Logger}{Logger}}
+\item 
+class \mbox{\hyperlink{classmeta_1_1MetaObject}{Meta\+Object}}
+\begin{DoxyCompactList}\small\item\em Base class enabling runtime metadata attachment. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmeta_1_1Preset}{Preset}}
+\begin{DoxyCompactList}\small\item\em A named color gradient preset. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmeta_1_1SetAttributeCommand}{Set\+Attribute\+Command}}
+\item 
+class \mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1Stop}{Stop}}
+\begin{DoxyCompactList}\small\item\em A color stop in a gradient. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName}{Type\+Name}}
+\begin{DoxyCompactList}\small\item\em Primary \doxylink{structmeta_1_1TypeName}{Type\+Name} template (unspecialized). \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01bool_01_4}{Type\+Name$<$ bool $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01double_01_4}{Type\+Name$<$ double $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01float_01_4}{Type\+Name$<$ float $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01int_01_4}{Type\+Name$<$ int $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint16__t_01_4}{Type\+Name$<$ uint16\+\_\+t $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint32__t_01_4}{Type\+Name$<$ uint32\+\_\+t $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint64__t_01_4}{Type\+Name$<$ uint64\+\_\+t $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint8__t_01_4}{Type\+Name$<$ uint8\+\_\+t $>$}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Concepts}
+\begin{DoxyCompactItemize}
+\item 
+concept \mbox{\hyperlink{conceptmeta_1_1StringLike}{String\+Like}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{Attr\+Container\+Type}} = std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}} $>$ $>$
+\begin{DoxyCompactList}\small\item\em Internal storage type for attributes. \end{DoxyCompactList}\item 
+using \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{Attr\+Iterator}} = Attr\+Container\+Type\+::iterator
+\begin{DoxyCompactList}\small\item\em Mutable iterator over attributes. \end{DoxyCompactList}\item 
+using \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} = Attr\+Container\+Type\+::const\+\_\+iterator
+\begin{DoxyCompactList}\small\item\em Const iterator over attributes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+nlohmann\+::json \mbox{\hyperlink{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128}{serialize\+\_\+metadata}} (const \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&m)
+\begin{DoxyCompactList}\small\item\em Serialize attribute metadata to JSON. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacemeta_a1ec007edebf611446a66ccb33aff0311}{deserialize\+\_\+metadata}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&m, const nlohmann\+::json \&j)
+\begin{DoxyCompactList}\small\item\em Deserialize attribute metadata from JSON. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\void \mbox{\hyperlink{namespacemeta_a37f460e894944044779e1ee21eca8881}{register\+\_\+attribute\+\_\+type}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Register a concrete attribute type in the factory. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacemeta_aa568359dcd9dfc14b28fdd87e4a06dd3}{register\+\_\+builtin\+\_\+types}} ()
+\begin{DoxyCompactList}\small\item\em Register all built-\/in attribute types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr bool \mbox{\hyperlink{namespacemeta_a75366aee356107c1efb503fd31f08fd1}{has\+\_\+type\+\_\+name\+\_\+v}} = requires \{ \mbox{\hyperlink{structmeta_1_1TypeName}{Type\+Name}}$<$T$>$\+::name; \}
+\begin{DoxyCompactList}\small\item\em Compile-\/time check for valid \doxylink{structmeta_1_1TypeName}{Type\+Name} specialization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}\label{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda} 
+\index{meta@{meta}!AttrContainerType@{AttrContainerType}}
+\index{AttrContainerType@{AttrContainerType}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{AttrContainerType}{AttrContainerType}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{meta\+::\+Attr\+Container\+Type}} = typedef std\+::unordered\+\_\+map$<$std\+::string, std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}}$>$ $>$}
+
+
+
+Internal storage type for attributes. 
+
+Maps attribute names to polymorphic attribute instances. \Hypertarget{namespacemeta_a041b3b46016d4565e45294279f021fa4}\label{namespacemeta_a041b3b46016d4565e45294279f021fa4} 
+\index{meta@{meta}!AttrIterator@{AttrIterator}}
+\index{AttrIterator@{AttrIterator}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{AttrIterator}{AttrIterator}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{meta\+::\+Attr\+Iterator}} = typedef Attr\+Container\+Type\+::iterator}
+
+
+
+Mutable iterator over attributes. 
+
+\Hypertarget{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}\label{namespacemeta_a3819cf59692150303d5cd95dc4bd2979} 
+\index{meta@{meta}!ConstAttrIterator@{ConstAttrIterator}}
+\index{ConstAttrIterator@{ConstAttrIterator}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{ConstAttrIterator}{ConstAttrIterator}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{meta\+::\+Const\+Attr\+Iterator}} = typedef Attr\+Container\+Type\+::const\+\_\+iterator}
+
+
+
+Const iterator over attributes. 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacemeta_a1ec007edebf611446a66ccb33aff0311}\label{namespacemeta_a1ec007edebf611446a66ccb33aff0311} 
+\index{meta@{meta}!deserialize\_metadata@{deserialize\_metadata}}
+\index{deserialize\_metadata@{deserialize\_metadata}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{deserialize\_metadata()}{deserialize\_metadata()}}
+{\footnotesize\ttfamily void meta\+::deserialize\+\_\+metadata (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&}]{m,  }\item[{const nlohmann\+::json \&}]{j }\end{DoxyParamCaption})}
+
+
+
+Deserialize attribute metadata from JSON. 
+
+Deserialize metadata container from JSON. \Hypertarget{namespacemeta_a37f460e894944044779e1ee21eca8881}\label{namespacemeta_a37f460e894944044779e1ee21eca8881} 
+\index{meta@{meta}!register\_attribute\_type@{register\_attribute\_type}}
+\index{register\_attribute\_type@{register\_attribute\_type}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{register\_attribute\_type()}{register\_attribute\_type()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void meta\+::register\+\_\+attribute\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name }\end{DoxyParamCaption})}
+
+
+
+Register a concrete attribute type in the factory. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \doxylink{classmeta_1_1Attribute}{Attribute} value type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Type identifier used in JSON serialization. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{namespacemeta_aa568359dcd9dfc14b28fdd87e4a06dd3}\label{namespacemeta_aa568359dcd9dfc14b28fdd87e4a06dd3} 
+\index{meta@{meta}!register\_builtin\_types@{register\_builtin\_types}}
+\index{register\_builtin\_types@{register\_builtin\_types}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{register\_builtin\_types()}{register\_builtin\_types()}}
+{\footnotesize\ttfamily void meta\+::register\+\_\+builtin\+\_\+types (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Register all built-\/in attribute types. 
+
+Typically called once at application startup or before deserialization. \Hypertarget{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128}\label{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128} 
+\index{meta@{meta}!serialize\_metadata@{serialize\_metadata}}
+\index{serialize\_metadata@{serialize\_metadata}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{serialize\_metadata()}{serialize\_metadata()}}
+{\footnotesize\ttfamily nlohmann\+::json meta\+::serialize\+\_\+metadata (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&}]{m }\end{DoxyParamCaption})}
+
+
+
+Serialize attribute metadata to JSON. 
+
+Serialize metadata container to JSON. 
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacemeta_a75366aee356107c1efb503fd31f08fd1}\label{namespacemeta_a75366aee356107c1efb503fd31f08fd1} 
+\index{meta@{meta}!has\_type\_name\_v@{has\_type\_name\_v}}
+\index{has\_type\_name\_v@{has\_type\_name\_v}!meta@{meta}}
+\doxysubsubsection{\texorpdfstring{has\_type\_name\_v}{has\_type\_name\_v}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+constexpr bool meta\+::has\+\_\+type\+\_\+name\+\_\+v = requires \{ \mbox{\hyperlink{structmeta_1_1TypeName}{Type\+Name}}$<$T$>$\+::name; \}\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}}
+
+
+
+Compile-\/time check for valid \doxylink{structmeta_1_1TypeName}{Type\+Name} specialization. 
+
+Evaluates to true if Type\+Name$<$\+T$>$\+::name exists. Used for validating type registration in the reflection system. 

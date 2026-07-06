@@ -1,0 +1,28 @@
+\chapter{Sheet\+: Built-\/in Types}
+\hypertarget{md_docs_2builtin__types}{}\label{md_docs_2builtin__types}\index{Sheet: Built-\/in Types@{Sheet: Built-\/in Types}}
+\label{md_docs_2builtin__types_autotoc_md2}%
+\Hypertarget{md_docs_2builtin__types_autotoc_md2}%
+ \tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{5}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ UI platform   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ widget\+\_\+type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ supported options    }\\\cline{1-5}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ UI platform   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ widget\+\_\+type   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ supported options    }\\\cline{1-5}
+\endhead
+bool   &Qt   &Toggle   &A single checkable Qpush\+Button.   &label    \\\cline{1-5}
+bool   &Qt   &Checkbox   &A standard Qcheck\+Box.   &label    \\\cline{1-5}
+bool   &Qt   &Binary\+Buttons   &Two mutually exclusive push buttons representing true and false.   &label, label\+\_\+true, label\+\_\+false    \\\cline{1-5}
+float   &Qt   &Input   &&\\\cline{1-5}
+float   &Qt   &Slider   &&\\\cline{1-5}
+float   &Qt   &Dial   &&\\\cline{1-5}
+float   &Qt   &Scroll\+Bar   &&\\\cline{1-5}
+float   &Qt   &Slider\+Float   &&\\\cline{1-5}
+std\+::string   &Qt   &Single\+Line\+Text (default)   &Single-\/line text field with an Apply button.   &label, placeholder, max\+\_\+length    \\\cline{1-5}
+std\+::string   &Qt   &Multiline\+Text   &Multi-\/line text editor with an Apply button.   &label, placeholder, min\+\_\+lines, max\+\_\+lines    \\\cline{1-5}
+std\+::string   &Qt   &Code\+Editor   &Fixed-\/width multi-\/line editor for code.   &label, placeholder, min\+\_\+lines, max\+\_\+lines, tab\+\_\+width    \\\cline{1-5}
+std\+::string   &Qt   &Combo\+Box (default when allowed\+\_\+values is defined)   &Drop-\/down list of allowed values.   &label, allowed\+\_\+values    \\\cline{1-5}
+std\+::string   &Qt   &Button\+Grid   &Grid of selectable buttons.   &label, allowed\+\_\+values, columns, exclusive   \\\cline{1-5}
+\end{longtabu}

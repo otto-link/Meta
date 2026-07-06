@@ -1,0 +1,32 @@
+\doxysection{Meta/include/meta/core/attribute.hpp File Reference}
+\hypertarget{attribute_8hpp}{}\label{attribute_8hpp}\index{Meta/include/meta/core/attribute.hpp@{Meta/include/meta/core/attribute.hpp}}
+
+
+Typed runtime attribute with reflection, serialization, and metadata.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classmeta_1_1Attribute}{meta\+::\+Attribute$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Typed runtime attribute with reflection support. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacemeta}{meta}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+nlohmann\+::json \mbox{\hyperlink{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128}{meta\+::serialize\+\_\+metadata}} (const \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&m)
+\begin{DoxyCompactList}\small\item\em Serialize attribute metadata to JSON. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacemeta_a1ec007edebf611446a66ccb33aff0311}{meta\+::deserialize\+\_\+metadata}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&m, const nlohmann\+::json \&j)
+\begin{DoxyCompactList}\small\item\em Deserialize attribute metadata from JSON. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Typed runtime attribute with reflection, serialization, and metadata. 
+
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2026 
+\end{DoxyCopyright}

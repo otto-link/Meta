@@ -1,0 +1,41 @@
+\doxysection{command\+\_\+stack.\+hpp}
+\hypertarget{command__stack_8hpp_source}{}\label{command__stack_8hpp_source}\index{Meta/include/meta/undo\_redo/command\_stack.hpp@{Meta/include/meta/undo\_redo/command\_stack.hpp}}
+\mbox{\hyperlink{command__stack_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ Copyright\ (c)\ 2026\ Otto\ Link.\ Distributed\ under\ the\ terms\ of\ the\ GNU\ General}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ \ \ Public\ License.\ The\ full\ license\ is\ in\ the\ file\ LICENSE,\ distributed\ with}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ \ \ this\ software.\ */}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{command_8hpp}{meta/undo\_redo/command.hpp}}"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classmeta_1_1CommandStack}{CommandStack}}}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00031\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1CommandStack_a403264c4addb021f9cd740ae08749800}{can\_undo}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00034\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1CommandStack_a2dfe9a53e062e22e7a0a35b672c9ff06}{can\_redo}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00037\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandStack_a2082d1a50774d7fb485f2854f22553aa}{clear}}();}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00044\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandStack_a938ea58ee5917fa6e30df7df80ec8796}{execute}}(std::unique\_ptr<ICommand>\ command,\ \textcolor{keywordtype}{bool}\ allow\_merge\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00047\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandStack_afccc95f38a315c1063a3c72d5e5b2e4a}{undo}}();}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00050\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandStack_ada6b37d9cd6bd95e76989d8a2b15e5b7}{redo}}();}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00053\ \ \ std::vector<std::unique\_ptr<ICommand>>\ \mbox{\hyperlink{classmeta_1_1CommandStack_ae281a38f4c8cc324ac9807e2854ba45e}{undo\_stack\_}};}
+\DoxyCodeLine{00054\ \ \ std::vector<std::unique\_ptr<ICommand>>\ \mbox{\hyperlink{classmeta_1_1CommandStack_ab9be62e015bccc777ea9b1d40a09e80a}{redo\_stack\_}};}
+\DoxyCodeLine{00055\ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \}\ \textcolor{comment}{//\ namespace\ meta}}
+
+\end{DoxyCode}

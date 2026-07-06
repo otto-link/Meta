@@ -1,0 +1,30 @@
+var annotated_dup =
+[
+    [ "meta", "namespacemeta.html", [
+      [ "AbstractAttribute", "classmeta_1_1AbstractAttribute.html", "classmeta_1_1AbstractAttribute" ],
+      [ "Attribute", "classmeta_1_1Attribute.html", "classmeta_1_1Attribute" ],
+      [ "AttributeContainer", "classmeta_1_1AttributeContainer.html", "classmeta_1_1AttributeContainer" ],
+      [ "AttributeFactory", "classmeta_1_1AttributeFactory.html", "classmeta_1_1AttributeFactory" ],
+      [ "AttributeTraits", "structmeta_1_1AttributeTraits.html", "structmeta_1_1AttributeTraits" ],
+      [ "ColorGradient", "classmeta_1_1ColorGradient.html", "classmeta_1_1ColorGradient" ],
+      [ "CommandGroup", "classmeta_1_1CommandGroup.html", "classmeta_1_1CommandGroup" ],
+      [ "CommandStack", "classmeta_1_1CommandStack.html", "classmeta_1_1CommandStack" ],
+      [ "ContainerGroup", "classmeta_1_1ContainerGroup.html", "classmeta_1_1ContainerGroup" ],
+      [ "ICommand", "classmeta_1_1ICommand.html", "classmeta_1_1ICommand" ],
+      [ "Logger", "classmeta_1_1Logger.html", "classmeta_1_1Logger" ],
+      [ "MetaObject", "classmeta_1_1MetaObject.html", "classmeta_1_1MetaObject" ],
+      [ "Preset", "structmeta_1_1Preset.html", "structmeta_1_1Preset" ],
+      [ "SetAttributeCommand", "classmeta_1_1SetAttributeCommand.html", "classmeta_1_1SetAttributeCommand" ],
+      [ "SnapshotManager", "classmeta_1_1SnapshotManager.html", "classmeta_1_1SnapshotManager" ],
+      [ "Stop", "structmeta_1_1Stop.html", "structmeta_1_1Stop" ],
+      [ "TypeName", "structmeta_1_1TypeName.html", null ],
+      [ "TypeName< bool >", "structmeta_1_1TypeName_3_01bool_01_4.html", "structmeta_1_1TypeName_3_01bool_01_4" ],
+      [ "TypeName< double >", "structmeta_1_1TypeName_3_01double_01_4.html", "structmeta_1_1TypeName_3_01double_01_4" ],
+      [ "TypeName< float >", "structmeta_1_1TypeName_3_01float_01_4.html", "structmeta_1_1TypeName_3_01float_01_4" ],
+      [ "TypeName< int >", "structmeta_1_1TypeName_3_01int_01_4.html", "structmeta_1_1TypeName_3_01int_01_4" ],
+      [ "TypeName< uint16_t >", "structmeta_1_1TypeName_3_01uint16__t_01_4.html", "structmeta_1_1TypeName_3_01uint16__t_01_4" ],
+      [ "TypeName< uint32_t >", "structmeta_1_1TypeName_3_01uint32__t_01_4.html", "structmeta_1_1TypeName_3_01uint32__t_01_4" ],
+      [ "TypeName< uint64_t >", "structmeta_1_1TypeName_3_01uint64__t_01_4.html", "structmeta_1_1TypeName_3_01uint64__t_01_4" ],
+      [ "TypeName< uint8_t >", "structmeta_1_1TypeName_3_01uint8__t_01_4.html", "structmeta_1_1TypeName_3_01uint8__t_01_4" ]
+    ] ]
+];

@@ -1,0 +1,32 @@
+\doxysection{meta\+::Type\+Name\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structmeta_1_1TypeName}{}\label{structmeta_1_1TypeName}\index{meta::TypeName$<$ T $>$@{meta::TypeName$<$ T $>$}}
+
+
+Primary \doxylink{structmeta_1_1TypeName}{Type\+Name} template (unspecialized).  
+
+
+
+
+{\ttfamily \#include $<$type\+\_\+name.\+hpp$>$}
+
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct meta\+::\+Type\+Name$<$ T $>$}
+Primary \doxylink{structmeta_1_1TypeName}{Type\+Name} template (unspecialized). 
+
+Fallback \doxylink{structmeta_1_1TypeName}{Type\+Name} specialization (compile-\/time guard).
+
+This template must be specialized for each supported type. Using it without specialization triggers a compile-\/time error via the fallback implementation.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type to be mapped to a string identifier.\\
+\hline
+\end{DoxyTemplParams}
+Triggers a static assertion if a type is used without specialization. Prevents silent runtime errors in the reflection system. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/type/\mbox{\hyperlink{type__name_8hpp}{type\+\_\+name.\+hpp}}\end{DoxyCompactItemize}

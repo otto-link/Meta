@@ -1,0 +1,69 @@
+\doxysection{Meta/include/meta/type/type\+\_\+name.hpp File Reference}
+\hypertarget{type__name_8hpp}{}\label{type__name_8hpp}\index{Meta/include/meta/type/type\_name.hpp@{Meta/include/meta/type/type\_name.hpp}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName}{meta\+::\+Type\+Name$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Primary \doxylink{structmeta_1_1TypeName}{Type\+Name} template (unspecialized). \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01float_01_4}{meta\+::\+Type\+Name$<$ float $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01double_01_4}{meta\+::\+Type\+Name$<$ double $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01int_01_4}{meta\+::\+Type\+Name$<$ int $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01bool_01_4}{meta\+::\+Type\+Name$<$ bool $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint8__t_01_4}{meta\+::\+Type\+Name$<$ uint8\+\_\+t $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint16__t_01_4}{meta\+::\+Type\+Name$<$ uint16\+\_\+t $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint32__t_01_4}{meta\+::\+Type\+Name$<$ uint32\+\_\+t $>$}}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1TypeName_3_01uint64__t_01_4}{meta\+::\+Type\+Name$<$ uint64\+\_\+t $>$}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacemeta}{meta}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{type__name_8hpp_a7b8c9e9159e2ec94e7055efd3d9f541e}{META\+\_\+\+DEFINE\+\_\+\+TYPE\+\_\+\+NAME}}(...)
+\begin{DoxyCompactList}\small\item\em Define a Type\+Name specialization for a given type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\constexpr bool \mbox{\hyperlink{namespacemeta_a75366aee356107c1efb503fd31f08fd1}{meta\+::has\+\_\+type\+\_\+name\+\_\+v}} = requires \{ \mbox{\hyperlink{structmeta_1_1TypeName}{Type\+Name}}$<$T$>$\+::name; \}
+\begin{DoxyCompactList}\small\item\em Compile-\/time check for valid \doxylink{structmeta_1_1TypeName}{Type\+Name} specialization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{type__name_8hpp_a7b8c9e9159e2ec94e7055efd3d9f541e}\label{type__name_8hpp_a7b8c9e9159e2ec94e7055efd3d9f541e} 
+\index{type\_name.hpp@{type\_name.hpp}!META\_DEFINE\_TYPE\_NAME@{META\_DEFINE\_TYPE\_NAME}}
+\index{META\_DEFINE\_TYPE\_NAME@{META\_DEFINE\_TYPE\_NAME}!type\_name.hpp@{type\_name.hpp}}
+\doxysubsubsection{\texorpdfstring{META\_DEFINE\_TYPE\_NAME}{META\_DEFINE\_TYPE\_NAME}}
+{\footnotesize\ttfamily \#define META\+\_\+\+DEFINE\+\_\+\+TYPE\+\_\+\+NAME(\begin{DoxyParamCaption}\item[{}]{... }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \textcolor{keyword}{template}\ <>\ \textcolor{keyword}{struct\ }TypeName<\_\_VA\_ARGS\_\_>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ std::string\_view\ name\ =\ \#\_\_VA\_ARGS\_\_;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \}}
+
+\end{DoxyCode}
+
+
+Define a Type\+Name specialization for a given type. 
+
+Creates a compile-\/time mapping between a C++ type and its string name.
+
+
+\begin{DoxyParams}{Parameters}
+{\em TYPE} & C++ type to register. \\
+\hline
+\end{DoxyParams}

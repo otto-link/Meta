@@ -1,0 +1,416 @@
+\doxysection{meta\+::Attribute\+Container Class Reference}
+\hypertarget{classmeta_1_1AttributeContainer}{}\label{classmeta_1_1AttributeContainer}\index{meta::AttributeContainer@{meta::AttributeContainer}}
+
+
+Container of named runtime attributes.  
+
+
+
+
+{\ttfamily \#include $<$attribute\+\_\+container.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{bool}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad5dc2aebafabcbffaa931d9e3d38b4b8}{empty}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{noexcept}}
+\begin{DoxyCompactList}\small\item\em Returns true if no attributes are stored. \end{DoxyCompactList}\item 
+std\+::size\+\_\+t \mbox{\hyperlink{classmeta_1_1AttributeContainer_a883f07e5f83ad0ccd7d68280164a795c}{size}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{noexcept}}
+\begin{DoxyCompactList}\small\item\em Returns number of stored attributes. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{Attr\+Iterator}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24}{begin}} ()
+\begin{DoxyCompactList}\small\item\em Iterator to first attribute. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{Attr\+Iterator}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2}{end}} ()
+\begin{DoxyCompactList}\small\item\em Iterator to end. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_aabf35909fca8ea1d0edad4a901398bad}{begin}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Const iterator to first attribute. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a68544cc2fc15ab50ce046cac1ebb90e5}{end}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Const iterator to end. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a734577c9b988ef88b7848bed60f736e3}{cbegin}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Const iterator to first attribute (explicit). \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a705a07cdbe0585efb11efe74dea9a859}{cend}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Const iterator to end (explicit). \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{bool}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad8047b000619c911f4349546648af9f7}{contains}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name) \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Returns true if an attribute exists. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{bool}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a075c97f18931680faff54d45cd15ac20}{contains\+\_\+all\+\_\+keys}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::vector$<$ std\+::string $>$ \&keys)
+\begin{DoxyCompactList}\small\item\em Returns true if all keys exist in the container. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Finds an attribute by name. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a8b92c646de7b87c4b6e996bb247573f9}{find}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name) \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Finds an attribute by name (const). \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6dd055c517a101779178fc455fcba2ed}{clear}} ()
+\begin{DoxyCompactList}\small\item\em Removes all attributes. \end{DoxyCompactList}\item 
+{\footnotesize template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ \newline
+requires (!String\+Like$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}$>$)}\\\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a54da56d3849fe4a85920696e5e843314}{add}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name, \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})
+\begin{DoxyCompactList}\small\item\em Creates and inserts a new attribute. \end{DoxyCompactList}\item 
+{\footnotesize template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ \newline
+requires (!String\+Like$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}$>$)}\\\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_aefe11d22d3aaa096003ca8fb4aedc38b}{try\+\_\+add}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name, \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})
+\begin{DoxyCompactList}\small\item\em Creates and inserts an attribute if it does not already exist. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ std\+::string $>$ $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a612183a01282e9a19febabc8b9d83d79}{add}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name, std\+::string \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})
+\begin{DoxyCompactList}\small\item\em Creates and inserts a std\+::string attribute. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ std\+::string $>$ $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392}{try\+\_\+add}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name, std\+::string \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})
+\begin{DoxyCompactList}\small\item\em Creates and inserts a std\+::string attribute if it does not already exist. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::vector$<$ std\+::string $>$ \& \mbox{\hyperlink{classmeta_1_1AttributeContainer_a498bc26ac82caf211c49af80a0302825}{insertion\+\_\+order}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Returns the attribute names in insertion order. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\+\_\+value}} (const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Returns a pointer to the attribute value if it exists and has the requested type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\const T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9790de41aba2d3b34667707a563d3cb5}{try\+\_\+value}} (const std\+::string \&name) const
+\begin{DoxyCompactList}\small\item\em Returns a pointer to the attribute value if it exists and has the requested type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ }\\\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \& \mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Returns the attribute value. \end{DoxyCompactList}\item 
+{\footnotesize template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ }\\\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \& \mbox{\hyperlink{classmeta_1_1AttributeContainer_a7489930ce58c927974e106426e2dbd04}{value}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&name) \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Returns the attribute value. \end{DoxyCompactList}\item 
+nlohmann\+::json \mbox{\hyperlink{classmeta_1_1AttributeContainer_af12dbed3c9932638b4d7c01ad81a25cd}{json\+\_\+to}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Serializes container to JSON. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a94dd8ffc3c9e350847a0ced0b7e9058a}{json\+\_\+from}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} nlohmann\+::json \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{j}})
+\begin{DoxyCompactList}\small\item\em Deserializes container from JSON. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_ac1ff885bb63112ce58668059ffb62339}{compact\+\_\+insertion\+\_\+order}} ()
+\begin{DoxyCompactList}\small\item\em Removes stale entries from insertion\+\_\+order\+\_\+ that no longer exist in attributes\+\_\+ (e.\+g. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{Attr\+Container\+Type}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\+\_\+}}
+\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\+\_\+order\+\_\+}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Container of named runtime attributes. 
+
+Provides\+:
+\begin{DoxyItemize}
+\item ownership of attributes
+\item fast lookup by name
+\item type-\/safe access
+\item iteration support
+\item JSON serialization/deserialization 
+\end{DoxyItemize}
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmeta_1_1AttributeContainer_a612183a01282e9a19febabc8b9d83d79}\label{classmeta_1_1AttributeContainer_a612183a01282e9a19febabc8b9d83d79} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!add@{add}}
+\index{add@{add}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ std\+::string $>$ $>$ \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::add (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name,  }\item[{std\+::string \&\&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates and inserts a std\+::string attribute. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a54da56d3849fe4a85920696e5e843314}\label{classmeta_1_1AttributeContainer_a54da56d3849fe4a85920696e5e843314} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!add@{add}}
+\index{add@{add}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ \newline
+requires (!String\+Like$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}$>$)\\
+\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ $>$ \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::add (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name,  }\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \&\&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates and inserts a new attribute. 
+
+Stores value as \doxylink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{Attribute$<$std\+::decay\+\_\+t$<$\+T$>$$>$}.
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::runtime\+\_\+error} & if the attribute already exists. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24}\label{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!begin@{begin}}
+\index{begin@{begin}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{begin()}{begin()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{Attr\+Iterator}} meta\+::\+Attribute\+Container\+::begin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Iterator to first attribute. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_aabf35909fca8ea1d0edad4a901398bad}\label{classmeta_1_1AttributeContainer_aabf35909fca8ea1d0edad4a901398bad} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!begin@{begin}}
+\index{begin@{begin}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{begin()}{begin()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} meta\+::\+Attribute\+Container\+::begin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Const iterator to first attribute. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a734577c9b988ef88b7848bed60f736e3}\label{classmeta_1_1AttributeContainer_a734577c9b988ef88b7848bed60f736e3} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!cbegin@{cbegin}}
+\index{cbegin@{cbegin}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{cbegin()}{cbegin()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} meta\+::\+Attribute\+Container\+::cbegin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Const iterator to first attribute (explicit). 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a705a07cdbe0585efb11efe74dea9a859}\label{classmeta_1_1AttributeContainer_a705a07cdbe0585efb11efe74dea9a859} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!cend@{cend}}
+\index{cend@{cend}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{cend()}{cend()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} meta\+::\+Attribute\+Container\+::cend (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Const iterator to end (explicit). 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a6dd055c517a101779178fc455fcba2ed}\label{classmeta_1_1AttributeContainer_a6dd055c517a101779178fc455fcba2ed} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!clear@{clear}}
+\index{clear@{clear}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{clear()}{clear()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} meta\+::\+Attribute\+Container\+::clear (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Removes all attributes. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_ac1ff885bb63112ce58668059ffb62339}\label{classmeta_1_1AttributeContainer_ac1ff885bb63112ce58668059ffb62339} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!compact\_insertion\_order@{compact\_insertion\_order}}
+\index{compact\_insertion\_order@{compact\_insertion\_order}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{compact\_insertion\_order()}{compact\_insertion\_order()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} meta\+::\+Attribute\+Container\+::compact\+\_\+insertion\+\_\+order (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Removes stale entries from insertion\+\_\+order\+\_\+ that no longer exist in attributes\+\_\+ (e.\+g. 
+
+after external erasure or clear). \Hypertarget{classmeta_1_1AttributeContainer_ad8047b000619c911f4349546648af9f7}\label{classmeta_1_1AttributeContainer_ad8047b000619c911f4349546648af9f7} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!contains@{contains}}
+\index{contains@{contains}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{bool}} meta\+::\+Attribute\+Container\+::contains (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name }\end{DoxyParamCaption}) const}
+
+
+
+Returns true if an attribute exists. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a075c97f18931680faff54d45cd15ac20}\label{classmeta_1_1AttributeContainer_a075c97f18931680faff54d45cd15ac20} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!contains\_all\_keys@{contains\_all\_keys}}
+\index{contains\_all\_keys@{contains\_all\_keys}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{contains\_all\_keys()}{contains\_all\_keys()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{bool}} meta\+::\+Attribute\+Container\+::contains\+\_\+all\+\_\+keys (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::vector$<$ std\+::string $>$ \&}]{keys }\end{DoxyParamCaption})}
+
+
+
+Returns true if all keys exist in the container. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_ad5dc2aebafabcbffaa931d9e3d38b4b8}\label{classmeta_1_1AttributeContainer_ad5dc2aebafabcbffaa931d9e3d38b4b8} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!empty@{empty}}
+\index{empty@{empty}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{empty()}{empty()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{bool}} meta\+::\+Attribute\+Container\+::empty (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Returns true if no attributes are stored. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2}\label{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!end@{end}}
+\index{end@{end}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{end()}{end()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{Attr\+Iterator}} meta\+::\+Attribute\+Container\+::end (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Iterator to end. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a68544cc2fc15ab50ce046cac1ebb90e5}\label{classmeta_1_1AttributeContainer_a68544cc2fc15ab50ce046cac1ebb90e5} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!end@{end}}
+\index{end@{end}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{end()}{end()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{Const\+Attr\+Iterator}} meta\+::\+Attribute\+Container\+::end (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Const iterator to end. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}\label{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!find@{find}}
+\index{find@{find}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{find()}{find()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}} \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::find (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name }\end{DoxyParamCaption})}
+
+
+
+Finds an attribute by name. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a8b92c646de7b87c4b6e996bb247573f9}\label{classmeta_1_1AttributeContainer_a8b92c646de7b87c4b6e996bb247573f9} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!find@{find}}
+\index{find@{find}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{find()}{find()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}} \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::find (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name }\end{DoxyParamCaption}) const}
+
+
+
+Finds an attribute by name (const). 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a498bc26ac82caf211c49af80a0302825}\label{classmeta_1_1AttributeContainer_a498bc26ac82caf211c49af80a0302825} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!insertion\_order@{insertion\_order}}
+\index{insertion\_order@{insertion\_order}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{insertion\_order()}{insertion\_order()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::vector$<$ std\+::string $>$ \& meta\+::\+Attribute\+Container\+::insertion\+\_\+order (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Returns the attribute names in insertion order. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a94dd8ffc3c9e350847a0ced0b7e9058a}\label{classmeta_1_1AttributeContainer_a94dd8ffc3c9e350847a0ced0b7e9058a} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!json\_from@{json\_from}}
+\index{json\_from@{json\_from}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{json\_from()}{json\_from()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} meta\+::\+Attribute\+Container\+::json\+\_\+from (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} nlohmann\+::json \&}]{j }\end{DoxyParamCaption})}
+
+
+
+Deserializes container from JSON. 
+
+Existing attributes are updated; missing ones are created via factory. \Hypertarget{classmeta_1_1AttributeContainer_af12dbed3c9932638b4d7c01ad81a25cd}\label{classmeta_1_1AttributeContainer_af12dbed3c9932638b4d7c01ad81a25cd} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!json\_to@{json\_to}}
+\index{json\_to@{json\_to}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{json\_to()}{json\_to()}}
+{\footnotesize\ttfamily nlohmann\+::json meta\+::\+Attribute\+Container\+::json\+\_\+to (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Serializes container to JSON. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a883f07e5f83ad0ccd7d68280164a795c}\label{classmeta_1_1AttributeContainer_a883f07e5f83ad0ccd7d68280164a795c} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!size@{size}}
+\index{size@{size}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily std\+::size\+\_\+t meta\+::\+Attribute\+Container\+::size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [noexcept]}}
+
+
+
+Returns number of stored attributes. 
+
+\Hypertarget{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392}\label{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!try\_add@{try\_add}}
+\index{try\_add@{try\_add}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{try\_add()}{try\_add()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ std\+::string $>$ $>$ \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::try\+\_\+add (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name,  }\item[{std\+::string \&\&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates and inserts a std\+::string attribute if it does not already exist. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the existing or newly created attribute. 
+\end{DoxyReturn}
+\Hypertarget{classmeta_1_1AttributeContainer_aefe11d22d3aaa096003ca8fb4aedc38b}\label{classmeta_1_1AttributeContainer_aefe11d22d3aaa096003ca8fb4aedc38b} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!try\_add@{try\_add}}
+\index{try\_add@{try\_add}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{try\_add()}{try\_add()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ \newline
+requires (!String\+Like$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}$>$)\\
+\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}$<$ std\+::decay\+\_\+t$<$ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ $>$ \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::try\+\_\+add (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name,  }\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \&\&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Creates and inserts an attribute if it does not already exist. 
+
+If an attribute with the specified name already exists, the existing attribute is returned and no new attribute is created.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & \doxylink{classmeta_1_1Attribute}{Attribute} value type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the attribute. \\
+\hline
+{\em value} & Value used to initialize the attribute if it is created. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the existing or newly created attribute. 
+\end{DoxyReturn}
+\Hypertarget{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}\label{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!try\_value@{try\_value}}
+\index{try\_value@{try\_value}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{try\_value()}{try\_value()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+T \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::try\+\_\+value (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns a pointer to the attribute value if it exists and has the requested type. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the value, or nullptr if the attribute is missing or has an incompatible type. 
+\end{DoxyReturn}
+\Hypertarget{classmeta_1_1AttributeContainer_a9790de41aba2d3b34667707a563d3cb5}\label{classmeta_1_1AttributeContainer_a9790de41aba2d3b34667707a563d3cb5} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!try\_value@{try\_value}}
+\index{try\_value@{try\_value}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{try\_value()}{try\_value()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+const T \texorpdfstring{$\ast$}{*} meta\+::\+Attribute\+Container\+::try\+\_\+value (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns a pointer to the attribute value if it exists and has the requested type. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the value, or nullptr if the attribute is missing or has an incompatible type. 
+\end{DoxyReturn}
+\Hypertarget{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}\label{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!value@{value}}
+\index{value@{value}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{value()}{value()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ \\
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \& meta\+::\+Attribute\+Container\+::value (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the attribute value. 
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::out\+\_\+of\+\_\+range} & if the attribute does not exist. \\
+\hline
+{\em std\+::runtime\+\_\+error} & if the attribute type is incompatible. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{classmeta_1_1AttributeContainer_a7489930ce58c927974e106426e2dbd04}\label{classmeta_1_1AttributeContainer_a7489930ce58c927974e106426e2dbd04} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!value@{value}}
+\index{value@{value}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{value()}{value()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{typename}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} $>$ \\
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}} \& meta\+::\+Attribute\+Container\+::value (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} std\+::string \&}]{name }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the attribute value. 
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::out\+\_\+of\+\_\+range} & if the attribute does not exist. \\
+\hline
+{\em std\+::runtime\+\_\+error} & if the attribute type is incompatible. \\
+\hline
+\end{DoxyExceptions}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}\label{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!attributes\_@{attributes\_}}
+\index{attributes\_@{attributes\_}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{attributes\_}{attributes\_}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{Attr\+Container\+Type}} meta\+::\+Attribute\+Container\+::attributes\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}\label{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!insertion\_order\_@{insertion\_order\_}}
+\index{insertion\_order\_@{insertion\_order\_}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{insertion\_order\_}{insertion\_order\_}}
+{\footnotesize\ttfamily std\+::vector$<$std\+::string$>$ meta\+::\+Attribute\+Container\+::insertion\+\_\+order\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/core/\mbox{\hyperlink{attribute__container_8hpp}{attribute\+\_\+container.\+hpp}}\end{DoxyCompactItemize}

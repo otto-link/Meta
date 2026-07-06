@@ -1,0 +1,110 @@
+\doxysection{meta\+::Command\+Group Class Reference}
+\hypertarget{classmeta_1_1CommandGroup}{}\label{classmeta_1_1CommandGroup}\index{meta::CommandGroup@{meta::CommandGroup}}
+
+
+Command that groups multiple commands into a single undo/redo step.  
+
+
+
+
+{\ttfamily \#include $<$command\+\_\+group.\+hpp$>$}
+
+
+
+Inheritance diagram for meta\+::Command\+Group\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=208pt]{classmeta_1_1CommandGroup__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for meta\+::Command\+Group\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=208pt]{classmeta_1_1CommandGroup__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classmeta_1_1CommandGroup_a3a512608445dbe914343423e3216644a}{add}} (std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}} $>$ command)
+\begin{DoxyCompactList}\small\item\em Adds a command to the group. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classmeta_1_1CommandGroup_a2cc2ad365dc7a2381a63d57d9cb60194}{redo}} () override
+\begin{DoxyCompactList}\small\item\em Executes all commands in forward order. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classmeta_1_1CommandGroup_aa53aa1ce11bcff556e52f3e587647387}{undo}} () override
+\begin{DoxyCompactList}\small\item\em Reverts all commands in reverse order. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classmeta_1_1ICommand}{meta\+::\+ICommand}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{classmeta_1_1ICommand_ab24f79a1493c3f846c245f0f5f09d7df}{\texorpdfstring{$\sim$}{\string~}\+ICommand}} ()=default
+\item 
+virtual bool \mbox{\hyperlink{classmeta_1_1ICommand_a83574bc0d07a22884bec79b5b41296fb}{merge\+\_\+with}} (const \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}} \&other)
+\begin{DoxyCompactList}\small\item\em Attempts to merge with another command. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}} $>$ $>$ \mbox{\hyperlink{classmeta_1_1CommandGroup_a3978d375d819bbcce8f4842ba9fe3833}{commands\+\_\+}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Command that groups multiple commands into a single undo/redo step. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmeta_1_1CommandGroup_a3a512608445dbe914343423e3216644a}\label{classmeta_1_1CommandGroup_a3a512608445dbe914343423e3216644a} 
+\index{meta::CommandGroup@{meta::CommandGroup}!add@{add}}
+\index{add@{add}!meta::CommandGroup@{meta::CommandGroup}}
+\doxysubsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily void meta\+::\+Command\+Group\+::add (\begin{DoxyParamCaption}\item[{std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}} $>$}]{command }\end{DoxyParamCaption})}
+
+
+
+Adds a command to the group. 
+
+\Hypertarget{classmeta_1_1CommandGroup_a2cc2ad365dc7a2381a63d57d9cb60194}\label{classmeta_1_1CommandGroup_a2cc2ad365dc7a2381a63d57d9cb60194} 
+\index{meta::CommandGroup@{meta::CommandGroup}!redo@{redo}}
+\index{redo@{redo}!meta::CommandGroup@{meta::CommandGroup}}
+\doxysubsubsection{\texorpdfstring{redo()}{redo()}}
+{\footnotesize\ttfamily void meta\+::\+Command\+Group\+::redo (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Executes all commands in forward order. 
+
+
+
+Implements \mbox{\hyperlink{classmeta_1_1ICommand_abde54c0572caf5fe8e14ddaf956d0e42}{meta\+::\+ICommand}}.
+
+\Hypertarget{classmeta_1_1CommandGroup_aa53aa1ce11bcff556e52f3e587647387}\label{classmeta_1_1CommandGroup_aa53aa1ce11bcff556e52f3e587647387} 
+\index{meta::CommandGroup@{meta::CommandGroup}!undo@{undo}}
+\index{undo@{undo}!meta::CommandGroup@{meta::CommandGroup}}
+\doxysubsubsection{\texorpdfstring{undo()}{undo()}}
+{\footnotesize\ttfamily void meta\+::\+Command\+Group\+::undo (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reverts all commands in reverse order. 
+
+
+
+Implements \mbox{\hyperlink{classmeta_1_1ICommand_a94e10a0ad799408fe29ba21361d5b889}{meta\+::\+ICommand}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmeta_1_1CommandGroup_a3978d375d819bbcce8f4842ba9fe3833}\label{classmeta_1_1CommandGroup_a3978d375d819bbcce8f4842ba9fe3833} 
+\index{meta::CommandGroup@{meta::CommandGroup}!commands\_@{commands\_}}
+\index{commands\_@{commands\_}!meta::CommandGroup@{meta::CommandGroup}}
+\doxysubsubsection{\texorpdfstring{commands\_}{commands\_}}
+{\footnotesize\ttfamily std\+::vector$<$std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}}$>$ $>$ meta\+::\+Command\+Group\+::commands\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/undo\+\_\+redo/\mbox{\hyperlink{command__group_8hpp}{command\+\_\+group.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,85 @@
+\doxysection{meta\+::Logger Class Reference}
+\hypertarget{classmeta_1_1Logger}{}\label{classmeta_1_1Logger}\index{meta::Logger@{meta::Logger}}
+
+
+{\ttfamily \#include $<$logger.\+hpp$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::shared\+\_\+ptr$<$ spdlog\+::logger $>$ \& \mbox{\hyperlink{classmeta_1_1Logger_a1a17c53906d2694c2711f9772ed23c8f}{log}} ()
+\begin{DoxyCompactList}\small\item\em Get the singleton instance of the logger. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmeta_1_1Logger_a2956a0a1184ca30178841c5d47ae513d}{Logger}} ()=default
+\begin{DoxyCompactList}\small\item\em Private constructor to prevent instantiation. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1Logger_a06c2fdf792a63812b3dee60cf74d6982}{Logger}} (const \mbox{\hyperlink{classmeta_1_1Logger}{Logger}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Disable copy constructor and assignment operator. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1Logger}{Logger}} \& \mbox{\hyperlink{classmeta_1_1Logger_a5da53987ccbe2ff92062ef09b584de27}{operator=}} (const \mbox{\hyperlink{classmeta_1_1Logger}{Logger}} \&)=delete
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::shared\+\_\+ptr$<$ spdlog\+::logger $>$ \mbox{\hyperlink{classmeta_1_1Logger_abebec76b64594d71d269d68c8054fa28}{instance}}
+\begin{DoxyCompactList}\small\item\em Static member to hold the single instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmeta_1_1Logger_a2956a0a1184ca30178841c5d47ae513d}\label{classmeta_1_1Logger_a2956a0a1184ca30178841c5d47ae513d} 
+\index{meta::Logger@{meta::Logger}!Logger@{Logger}}
+\index{Logger@{Logger}!meta::Logger@{meta::Logger}}
+\doxysubsubsection{\texorpdfstring{Logger()}{Logger()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily meta\+::\+Logger\+::\+Logger (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}, {\ttfamily [default]}}
+
+
+
+Private constructor to prevent instantiation. 
+
+\Hypertarget{classmeta_1_1Logger_a06c2fdf792a63812b3dee60cf74d6982}\label{classmeta_1_1Logger_a06c2fdf792a63812b3dee60cf74d6982} 
+\index{meta::Logger@{meta::Logger}!Logger@{Logger}}
+\index{Logger@{Logger}!meta::Logger@{meta::Logger}}
+\doxysubsubsection{\texorpdfstring{Logger()}{Logger()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily meta\+::\+Logger\+::\+Logger (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classmeta_1_1Logger}{Logger}} \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}, {\ttfamily [delete]}}
+
+
+
+Disable copy constructor and assignment operator. 
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmeta_1_1Logger_a1a17c53906d2694c2711f9772ed23c8f}\label{classmeta_1_1Logger_a1a17c53906d2694c2711f9772ed23c8f} 
+\index{meta::Logger@{meta::Logger}!log@{log}}
+\index{log@{log}!meta::Logger@{meta::Logger}}
+\doxysubsubsection{\texorpdfstring{log()}{log()}}
+{\footnotesize\ttfamily static std\+::shared\+\_\+ptr$<$ spdlog\+::logger $>$ \& meta\+::\+Logger\+::log (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Get the singleton instance of the logger. 
+
+\Hypertarget{classmeta_1_1Logger_a5da53987ccbe2ff92062ef09b584de27}\label{classmeta_1_1Logger_a5da53987ccbe2ff92062ef09b584de27} 
+\index{meta::Logger@{meta::Logger}!operator=@{operator=}}
+\index{operator=@{operator=}!meta::Logger@{meta::Logger}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1Logger}{Logger}} \& meta\+::\+Logger\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classmeta_1_1Logger}{Logger}} \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}, {\ttfamily [delete]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmeta_1_1Logger_abebec76b64594d71d269d68c8054fa28}\label{classmeta_1_1Logger_abebec76b64594d71d269d68c8054fa28} 
+\index{meta::Logger@{meta::Logger}!instance@{instance}}
+\index{instance@{instance}!meta::Logger@{meta::Logger}}
+\doxysubsubsection{\texorpdfstring{instance}{instance}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$spdlog\+::logger$>$ meta\+::\+Logger\+::instance\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Static member to hold the single instance. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/\mbox{\hyperlink{logger_8hpp}{logger.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,59 @@
+\doxysection{set\+\_\+attribute\+\_\+command.\+hpp}
+\hypertarget{set__attribute__command_8hpp_source}{}\label{set__attribute__command_8hpp_source}\index{Meta/include/meta/undo\_redo/set\_attribute\_command.hpp@{Meta/include/meta/undo\_redo/set\_attribute\_command.hpp}}
+\mbox{\hyperlink{set__attribute__command_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ Copyright\ (c)\ 2026\ Otto\ Link.\ Distributed\ under\ the\ terms\ of\ the\ GNU\ General}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ \ \ Public\ License.\ The\ full\ license\ is\ in\ the\ file\ LICENSE,\ distributed\ with}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ \ \ this\ software.\ */}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{command_8hpp}{meta/undo\_redo/command.hpp}}"{}}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}}
+\DoxyCodeLine{00015\ \{}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keyword}{class\ }Attribute;}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classmeta_1_1SetAttributeCommand}{SetAttributeCommand}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}}}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00029\ \ \ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_a53a701bd7af30efe5dd5616f3c4590cd}{SetAttributeCommand}}(\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<T>}}\ \&attribute,\ \textcolor{keyword}{const}\ T\ \&new\_value)}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ :\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ad26ac445bd82ba078068bb1a88dd082e}{attribute\_}}(attribute),}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ac4da1a17a38e42077676ea1cb5675684}{old\_value\_}}(attribute.value()),}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_aac97e364f3e214b4b6c7ecb3a9bacdfd}{new\_value\_}}(new\_value)}
+\DoxyCodeLine{00033\ \ \ \{}
+\DoxyCodeLine{00034\ \ \ \}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00037\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_afe0b87fafffbc8d87b824e7beef8bf31}{undo}}()\textcolor{keyword}{\ override\ }\{\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ad26ac445bd82ba078068bb1a88dd082e}{attribute\_}}.value()\ =\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ac4da1a17a38e42077676ea1cb5675684}{old\_value\_}};\ \}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00040\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_a3716d6401bec3db98eb96311e3597131}{redo}}()\textcolor{keyword}{\ override\ }\{\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ad26ac445bd82ba078068bb1a88dd082e}{attribute\_}}.value()\ =\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_aac97e364f3e214b4b6c7ecb3a9bacdfd}{new\_value\_}};\ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00043\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ac264abccfedc901be3b3dd67242fa51d}{merge\_with}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}}\ \&other)\textcolor{keyword}{\ override}}
+\DoxyCodeLine{00044\ \textcolor{keyword}{\ \ }\{}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{auto}\ ptr\ =\ \textcolor{keyword}{dynamic\_cast<}\textcolor{keyword}{const\ }\mbox{\hyperlink{classmeta_1_1SetAttributeCommand}{SetAttributeCommand<T>}}\ *\textcolor{keyword}{>}(\&other);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordflow}{if}\ (!ptr)}
+\DoxyCodeLine{00048\ \ \ \ \ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00050\ \ \ \ \ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordflow}{if}\ (\&ptr-\/>attribute\_\ !=\ \&\mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ad26ac445bd82ba078068bb1a88dd082e}{attribute\_}})}
+\DoxyCodeLine{00053\ \ \ \ \ \{}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00055\ \ \ \ \ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_aac97e364f3e214b4b6c7ecb3a9bacdfd}{new\_value\_}}\ =\ ptr-\/>\mbox{\hyperlink{classmeta_1_1SetAttributeCommand_aac97e364f3e214b4b6c7ecb3a9bacdfd}{new\_value\_}};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00060\ \ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00063\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<T>}}\ \&\mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ad26ac445bd82ba078068bb1a88dd082e}{attribute\_}};}
+\DoxyCodeLine{00064\ \ \ T\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ac4da1a17a38e42077676ea1cb5675684}{old\_value\_}};}
+\DoxyCodeLine{00065\ \ \ T\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_aac97e364f3e214b4b6c7ecb3a9bacdfd}{new\_value\_}};}
+\DoxyCodeLine{00066\ \};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \}\ \textcolor{comment}{//\ namespace\ meta}}
+
+\end{DoxyCode}

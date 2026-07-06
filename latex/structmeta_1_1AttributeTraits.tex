@@ -1,0 +1,82 @@
+\doxysection{meta\+::Attribute\+Traits\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structmeta_1_1AttributeTraits}{}\label{structmeta_1_1AttributeTraits}\index{meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}}
+
+
+Default traits for attribute value conversion.  
+
+
+
+
+{\ttfamily \#include $<$attribute\+\_\+traits.\+hpp$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::string \mbox{\hyperlink{structmeta_1_1AttributeTraits_a1b7fc5fa6828ffb97345bfe9049eec13}{to\+\_\+string}} (const T \&value)
+\begin{DoxyCompactList}\small\item\em Convert value to human-\/readable string. \end{DoxyCompactList}\item 
+static nlohmann\+::json \mbox{\hyperlink{structmeta_1_1AttributeTraits_a42be738ca9dd51c89cd9d995d830d771}{json\+\_\+to}} (const T \&value)
+\begin{DoxyCompactList}\small\item\em Convert value to JSON representation. \end{DoxyCompactList}\item 
+static T \mbox{\hyperlink{structmeta_1_1AttributeTraits_aea52842559753728aa5b07153bb93732}{json\+\_\+from}} (const nlohmann\+::json \&j)
+\begin{DoxyCompactList}\small\item\em Convert JSON back to value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct meta\+::\+Attribute\+Traits$<$ T $>$}
+Default traits for attribute value conversion. 
+
+Provides generic conversions between\+:
+\begin{DoxyItemize}
+\item C++ values
+\item std\+::string representation
+\item JSON serialization
+\end{DoxyItemize}
+
+Specializations should be provided for complex or non-\/trivial types.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Value type handled by the attribute system. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structmeta_1_1AttributeTraits_aea52842559753728aa5b07153bb93732}\label{structmeta_1_1AttributeTraits_aea52842559753728aa5b07153bb93732} 
+\index{meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}!json\_from@{json\_from}}
+\index{json\_from@{json\_from}!meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{json\_from()}{json\_from()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static T \mbox{\hyperlink{structmeta_1_1AttributeTraits}{meta\+::\+Attribute\+Traits}}$<$ T $>$\+::json\+\_\+from (\begin{DoxyParamCaption}\item[{const nlohmann\+::json \&}]{j }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert JSON back to value. 
+
+\Hypertarget{structmeta_1_1AttributeTraits_a42be738ca9dd51c89cd9d995d830d771}\label{structmeta_1_1AttributeTraits_a42be738ca9dd51c89cd9d995d830d771} 
+\index{meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}!json\_to@{json\_to}}
+\index{json\_to@{json\_to}!meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{json\_to()}{json\_to()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static nlohmann\+::json \mbox{\hyperlink{structmeta_1_1AttributeTraits}{meta\+::\+Attribute\+Traits}}$<$ T $>$\+::json\+\_\+to (\begin{DoxyParamCaption}\item[{const T \&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert value to JSON representation. 
+
+\Hypertarget{structmeta_1_1AttributeTraits_a1b7fc5fa6828ffb97345bfe9049eec13}\label{structmeta_1_1AttributeTraits_a1b7fc5fa6828ffb97345bfe9049eec13} 
+\index{meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}!to\_string@{to\_string}}
+\index{to\_string@{to\_string}!meta::AttributeTraits$<$ T $>$@{meta::AttributeTraits$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{to\_string()}{to\_string()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static std\+::string \mbox{\hyperlink{structmeta_1_1AttributeTraits}{meta\+::\+Attribute\+Traits}}$<$ T $>$\+::to\+\_\+string (\begin{DoxyParamCaption}\item[{const T \&}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Convert value to human-\/readable string. 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/type/\mbox{\hyperlink{attribute__traits_8hpp}{attribute\+\_\+traits.\+hpp}}\end{DoxyCompactItemize}

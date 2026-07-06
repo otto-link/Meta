@@ -1,0 +1,31 @@
+\doxysection{Meta/include/meta/core/meta\+\_\+object.hpp File Reference}
+\hypertarget{meta__object_8hpp}{}\label{meta__object_8hpp}\index{Meta/include/meta/core/meta\_object.hpp@{Meta/include/meta/core/meta\_object.hpp}}
+
+
+Base class providing owned metadata storage for reflection-\/enabled objects.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classmeta_1_1MetaObject}{meta\+::\+Meta\+Object}}
+\begin{DoxyCompactList}\small\item\em Base class enabling runtime metadata attachment. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacemeta}{meta}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class providing owned metadata storage for reflection-\/enabled objects. 
+
+Meta\+Object is a lightweight utility class that gives derived classes a fully owned Attribute\+Container used to store arbitrary runtime metadata.
+
+This metadata system is used for GUI reflection, serialization hints, editor configuration, and user-\/defined extensions.
+
+The metadata is fully owned (no sharing), ensuring deterministic behavior and avoiding cross-\/instance side effects.
+
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2026 
+\end{DoxyCopyright}

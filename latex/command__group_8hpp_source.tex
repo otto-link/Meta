@@ -1,0 +1,34 @@
+\doxysection{command\+\_\+group.\+hpp}
+\hypertarget{command__group_8hpp_source}{}\label{command__group_8hpp_source}\index{Meta/include/meta/undo\_redo/command\_group.hpp@{Meta/include/meta/undo\_redo/command\_group.hpp}}
+\mbox{\hyperlink{command__group_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ Copyright\ (c)\ 2026\ Otto\ Link.\ Distributed\ under\ the\ terms\ of\ the\ GNU\ General}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ \ \ Public\ License.\ The\ full\ license\ is\ in\ the\ file\ LICENSE,\ distributed\ with}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ \ \ this\ software.\ */}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{command_8hpp}{meta/undo\_redo/command.hpp}}"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classmeta_1_1CommandGroup}{CommandGroup}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}}}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandGroup_a3a512608445dbe914343423e3216644a}{add}}(std::unique\_ptr<ICommand>\ command);}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00028\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandGroup_a2cc2ad365dc7a2381a63d57d9cb60194}{redo}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00031\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1CommandGroup_aa53aa1ce11bcff556e52f3e587647387}{undo}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00034\ \ \ std::vector<std::unique\_ptr<ICommand>>\ \mbox{\hyperlink{classmeta_1_1CommandGroup_a3978d375d819bbcce8f4842ba9fe3833}{commands\_}};}
+\DoxyCodeLine{00035\ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \}\ \textcolor{comment}{//\ namespace\ meta}}
+
+\end{DoxyCode}

@@ -1,0 +1,16 @@
+\doxysection{meta\+::String\+Like Concept Reference}
+\hypertarget{conceptmeta_1_1StringLike}{}\label{conceptmeta_1_1StringLike}\index{meta::StringLike@{meta::StringLike}}
+
+
+{\ttfamily \#include $<$attribute\+\_\+container.\+hpp$>$}
+
+\doxysubsection{Concept definition}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{\textcolor{keyword}{concept\ }\mbox{\hyperlink{conceptmeta_1_1StringLike}{meta::StringLike}}\ =\ \ std::is\_same\_v<std::decay\_t<T>,\ std::string>\ ||}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *>\ ||}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keywordtype}{char}\ *>\ ||}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ std::string\_view>}
+
+\end{DoxyCode}

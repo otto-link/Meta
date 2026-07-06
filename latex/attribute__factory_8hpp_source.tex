@@ -1,0 +1,66 @@
+\doxysection{attribute\+\_\+factory.\+hpp}
+\hypertarget{attribute__factory_8hpp_source}{}\label{attribute__factory_8hpp_source}\index{Meta/include/meta/serialization/attribute\_factory.hpp@{Meta/include/meta/serialization/attribute\_factory.hpp}}
+\mbox{\hyperlink{attribute__factory_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ Copyright\ (c)\ 2026\ Otto\ Link.\ Distributed\ under\ the\ terms\ of\ the\ GNU\ General}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ \ \ Public\ License.\ The\ full\ license\ is\ in\ the\ file\ LICENSE,\ distributed\ with}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ \ \ this\ software.\ */}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{abstract__attribute_8hpp}{meta/core/abstract\_attribute.hpp}}"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{attribute_8hpp}{meta/core/attribute.hpp}}"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#define\ META\_REGISTER\_ATTRIBUTE\_TYPE(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\ \ register\_attribute\_type<\_\_VA\_ARGS\_\_>(\#\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classmeta_1_1AttributeFactory}{AttributeFactory}}}
+\DoxyCodeLine{00035\ \{}
+\DoxyCodeLine{00036\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00043\ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classmeta_1_1AttributeFactory_a6bf0732503ef6d96713eaaa0a414fe3c}{CreateFn}}\ =}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ std::function<std::unique\_ptr<AbstractAttribute>(\textcolor{keyword}{const}\ std::string\ \&)>;}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00047\ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classmeta_1_1AttributeFactory}{AttributeFactory}}\ \&\mbox{\hyperlink{classmeta_1_1AttributeFactory_a3860d3bf84d293a18564987219d79ee2}{instance}}()}
+\DoxyCodeLine{00048\ \ \ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{classmeta_1_1AttributeFactory}{AttributeFactory}}\ r;}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordflow}{return}\ r;}
+\DoxyCodeLine{00051\ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00061\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeFactory_a173bb33e9292c6cd8c6bd17a7ce961d8}{register\_attribute\_type}}(std::string\ name,\ \mbox{\hyperlink{classmeta_1_1AttributeFactory_a6bf0732503ef6d96713eaaa0a414fe3c}{CreateFn}}\ fn)}
+\DoxyCodeLine{00062\ \ \ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeFactory_aafa70505df005aa3c0e90c2c0aeff662}{registry\_}}[std::move(name)]\ =\ std::move(fn);}
+\DoxyCodeLine{00064\ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00073\ \ \ std::unique\_ptr<AbstractAttribute>\ \mbox{\hyperlink{classmeta_1_1AttributeFactory_ad0cf99a93945ab0e5f1345d0dae45b05}{create}}(\textcolor{keyword}{const}\ std::string\ \&type,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&name)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00077\ \ \ std::unordered\_map<std::string,\ CreateFn>\ \mbox{\hyperlink{classmeta_1_1AttributeFactory_aafa70505df005aa3c0e90c2c0aeff662}{registry\_}};}
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ Helper\ API}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00090\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{namespacemeta_a37f460e894944044779e1ee21eca8881}{register\_attribute\_type}}(\textcolor{keyword}{const}\ std::string\ \&name)}
+\DoxyCodeLine{00091\ \{}
+\DoxyCodeLine{00092\ \ \ \textcolor{keyword}{auto}\ \&r\ =\ \mbox{\hyperlink{classmeta_1_1AttributeFactory_a3860d3bf84d293a18564987219d79ee2}{AttributeFactory::instance}}();}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ r.register\_attribute\_type(}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ name,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ std::string\ \&attr\_name)}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ std::make\_unique<Attribute<T>>(attr\_name,\ T\{\});\ \});}
+\DoxyCodeLine{00098\ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00105\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{namespacemeta_aa568359dcd9dfc14b28fdd87e4a06dd3}{register\_builtin\_types}}();}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \}\ \textcolor{comment}{//\ namespace\ meta}}
+
+\end{DoxyCode}

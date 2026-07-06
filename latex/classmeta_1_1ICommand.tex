@@ -1,0 +1,99 @@
+\doxysection{meta\+::ICommand Class Reference}
+\hypertarget{classmeta_1_1ICommand}{}\label{classmeta_1_1ICommand}\index{meta::ICommand@{meta::ICommand}}
+
+
+Abstract interface for reversible operations.  
+
+
+
+
+{\ttfamily \#include $<$command.\+hpp$>$}
+
+
+
+Inheritance diagram for meta\+::ICommand\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classmeta_1_1ICommand__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \mbox{\hyperlink{classmeta_1_1ICommand_ab24f79a1493c3f846c245f0f5f09d7df}{\texorpdfstring{$\sim$}{\string~}\+ICommand}} ()=default
+\item 
+virtual void \mbox{\hyperlink{classmeta_1_1ICommand_a94e10a0ad799408fe29ba21361d5b889}{undo}} ()=0
+\begin{DoxyCompactList}\small\item\em Reverts the command effect. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classmeta_1_1ICommand_abde54c0572caf5fe8e14ddaf956d0e42}{redo}} ()=0
+\begin{DoxyCompactList}\small\item\em Applies the command effect. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classmeta_1_1ICommand_a83574bc0d07a22884bec79b5b41296fb}{merge\+\_\+with}} (const \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}} \&other)
+\begin{DoxyCompactList}\small\item\em Attempts to merge with another command. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Abstract interface for reversible operations. 
+
+Commands implement undo/redo logic and can optionally support merging with consecutive commands (e.\+g. continuous edits). 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmeta_1_1ICommand_ab24f79a1493c3f846c245f0f5f09d7df}\label{classmeta_1_1ICommand_ab24f79a1493c3f846c245f0f5f09d7df} 
+\index{meta::ICommand@{meta::ICommand}!````~ICommand@{\texorpdfstring{$\sim$}{\string~}ICommand}}
+\index{````~ICommand@{\texorpdfstring{$\sim$}{\string~}ICommand}!meta::ICommand@{meta::ICommand}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}ICommand()}{\string~ICommand()}}
+{\footnotesize\ttfamily virtual meta\+::\+ICommand\+::\texorpdfstring{$\sim$}{\string~}\+ICommand (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}, {\ttfamily [default]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmeta_1_1ICommand_a83574bc0d07a22884bec79b5b41296fb}\label{classmeta_1_1ICommand_a83574bc0d07a22884bec79b5b41296fb} 
+\index{meta::ICommand@{meta::ICommand}!merge\_with@{merge\_with}}
+\index{merge\_with@{merge\_with}!meta::ICommand@{meta::ICommand}}
+\doxysubsubsection{\texorpdfstring{merge\_with()}{merge\_with()}}
+{\footnotesize\ttfamily virtual bool meta\+::\+ICommand\+::merge\+\_\+with (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classmeta_1_1ICommand}{ICommand}} \&}]{other }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Attempts to merge with another command. 
+
+\begin{DoxyReturn}{Returns}
+true if merge succeeded, false otherwise. 
+\end{DoxyReturn}
+
+
+Reimplemented in \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_ac264abccfedc901be3b3dd67242fa51d}{meta\+::\+Set\+Attribute\+Command$<$ T $>$}}.
+
+\Hypertarget{classmeta_1_1ICommand_abde54c0572caf5fe8e14ddaf956d0e42}\label{classmeta_1_1ICommand_abde54c0572caf5fe8e14ddaf956d0e42} 
+\index{meta::ICommand@{meta::ICommand}!redo@{redo}}
+\index{redo@{redo}!meta::ICommand@{meta::ICommand}}
+\doxysubsubsection{\texorpdfstring{redo()}{redo()}}
+{\footnotesize\ttfamily virtual void meta\+::\+ICommand\+::redo (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Applies the command effect. 
+
+
+
+Implemented in \mbox{\hyperlink{classmeta_1_1CommandGroup_a2cc2ad365dc7a2381a63d57d9cb60194}{meta\+::\+Command\+Group}}, and \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_a3716d6401bec3db98eb96311e3597131}{meta\+::\+Set\+Attribute\+Command$<$ T $>$}}.
+
+\Hypertarget{classmeta_1_1ICommand_a94e10a0ad799408fe29ba21361d5b889}\label{classmeta_1_1ICommand_a94e10a0ad799408fe29ba21361d5b889} 
+\index{meta::ICommand@{meta::ICommand}!undo@{undo}}
+\index{undo@{undo}!meta::ICommand@{meta::ICommand}}
+\doxysubsubsection{\texorpdfstring{undo()}{undo()}}
+{\footnotesize\ttfamily virtual void meta\+::\+ICommand\+::undo (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Reverts the command effect. 
+
+
+
+Implemented in \mbox{\hyperlink{classmeta_1_1CommandGroup_aa53aa1ce11bcff556e52f3e587647387}{meta\+::\+Command\+Group}}, and \mbox{\hyperlink{classmeta_1_1SetAttributeCommand_afe0b87fafffbc8d87b824e7beef8bf31}{meta\+::\+Set\+Attribute\+Command$<$ T $>$}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/undo\+\_\+redo/\mbox{\hyperlink{command_8hpp}{command.\+hpp}}\end{DoxyCompactItemize}

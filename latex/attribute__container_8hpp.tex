@@ -1,0 +1,46 @@
+\doxysection{Meta/include/meta/core/attribute\+\_\+container.hpp File Reference}
+\hypertarget{attribute__container_8hpp}{}\label{attribute__container_8hpp}\index{Meta/include/meta/core/attribute\_container.hpp@{Meta/include/meta/core/attribute\_container.hpp}}
+
+
+Container for named runtime attributes with lookup and JSON support.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classmeta_1_1AttributeContainer}{meta\+::\+Attribute\+Container}}
+\begin{DoxyCompactList}\small\item\em Container of named runtime attributes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacemeta}{meta}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Concepts}
+\begin{DoxyCompactItemize}
+\item 
+concept \mbox{\hyperlink{conceptmeta_1_1StringLike}{meta\+::\+String\+Like}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{meta\+::\+Attr\+Container\+Type}} = std\+::unordered\+\_\+map$<$ std\+::string, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{Abstract\+Attribute}} $>$ $>$
+\begin{DoxyCompactList}\small\item\em Internal storage type for attributes. \end{DoxyCompactList}\item 
+using \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{meta\+::\+Attr\+Iterator}} = Attr\+Container\+Type\+::iterator
+\begin{DoxyCompactList}\small\item\em Mutable iterator over attributes. \end{DoxyCompactList}\item 
+using \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{meta\+::\+Const\+Attr\+Iterator}} = Attr\+Container\+Type\+::const\+\_\+iterator
+\begin{DoxyCompactList}\small\item\em Const iterator over attributes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+nlohmann\+::json \mbox{\hyperlink{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128}{meta\+::serialize\+\_\+metadata}} (const \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&m)
+\begin{DoxyCompactList}\small\item\em Serialize attribute metadata to JSON. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacemeta_a1ec007edebf611446a66ccb33aff0311}{meta\+::deserialize\+\_\+metadata}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \&m, const nlohmann\+::json \&j)
+\begin{DoxyCompactList}\small\item\em Deserialize attribute metadata from JSON. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Container for named runtime attributes with lookup and JSON support. 
+
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2026 
+\end{DoxyCopyright}

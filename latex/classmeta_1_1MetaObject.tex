@@ -1,0 +1,127 @@
+\doxysection{meta\+::Meta\+Object Class Reference}
+\hypertarget{classmeta_1_1MetaObject}{}\label{classmeta_1_1MetaObject}\index{meta::MetaObject@{meta::MetaObject}}
+
+
+Base class enabling runtime metadata attachment.  
+
+
+
+
+{\ttfamily \#include $<$meta\+\_\+object.\+hpp$>$}
+
+
+
+Inheritance diagram for meta\+::Meta\+Object\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classmeta_1_1MetaObject__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmeta_1_1MetaObject_a54d756b3460ed63bcfa00d711cb442c2}{Meta\+Object}} ()
+\begin{DoxyCompactList}\small\item\em Construct a \doxylink{classmeta_1_1MetaObject}{Meta\+Object} with an empty metadata container. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1MetaObject_a02f25da378981a22e8afd9f31ba1da21}{\texorpdfstring{$\sim$}{\string~}\+Meta\+Object}} ()=default
+\begin{DoxyCompactList}\small\item\em Default destructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \& \mbox{\hyperlink{classmeta_1_1MetaObject_aaa64bfdc3ebb1c26290067a1e3dc5bf6}{metadata}} ()
+\begin{DoxyCompactList}\small\item\em Access mutable metadata container. \end{DoxyCompactList}\item 
+const \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \& \mbox{\hyperlink{classmeta_1_1MetaObject_a155c8e64f91d97387c8cc10bf63783a9}{metadata}} () const
+\begin{DoxyCompactList}\small\item\em Access immutable metadata container. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} $>$ \mbox{\hyperlink{classmeta_1_1MetaObject_a0e939f50d4c16e99377a41c465a12b1f}{metadata\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Owned metadata container storing arbitrary attributes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class enabling runtime metadata attachment. 
+
+\doxylink{classmeta_1_1MetaObject}{Meta\+Object} provides a unified way to attach arbitrary key/value metadata to any object in the Meta framework.
+
+Typical uses include\+:
+\begin{DoxyItemize}
+\item GUI reflection hints (slider ranges, widgets, grouping)
+\item Serialization annotations
+\item Editor-\/specific configuration
+\item User-\/defined extensions
+\end{DoxyItemize}
+
+Ownership model\+:
+\begin{DoxyItemize}
+\item Metadata is fully owned by the object
+\item No shared or global state
+\item Lifetime tied to the object 
+\end{DoxyItemize}
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmeta_1_1MetaObject_a54d756b3460ed63bcfa00d711cb442c2}\label{classmeta_1_1MetaObject_a54d756b3460ed63bcfa00d711cb442c2} 
+\index{meta::MetaObject@{meta::MetaObject}!MetaObject@{MetaObject}}
+\index{MetaObject@{MetaObject}!meta::MetaObject@{meta::MetaObject}}
+\doxysubsubsection{\texorpdfstring{MetaObject()}{MetaObject()}}
+{\footnotesize\ttfamily meta\+::\+Meta\+Object\+::\+Meta\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Construct a \doxylink{classmeta_1_1MetaObject}{Meta\+Object} with an empty metadata container. 
+
+\Hypertarget{classmeta_1_1MetaObject_a02f25da378981a22e8afd9f31ba1da21}\label{classmeta_1_1MetaObject_a02f25da378981a22e8afd9f31ba1da21} 
+\index{meta::MetaObject@{meta::MetaObject}!````~MetaObject@{\texorpdfstring{$\sim$}{\string~}MetaObject}}
+\index{````~MetaObject@{\texorpdfstring{$\sim$}{\string~}MetaObject}!meta::MetaObject@{meta::MetaObject}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}MetaObject()}{\string~MetaObject()}}
+{\footnotesize\ttfamily meta\+::\+Meta\+Object\+::\texorpdfstring{$\sim$}{\string~}\+Meta\+Object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Default destructor. 
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmeta_1_1MetaObject_aaa64bfdc3ebb1c26290067a1e3dc5bf6}\label{classmeta_1_1MetaObject_aaa64bfdc3ebb1c26290067a1e3dc5bf6} 
+\index{meta::MetaObject@{meta::MetaObject}!metadata@{metadata}}
+\index{metadata@{metadata}!meta::MetaObject@{meta::MetaObject}}
+\doxysubsubsection{\texorpdfstring{metadata()}{metadata()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \& meta\+::\+Meta\+Object\+::metadata (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Access mutable metadata container. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the internal \doxylink{classmeta_1_1AttributeContainer}{Attribute\+Container}. 
+\end{DoxyReturn}
+\Hypertarget{classmeta_1_1MetaObject_a155c8e64f91d97387c8cc10bf63783a9}\label{classmeta_1_1MetaObject_a155c8e64f91d97387c8cc10bf63783a9} 
+\index{meta::MetaObject@{meta::MetaObject}!metadata@{metadata}}
+\index{metadata@{metadata}!meta::MetaObject@{meta::MetaObject}}
+\doxysubsubsection{\texorpdfstring{metadata()}{metadata()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}} \& meta\+::\+Meta\+Object\+::metadata (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Access immutable metadata container. 
+
+\begin{DoxyReturn}{Returns}
+Const reference to the internal \doxylink{classmeta_1_1AttributeContainer}{Attribute\+Container}. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmeta_1_1MetaObject_a0e939f50d4c16e99377a41c465a12b1f}\label{classmeta_1_1MetaObject_a0e939f50d4c16e99377a41c465a12b1f} 
+\index{meta::MetaObject@{meta::MetaObject}!metadata\_@{metadata\_}}
+\index{metadata\_@{metadata\_}!meta::MetaObject@{meta::MetaObject}}
+\doxysubsubsection{\texorpdfstring{metadata\_}{metadata\_}}
+{\footnotesize\ttfamily std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer}{Attribute\+Container}}$>$ meta\+::\+Meta\+Object\+::metadata\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Owned metadata container storing arbitrary attributes. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/core/\mbox{\hyperlink{meta__object_8hpp}{meta\+\_\+object.\+hpp}}\end{DoxyCompactItemize}
