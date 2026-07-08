@@ -5,10 +5,14 @@ var hierarchy =
     [ "meta::AttributeTraits< T >", "structmeta_1_1AttributeTraits.html", null ],
     [ "meta::ColorGradient", "classmeta_1_1ColorGradient.html", null ],
     [ "meta::CommandStack", "classmeta_1_1CommandStack.html", null ],
+    [ "meta::Event< Args >", "classmeta_1_1Event.html", null ],
+    [ "meta::Event< T >", "classmeta_1_1Event.html", null ],
+    [ "meta::EventConnection", "classmeta_1_1EventConnection.html", null ],
     [ "meta::ICommand", "classmeta_1_1ICommand.html", [
       [ "meta::CommandGroup", "classmeta_1_1CommandGroup.html", null ],
       [ "meta::SetAttributeCommand< T >", "classmeta_1_1SetAttributeCommand.html", null ]
     ] ],
+    [ "meta::Event< Args >::Listener", "structmeta_1_1Event_1_1Listener.html", null ],
     [ "meta::Logger", "classmeta_1_1Logger.html", null ],
     [ "meta::MetaObject", "classmeta_1_1MetaObject.html", [
       [ "meta::AbstractAttribute", "classmeta_1_1AbstractAttribute.html", [

@@ -17,5 +17,6 @@ var searchData=
   ['state_14',['state',['../namespacemeta_1_1keys_1_1ui.html#ad75315bc8b4cb6472bbf6a648b0a1336',1,'meta::keys::ui']]],
   ['step_15',['step',['../namespacemeta_1_1keys_1_1constraints.html#a572252adc3aacfe9c5759f4015ec65ab',1,'meta::keys::constraints']]],
   ['stop_16',['Stop',['../structmeta_1_1Stop.html',1,'meta']]],
-  ['stops_17',['stops',['../structmeta_1_1Preset.html#a29d14720e9b223e7c901b917dabaacec',1,'meta::Preset']]]
+  ['stops_17',['stops',['../structmeta_1_1Preset.html#a29d14720e9b223e7c901b917dabaacec',1,'meta::Preset']]],
+  ['subscribe_18',['subscribe',['../classmeta_1_1Event.html#ae9efe77a31419e5cb46d49f62e7dac09',1,'meta::Event']]]
 ];

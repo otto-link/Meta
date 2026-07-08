@@ -14,6 +14,8 @@ var namespacemeta =
     [ "CommandGroup", "classmeta_1_1CommandGroup.html", "classmeta_1_1CommandGroup" ],
     [ "CommandStack", "classmeta_1_1CommandStack.html", "classmeta_1_1CommandStack" ],
     [ "ContainerGroup", "classmeta_1_1ContainerGroup.html", "classmeta_1_1ContainerGroup" ],
+    [ "Event", "classmeta_1_1Event.html", "classmeta_1_1Event" ],
+    [ "EventConnection", "classmeta_1_1EventConnection.html", "classmeta_1_1EventConnection" ],
     [ "ICommand", "classmeta_1_1ICommand.html", "classmeta_1_1ICommand" ],
     [ "Logger", "classmeta_1_1Logger.html", "classmeta_1_1Logger" ],
     [ "MetaObject", "classmeta_1_1MetaObject.html", "classmeta_1_1MetaObject" ],

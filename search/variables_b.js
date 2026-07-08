@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['redo_5fstack_5f_0',['redo_stack_',['../classmeta_1_1CommandStack.html#ab9be62e015bccc777ea9b1d40a09e80a',1,'meta::CommandStack']]],
-  ['registry_5f_1',['registry_',['../classmeta_1_1AttributeFactory.html#aafa70505df005aa3c0e90c2c0aeff662',1,'meta::AttributeFactory']]]
+  ['position_0',['position',['../structmeta_1_1Stop.html#a8fe3d422bd0e09f41fc51bf39393750d',1,'meta::Stop']]],
+  ['power_5fof_5ftwo_1',['power_of_two',['../namespacemeta_1_1keys_1_1constraints.html#a41a01ae5d2b6f41b08fd8cdf8c2a7ed4',1,'meta::keys::constraints']]],
+  ['presets_5f_2',['presets_',['../classmeta_1_1ColorGradient.html#ae3c2c4fc0a8119711abb5a0158071ae9',1,'meta::ColorGradient']]]
 ];

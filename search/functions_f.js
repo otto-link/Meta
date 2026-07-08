@@ -8,5 +8,6 @@ var searchData=
   ['set_5fpresets_5',['set_presets',['../classmeta_1_1ColorGradient.html#a4c90dca751c0b8ab4209c90d2055568f',1,'meta::ColorGradient']]],
   ['set_5fvalue_6',['set_value',['../classmeta_1_1ColorGradient.html#a7e8778ea1096d97411ee37b8142cac57',1,'meta::ColorGradient']]],
   ['setattributecommand_7',['SetAttributeCommand',['../classmeta_1_1SetAttributeCommand.html#a53a701bd7af30efe5dd5616f3c4590cd',1,'meta::SetAttributeCommand']]],
-  ['size_8',['size',['../classmeta_1_1AttributeContainer.html#a883f07e5f83ad0ccd7d68280164a795c',1,'meta::AttributeContainer']]]
+  ['size_8',['size',['../classmeta_1_1AttributeContainer.html#a883f07e5f83ad0ccd7d68280164a795c',1,'meta::AttributeContainer']]],
+  ['subscribe_9',['subscribe',['../classmeta_1_1Event.html#ae9efe77a31419e5cb46d49f62e7dac09',1,'meta::Event']]]
 ];

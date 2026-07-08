@@ -1,0 +1,100 @@
+\doxysection{meta\+::Event\texorpdfstring{$<$}{<} Args \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmeta_1_1Event}{}\label{classmeta_1_1Event}\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+
+
+{\ttfamily \#include $<$event.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structmeta_1_1Event_1_1Listener}{Listener}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{classmeta_1_1Event_a1dda283b825179b818c07ecf6d492f27}{callback\+\_\+t}} = std\+::function$<$ void(Args...)$>$
+\item 
+using \mbox{\hyperlink{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f}{listener\+\_\+id\+\_\+t}} = std\+::size\+\_\+t
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmeta_1_1EventConnection}{Event\+Connection}} \mbox{\hyperlink{classmeta_1_1Event_ae9efe77a31419e5cb46d49f62e7dac09}{subscribe}} (\mbox{\hyperlink{classmeta_1_1Event_a1dda283b825179b818c07ecf6d492f27}{callback\+\_\+t}} callback)
+\item 
+void \mbox{\hyperlink{classmeta_1_1Event_aff0616e49d75f14b6795c1a2b8b7a451}{notify}} (Args... args)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classmeta_1_1Event_a01e559e9a97f3ea3ca33ec2b6110a457}{unsubscribe}} (\mbox{\hyperlink{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f}{listener\+\_\+id\+\_\+t}} id)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{structmeta_1_1Event_1_1Listener}{Listener}} $>$ \mbox{\hyperlink{classmeta_1_1Event_a719da3f8750f225ccb4603b8e3aecd7b}{listeners\+\_\+}}
+\item 
+\mbox{\hyperlink{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f}{listener\+\_\+id\+\_\+t}} \mbox{\hyperlink{classmeta_1_1Event_a83117ee8fb6ddffc159258917f7fa927}{next\+\_\+id\+\_\+}} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{classmeta_1_1Event_a1dda283b825179b818c07ecf6d492f27}\label{classmeta_1_1Event_a1dda283b825179b818c07ecf6d492f27} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!callback\_t@{callback\_t}}
+\index{callback\_t@{callback\_t}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{callback\_t}{callback\_t}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+using \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::callback\+\_\+t =  std\+::function$<$void(Args...)$>$}
+
+\Hypertarget{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f}\label{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!listener\_id\_t@{listener\_id\_t}}
+\index{listener\_id\_t@{listener\_id\_t}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{listener\_id\_t}{listener\_id\_t}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+using \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::listener\+\_\+id\+\_\+t =  std\+::size\+\_\+t}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmeta_1_1Event_aff0616e49d75f14b6795c1a2b8b7a451}\label{classmeta_1_1Event_aff0616e49d75f14b6795c1a2b8b7a451} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!notify@{notify}}
+\index{notify@{notify}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{notify()}{notify()}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+void \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::notify (\begin{DoxyParamCaption}\item[{Args...}]{args }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{classmeta_1_1Event_ae9efe77a31419e5cb46d49f62e7dac09}\label{classmeta_1_1Event_ae9efe77a31419e5cb46d49f62e7dac09} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!subscribe@{subscribe}}
+\index{subscribe@{subscribe}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{subscribe()}{subscribe()}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+\mbox{\hyperlink{classmeta_1_1EventConnection}{Event\+Connection}} \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::subscribe (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1Event_a1dda283b825179b818c07ecf6d492f27}{callback\+\_\+t}}}]{callback }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{classmeta_1_1Event_a01e559e9a97f3ea3ca33ec2b6110a457}\label{classmeta_1_1Event_a01e559e9a97f3ea3ca33ec2b6110a457} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!unsubscribe@{unsubscribe}}
+\index{unsubscribe@{unsubscribe}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{unsubscribe()}{unsubscribe()}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+void \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::unsubscribe (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f}{listener\+\_\+id\+\_\+t}}}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmeta_1_1Event_a719da3f8750f225ccb4603b8e3aecd7b}\label{classmeta_1_1Event_a719da3f8750f225ccb4603b8e3aecd7b} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!listeners\_@{listeners\_}}
+\index{listeners\_@{listeners\_}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{listeners\_}{listeners\_}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+std\+::vector$<$\mbox{\hyperlink{structmeta_1_1Event_1_1Listener}{Listener}}$>$ \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::listeners\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{classmeta_1_1Event_a83117ee8fb6ddffc159258917f7fa927}\label{classmeta_1_1Event_a83117ee8fb6ddffc159258917f7fa927} 
+\index{meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}!next\_id\_@{next\_id\_}}
+\index{next\_id\_@{next\_id\_}!meta::Event$<$ Args $>$@{meta::Event$<$ Args $>$}}
+\doxysubsubsection{\texorpdfstring{next\_id\_}{next\_id\_}}
+{\footnotesize\ttfamily template$<$typename... Args$>$ \\
+\mbox{\hyperlink{classmeta_1_1Event_a52e1c67454634f878c04cf489726aa1f}{listener\+\_\+id\+\_\+t}} \mbox{\hyperlink{classmeta_1_1Event}{meta\+::\+Event}}$<$ Args $>$\+::next\+\_\+id\+\_\+ = 0\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Meta/include/meta/core/\mbox{\hyperlink{event_8hpp}{event.\+hpp}}\end{DoxyCompactItemize}
