@@ -103,6 +103,9 @@ void ContainerGroupWidget::on_sync_meta_widgets_from_model()
 
   for (int i = 0; i < stacked->count(); ++i)
   {
+    // those MetaWidgets are container widgets, passing the sync to
+    // the individual MetaWidgets is carried out by the container
+    // widget
     if (auto *meta_widget = qobject_cast<MetaWidget *>(stacked->widget(i)))
       meta_widget->sync_widget_from_model();
   }
