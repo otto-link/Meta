@@ -124,6 +124,7 @@ template <> struct WidgetRenderer<glm::ivec2>
                        qOverload<int>(&QSpinBox::valueChanged),
                        widget,
                        [&value,
+                        &attr,
                         widget,
                         spinbox_x,
                         spinbox_y,
@@ -142,16 +143,18 @@ template <> struct WidgetRenderer<glm::ivec2>
                            spinbox_x->setValue(x);
                          }
 
-                         value.x = x;
+                         glm::ivec2 new_value = {x, 0};
 
                          if (keep_aspect)
                          {
                            int y = int(std::lround(double(x) / aspect_ratio));
-                           value.y = y;
+                           new_value.y = y;
 
                            QSignalBlocker blocker(spinbox_y);
                            spinbox_y->setValue(y);
                          }
+
+                         attr.set_from_any(new_value);
 
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
@@ -164,7 +167,7 @@ template <> struct WidgetRenderer<glm::ivec2>
             spinbox_y,
             qOverload<int>(&QSpinBox::valueChanged),
             widget,
-            [&value, widget, spinbox_y, min, max, power_of_two](int v)
+            [&value, &attr, widget, spinbox_y, min, max, power_of_two](int v)
             {
               int y = std::clamp(v, min, max);
 
@@ -175,7 +178,7 @@ template <> struct WidgetRenderer<glm::ivec2>
                 spinbox_y->setValue(y);
               }
 
-              value.y = y;
+              attr.set_from_any(glm::ivec2{value.x, y});
 
               Q_EMIT widget->edit_started();
               Q_EMIT widget->value_changed();
@@ -188,6 +191,11 @@ template <> struct WidgetRenderer<glm::ivec2>
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](glm::ivec2) { widget->sync_widget_from_model(); });
 
     return widget;
   }

@@ -32,7 +32,7 @@ template <> struct WidgetRenderer<glm::vec3>
     {
       return nullptr;
     }
-    else if (widget_type == "Input")
+    else if (widget_type == "Input") // --- Input
     {
       if (!label_txt.empty())
       {
@@ -85,7 +85,7 @@ template <> struct WidgetRenderer<glm::vec3>
       QObject::connect(spinbox_x,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_x, min, max](double v)
+                       [&attr, &value, widget, spinbox_x, min, max](double v)
                        {
                          float x = std::clamp(static_cast<float>(v), min, max);
 
@@ -99,12 +99,15 @@ template <> struct WidgetRenderer<glm::vec3>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(spinbox_y,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_y, min, max](double v)
+                       [&attr, &value, widget, spinbox_y, min, max](double v)
                        {
                          float y = std::clamp(static_cast<float>(v), min, max);
 
@@ -118,12 +121,15 @@ template <> struct WidgetRenderer<glm::vec3>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(spinbox_z,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_z, min, max](double v)
+                       [&attr, &value, widget, spinbox_z, min, max](double v)
                        {
                          float z = std::clamp(static_cast<float>(v), min, max);
 
@@ -137,9 +143,12 @@ template <> struct WidgetRenderer<glm::vec3>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
     }
-    else if (widget_type == "ColorPicker")
+    else if (widget_type == "ColorPicker") // --- ColorPicker
     {
       if (!label_txt.empty())
       {
@@ -202,7 +211,8 @@ template <> struct WidgetRenderer<glm::vec3>
       QObject::connect(color_button,
                        &QPushButton::clicked,
                        widget,
-                       [&value,
+                       [&attr,
+                        &value,
                         widget,
                         color_button,
                         update_button_color,
@@ -234,13 +244,21 @@ template <> struct WidgetRenderer<glm::vec3>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](glm::vec3) { widget->sync_widget_from_model(); });
 
     return widget;
   }

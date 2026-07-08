@@ -74,8 +74,6 @@ ConstAttrIterator AttributeContainer::end() const { return attributes_.end(); }
 
 AbstractAttribute *AttributeContainer::find(const std::string &name)
 {
-  Logger::log()->trace("AttributeContainer::find: '{}'", name);
-
   auto it = attributes_.find(name);
   return it == attributes_.end() ? nullptr : it->second.get();
 }

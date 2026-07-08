@@ -73,9 +73,9 @@ template <> struct WidgetRenderer<int>
       QObject::connect(spinbox,
                        &QDoubleSpinBox::valueChanged,
                        spinbox,
-                       [&value, widget, min, max](int v)
+                       [&attr, widget, min, max](int v)
                        {
-                         value = std::clamp(v, min, max);
+                         attr.set_from_any(std::clamp(v, min, max));
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -120,9 +120,9 @@ template <> struct WidgetRenderer<int>
       QObject::connect(combo,
                        QOverload<int>::of(&QComboBox::currentIndexChanged),
                        widget,
-                       [&value, widget, combo](int)
+                       [&attr, widget, combo](int)
                        {
-                         value = combo->currentData().toInt();
+                         attr.set_from_any(combo->currentData().toInt());
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -138,7 +138,7 @@ template <> struct WidgetRenderer<int>
         return widget;
       }
 
-      value = std::clamp(value, min, max);
+      attr.set_from_any(std::clamp(value, min, max));
 
       QAbstractSlider *control = nullptr;
 
@@ -179,9 +179,9 @@ template <> struct WidgetRenderer<int>
       QObject::connect(control,
                        &QAbstractSlider::valueChanged,
                        widget,
-                       [&value, widget, min, max](int v)
+                       [&attr, widget, min, max](int v)
                        {
-                         value = std::clamp(v, min, max);
+                         attr.set_from_any(std::clamp(v, min, max));
                          Q_EMIT widget->value_changed();
                        });
 
@@ -209,9 +209,9 @@ template <> struct WidgetRenderer<int>
       QObject::connect(slider,
                        &SliderInt::value_changed,
                        widget,
-                       [&value, slider, widget]()
+                       [&attr, slider, widget]()
                        {
-                         value = slider->get_value();
+                         attr.set_from_any(slider->get_value());
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                        });
@@ -219,9 +219,9 @@ template <> struct WidgetRenderer<int>
       QObject::connect(slider,
                        &SliderInt::edit_ended,
                        widget,
-                       [&value, slider, widget]()
+                       [&attr, slider, widget]()
                        {
-                         value = slider->get_value();
+                         attr.set_from_any(slider->get_value());
                          Q_EMIT widget->edit_ended();
                        });
     }
@@ -230,6 +230,11 @@ template <> struct WidgetRenderer<int>
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](int) { widget->sync_widget_from_model(); });
 
     return widget;
   }

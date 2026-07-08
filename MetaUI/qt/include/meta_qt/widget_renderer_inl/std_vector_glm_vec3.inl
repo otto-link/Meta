@@ -48,7 +48,7 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
     {
       return nullptr;
     }
-    else if (is_points || is_path)
+    else if (is_points || is_path) // --- Point and Path editor
     {
       if (!label_txt.empty())
         layout->addWidget(
@@ -102,17 +102,24 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
       QObject::connect(canvas,
                        &PointsCanvas::points_changed,
                        widget,
-                       [widget]()
+                       [&attr, widget]()
                        {
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         attr.value_changed.notify(attr.value());
                        });
 
       // Committed edits (drag release / delete / clear / randomize / csv)
       QObject::connect(canvas,
                        &PointsCanvas::drag_ended,
                        widget,
-                       [widget]() { Q_EMIT widget->edit_ended(); });
+                       [&attr, widget]()
+                       {
+                         Q_EMIT widget->edit_ended();
+
+                         attr.value_changed.notify(attr.value());
+                       });
 
       // Clear
       QObject::connect(clear_btn,
@@ -124,13 +131,17 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
       QObject::connect(rand_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, canvas]() { canvas->randomize(value.size()); });
+                       [&attr, &value, canvas]()
+                       {
+                         canvas->randomize(value.size());
+                         attr.value_changed.notify(attr.value());
+                       });
 
       // From CSV
       QObject::connect(csv_btn,
                        &QPushButton::clicked,
                        widget,
-                       [canvas, widget]()
+                       [&attr, canvas, widget]()
                        {
                          const QString path = QFileDialog::getOpenFileName(
                              widget,
@@ -139,7 +150,11 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
                              QObject::tr("CSV files (*.csv);;All Files (*)"),
                              nullptr,
                              QFileDialog::DontUseNativeDialog);
-                         if (!path.isEmpty()) canvas->load_csv(path);
+                         if (!path.isEmpty())
+                         {
+                           canvas->load_csv(path);
+                           attr.value_changed.notify(attr.value());
+                         }
                        });
     }
     else // --- ERROR
@@ -147,6 +162,11 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](std::vector<glm::vec3>) { widget->sync_widget_from_model(); });
 
     return widget;
   }

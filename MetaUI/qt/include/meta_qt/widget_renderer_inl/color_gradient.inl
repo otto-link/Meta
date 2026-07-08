@@ -57,23 +57,34 @@ template <> struct WidgetRenderer<meta::ColorGradient>
       QObject::connect(picker,
                        &GradientPicker::value_changed,
                        widget,
-                       [widget]()
+                       [&attr, widget]()
                        {
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         attr.value_changed.notify(attr.value());
                        });
 
       // Committed
       QObject::connect(picker,
                        &GradientPicker::edit_ended,
                        widget,
-                       [widget]() { Q_EMIT widget->edit_ended(); });
+                       [&attr, widget]()
+                       {
+                         Q_EMIT widget->edit_ended();
+                         attr.value_changed.notify(attr.value());
+                       });
     }
     else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](meta::ColorGradient) { widget->sync_widget_from_model(); });
 
     return widget;
   }

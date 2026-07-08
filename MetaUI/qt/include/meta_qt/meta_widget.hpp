@@ -8,6 +8,7 @@
 #include <QWidget>
 
 #include "meta/core/abstract_attribute.hpp"
+#include "meta/core/event.hpp"
 
 namespace meta::qt
 {
@@ -23,6 +24,10 @@ class MetaWidget : public QWidget
   Q_OBJECT
 
 public:
+  // Make sure the connection is declared after anything it references => the
+  // connection must be destroyed before anything else disappears.
+  EventConnection connection_;
+
   /// Construct a MetaWidget.
   MetaWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 

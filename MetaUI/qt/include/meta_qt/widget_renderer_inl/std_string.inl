@@ -136,9 +136,9 @@ template <> struct WidgetRenderer<std::string>
           });
 
       // stage edits; commit only on Apply / Return.
-      auto do_apply = [&value, line_edit, widget]()
+      auto do_apply = [&attr, line_edit, widget]()
       {
-        value = line_edit->text().toStdString();
+        attr.set_from_any(line_edit->text().toStdString());
         Q_EMIT widget->edit_started();
         Q_EMIT widget->value_changed();
         Q_EMIT widget->edit_ended();
@@ -177,9 +177,10 @@ template <> struct WidgetRenderer<std::string>
       QObject::connect(apply_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, text_edit, widget]()
+                       [&attr, text_edit, widget]()
                        {
-                         value = text_edit->toPlainText().toStdString();
+                         attr.set_from_any(
+                             text_edit->toPlainText().toStdString());
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -243,9 +244,10 @@ template <> struct WidgetRenderer<std::string>
       QObject::connect(apply_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, text_edit, widget]()
+                       [&attr, text_edit, widget]()
                        {
-                         value = text_edit->toPlainText().toStdString();
+                         attr.set_from_any(
+                             text_edit->toPlainText().toStdString());
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -284,9 +286,9 @@ template <> struct WidgetRenderer<std::string>
       QObject::connect(combo,
                        &QComboBox::currentTextChanged,
                        widget,
-                       [&value, widget](const QString &text)
+                       [&attr, widget](const QString &text)
                        {
-                         value = text.toStdString();
+                         attr.set_from_any(text.toStdString());
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -347,9 +349,9 @@ template <> struct WidgetRenderer<std::string>
           group,
           QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
           widget,
-          [&value, widget](QAbstractButton *button)
+          [&attr, widget](QAbstractButton *button)
           {
-            value = button->text().toStdString();
+            attr.set_from_any(button->text().toStdString());
             Q_EMIT widget->edit_started();
             Q_EMIT widget->value_changed();
             Q_EMIT widget->edit_ended();
@@ -362,6 +364,11 @@ template <> struct WidgetRenderer<std::string>
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](std::string) { widget->sync_widget_from_model(); });
 
     return widget;
   }

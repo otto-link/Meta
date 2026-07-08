@@ -137,11 +137,11 @@ int main(int argc, char *argv[])
 
 #ifdef META_ENABLE_GLM_TYPES
   const bool base_glm_ivec = false;
-  const bool base_glm_vec = true;
+  const bool base_glm_vec = false;
 #endif
 
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
-  const bool base_color_gradient = false;
+  const bool base_color_gradient = true;
 #endif
 
   const bool base_groups = false;
@@ -533,12 +533,15 @@ int main(int argc, char *argv[])
     bool add_border = false;
 
     for (const auto &[name, sp_attr] : container)
+    {
       make_debug_view(sp_attr.get(), add_border);
+      make_debug_view(sp_attr.get(), add_border);
+    }
   }
 
   meta::SnapshotManager snapshots;
 
-  if (true)
+  if (false)
   {
     snapshots.save("default", container.json_to());
     snapshots.save("Some Config.", container.json_to());
@@ -567,7 +570,7 @@ int main(int argc, char *argv[])
 
   meta::ContainerGroup group; // watch for lifetime...
 
-  if (true)
+  if (false)
   {
     // Create multiple "views" / contexts
     auto &node_settings = group.add("node_settings");
@@ -628,6 +631,7 @@ int main(int argc, char *argv[])
     widget->show();
   }
 
+  if (false)
   {
     auto *button = new QPushButton("NEW WIDGET");
     button->setCheckable(true);

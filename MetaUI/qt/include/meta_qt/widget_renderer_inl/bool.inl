@@ -4,6 +4,7 @@
 #pragma once
 #include <QCheckBox>
 #include <QLabel>
+#include <QPointer>
 #include <QPushButton>
 #include <QWidget>
 
@@ -47,9 +48,9 @@ template <> struct WidgetRenderer<bool>
       QObject::connect(button,
                        &QPushButton::toggled,
                        widget,
-                       [widget, &value](bool checked)
+                       [widget, &attr](bool checked)
                        {
-                         value = checked;
+                         attr.set_from_any(checked);
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -101,12 +102,12 @@ template <> struct WidgetRenderer<bool>
       QObject::connect(button_true,
                        &QPushButton::clicked,
                        widget,
-                       [widget, button_true, button_false, &value]()
+                       [widget, button_true, button_false, &attr]()
                        {
                          if (button_true->isChecked())
                          {
                            button_false->setChecked(false);
-                           value = true;
+                           attr.set_from_any(true);
                            Q_EMIT widget->edit_started();
                            Q_EMIT widget->value_changed();
                            Q_EMIT widget->edit_ended();
@@ -121,12 +122,12 @@ template <> struct WidgetRenderer<bool>
       QObject::connect(button_false,
                        &QPushButton::clicked,
                        widget,
-                       [widget, button_true, button_false, &value]()
+                       [widget, button_true, button_false, &attr]()
                        {
                          if (button_false->isChecked())
                          {
                            button_true->setChecked(false);
-                           value = false;
+                           attr.set_from_any(false);
                            Q_EMIT widget->edit_started();
                            Q_EMIT widget->value_changed();
                            Q_EMIT widget->edit_ended();
@@ -150,9 +151,9 @@ template <> struct WidgetRenderer<bool>
       checkbox->connect(checkbox,
                         &QCheckBox::toggled,
                         checkbox,
-                        [widget, checkbox, &value](bool checked)
+                        [widget, checkbox, &attr](bool checked)
                         {
-                          value = checked;
+                          attr.set_from_any(checked);
                           Q_EMIT widget->edit_started();
                           Q_EMIT widget->value_changed();
                           Q_EMIT widget->edit_ended();
@@ -165,6 +166,11 @@ template <> struct WidgetRenderer<bool>
           0,
           0);
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](bool) { widget->sync_widget_from_model(); });
 
     return widget;
   }

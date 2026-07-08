@@ -135,6 +135,8 @@ void CurveCanvas::init_control_points()
     const float t = float(idx) / float(n - 1);
     ctrl_.push_back({min_x_ + t * (max_x_ - min_x_),
                      std::clamp(samples_[idx], min_y_, max_y_)});
+
+    qDebug() << ctrl_.back();
   }
   // Do NOT call resample() — samples_ is already correct.
 }

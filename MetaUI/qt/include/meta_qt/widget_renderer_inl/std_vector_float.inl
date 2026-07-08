@@ -6,6 +6,8 @@
 #include <cmath>
 #include <vector>
 
+#include "meta/logger.hpp"
+
 #include "meta_common.hpp"
 #include "meta_qt/meta_widget.hpp"
 #include "meta_qt/widgets/curve_canvas.hpp"
@@ -68,35 +70,52 @@ template <> struct WidgetRenderer<std::vector<float>>
           [canvas]()
           {
             const QSignalBlocker blocker(canvas);
-            canvas->reset_to_value();
+            canvas->update();
           });
 
       // propagate canvas changes to the node graph.
       QObject::connect(canvas,
                        &CurveCanvas::curve_changed,
                        widget,
-                       [widget]()
+                       [widget, &attr]()
                        {
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         // not using 'set_from_any' method, emit the
+                         // signal manually
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(canvas,
                        &CurveCanvas::drag_ended,
                        widget,
-                       [widget]() { Q_EMIT widget->edit_ended(); });
+                       [widget, &attr]()
+                       {
+                         Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, emit the signal
+                         // manually
+                         attr.value_changed.notify(attr.value());
+                       });
 
       // reset to identity diagonal.
       QObject::connect(reset_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, curve_size, min_y, max_y, canvas, widget]()
+                       [&attr, curve_size, min_y, max_y, canvas, widget]()
                        {
+                         std::vector<float> new_value;
+                         new_value.reserve(curve_size);
+
                          for (int i = 0; i < curve_size; ++i)
                          {
                            const float t = float(i) / float(curve_size - 1);
-                           value[i] = min_y + t * (max_y - min_y);
+                           new_value.push_back(min_y + t * (max_y - min_y));
                          }
+
+                         attr.set_from_any(new_value);
+
                          // re-create the canvas state from the new buffer.
                          canvas->reset_to_value();
 
@@ -110,6 +129,11 @@ template <> struct WidgetRenderer<std::vector<float>>
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](std::vector<float>) { widget->sync_widget_from_model(); });
 
     return widget;
   }

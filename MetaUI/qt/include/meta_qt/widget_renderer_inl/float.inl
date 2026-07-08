@@ -78,16 +78,17 @@ template <> struct WidgetRenderer<float>
       QObject::connect(spinbox,
                        &QDoubleSpinBox::valueChanged,
                        spinbox,
-                       [&value, widget, min, max](double v)
+                       [&attr, widget, min, max](double v)
                        {
-                         value = std::clamp(static_cast<float>(v), min, max);
+                         attr.set_from_any(
+                             std::clamp(static_cast<float>(v), min, max));
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
     }
     else if (widget_type == "Slider" || widget_type == "ScrollBar" ||
-             widget_type == "Dial")
+             widget_type == "Dial") // --- Sliders
     {
       if (!attr.metadata().contains_all_keys(
               {meta::keys::constraints::min, meta::keys::constraints::max}))
@@ -105,7 +106,7 @@ template <> struct WidgetRenderer<float>
       auto from_int = [min, max](int v) -> float
       { return min + (static_cast<float>(v) / range_max) * (max - min); };
 
-      value = std::clamp(value, min, max);
+      attr.set_from_any(std::clamp(value, min, max));
 
       QAbstractSlider *control = nullptr;
 
@@ -149,9 +150,9 @@ template <> struct WidgetRenderer<float>
       QObject::connect(control,
                        &QAbstractSlider::valueChanged,
                        widget,
-                       [&value, widget, from_int, min, max](int v)
+                       [&attr, widget, from_int, min, max](int v)
                        {
-                         value = std::clamp(from_int(v), min, max);
+                         attr.set_from_any(std::clamp(from_int(v), min, max));
                          Q_EMIT widget->value_changed();
                        });
 
@@ -186,9 +187,9 @@ template <> struct WidgetRenderer<float>
       QObject::connect(slider,
                        &SliderFloat::value_changed,
                        widget,
-                       [&value, slider, widget]()
+                       [&attr, slider, widget]()
                        {
-                         value = slider->get_value();
+                         attr.set_from_any(slider->get_value());
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                        });
@@ -197,17 +198,22 @@ template <> struct WidgetRenderer<float>
       QObject::connect(slider,
                        &SliderFloat::edit_ended,
                        widget,
-                       [&value, slider, widget]()
+                       [&attr, slider, widget]()
                        {
-                         value = slider->get_value();
+                         attr.set_from_any(slider->get_value());
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](float) { widget->sync_widget_from_model(); });
 
     return widget;
   }

@@ -93,7 +93,7 @@ template <> struct WidgetRenderer<glm::vec4>
       QObject::connect(spinbox_x,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_x, min, max](double v)
+                       [&attr, &value, widget, spinbox_x, min, max](double v)
                        {
                          float x = std::clamp(static_cast<float>(v), min, max);
 
@@ -107,12 +107,15 @@ template <> struct WidgetRenderer<glm::vec4>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(spinbox_y,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_y, min, max](double v)
+                       [&attr, &value, widget, spinbox_y, min, max](double v)
                        {
                          float y = std::clamp(static_cast<float>(v), min, max);
 
@@ -126,12 +129,15 @@ template <> struct WidgetRenderer<glm::vec4>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(spinbox_z,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_z, min, max](double v)
+                       [&attr, &value, widget, spinbox_z, min, max](double v)
                        {
                          float z = std::clamp(static_cast<float>(v), min, max);
 
@@ -145,12 +151,15 @@ template <> struct WidgetRenderer<glm::vec4>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(spinbox_w,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_w, min, max](double v)
+                       [&attr, &value, widget, spinbox_w, min, max](double v)
                        {
                          float w = std::clamp(static_cast<float>(v), min, max);
 
@@ -164,6 +173,9 @@ template <> struct WidgetRenderer<glm::vec4>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
     }
     else if (widget_type == "ColorPicker") // --- ColorPicker
@@ -233,48 +245,57 @@ template <> struct WidgetRenderer<glm::vec4>
             update_hex_label(value);
           });
 
-      QObject::connect(color_button,
-                       &QPushButton::clicked,
-                       widget,
-                       [&value, widget, update_button_color, update_hex_label]()
-                       {
-                         const int ri = static_cast<int>(
-                             std::clamp(value.x, 0.f, 1.f) * 255.f);
-                         const int gi = static_cast<int>(
-                             std::clamp(value.y, 0.f, 1.f) * 255.f);
-                         const int bi = static_cast<int>(
-                             std::clamp(value.z, 0.f, 1.f) * 255.f);
-                         const int ai = static_cast<int>(
-                             std::clamp(value.w, 0.f, 1.f) * 255.f);
-                         const QColor initial(ri, gi, bi, ai);
+      QObject::connect(
+          color_button,
+          &QPushButton::clicked,
+          widget,
+          [&attr, &value, widget, update_button_color, update_hex_label]()
+          {
+            const int    ri = static_cast<int>(std::clamp(value.x, 0.f, 1.f) *
+                                            255.f);
+            const int    gi = static_cast<int>(std::clamp(value.y, 0.f, 1.f) *
+                                            255.f);
+            const int    bi = static_cast<int>(std::clamp(value.z, 0.f, 1.f) *
+                                            255.f);
+            const int    ai = static_cast<int>(std::clamp(value.w, 0.f, 1.f) *
+                                            255.f);
+            const QColor initial(ri, gi, bi, ai);
 
-                         const QColor picked = QColorDialog::getColor(
-                             initial,
-                             widget,
-                             QString(),
-                             QColorDialog::ShowAlphaChannel |
-                                 QColorDialog::DontUseNativeDialog);
+            const QColor picked = QColorDialog::getColor(
+                initial,
+                widget,
+                QString(),
+                QColorDialog::ShowAlphaChannel |
+                    QColorDialog::DontUseNativeDialog);
 
-                         if (!picked.isValid()) return;
+            if (!picked.isValid()) return;
 
-                         value.x = static_cast<float>(picked.redF());
-                         value.y = static_cast<float>(picked.greenF());
-                         value.z = static_cast<float>(picked.blueF());
-                         value.w = static_cast<float>(picked.alphaF());
+            value.x = static_cast<float>(picked.redF());
+            value.y = static_cast<float>(picked.greenF());
+            value.z = static_cast<float>(picked.blueF());
+            value.w = static_cast<float>(picked.alphaF());
 
-                         update_button_color(value);
-                         update_hex_label(value);
+            update_button_color(value);
+            update_hex_label(value);
 
-                         Q_EMIT widget->edit_started();
-                         Q_EMIT widget->value_changed();
-                         Q_EMIT widget->edit_ended();
-                       });
+            Q_EMIT widget->edit_started();
+            Q_EMIT widget->value_changed();
+            Q_EMIT widget->edit_ended();
+
+            // not using 'set_from_any' method, force emit
+            attr.value_changed.notify(attr.value());
+          });
     }
     else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](glm::vec4) { widget->sync_widget_from_model(); });
 
     return widget;
   }

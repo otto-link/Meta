@@ -60,7 +60,7 @@ void VectorCanvas::commit()
   const float rad = angle_deg_ * DEG2RAD;
 
   if (locked_)
-    value_ = {magnitude_, magnitude_};
+    value_ = {magnitude_ / 1.414213562f, magnitude_ / 1.414213562f};
   else
     value_ = {magnitude_ * std::cos(rad), magnitude_ * std::sin(rad)};
 

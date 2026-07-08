@@ -105,7 +105,7 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(spinbox_x,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_x, min, max](double v)
+                       [&attr, &value, widget, spinbox_x, min, max](double v)
                        {
                          float x = std::clamp(static_cast<float>(v), min, max);
 
@@ -114,7 +114,7 @@ template <> struct WidgetRenderer<glm::vec2>
                            spinbox_x->setValue(x);
                          }
 
-                         value.x = x;
+                         attr.set_from_any(glm::vec2{x, value.y});
 
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
@@ -124,7 +124,7 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(spinbox_y,
                        qOverload<double>(&QDoubleSpinBox::valueChanged),
                        widget,
-                       [&value, widget, spinbox_y, min, max](double v)
+                       [&attr, &value, widget, spinbox_y, min, max](double v)
                        {
                          float y = std::clamp(static_cast<float>(v), min, max);
 
@@ -133,7 +133,7 @@ template <> struct WidgetRenderer<glm::vec2>
                            spinbox_y->setValue(y);
                          }
 
-                         value.y = y;
+                         attr.set_from_any(glm::vec2{value.x, y});
 
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
@@ -169,27 +169,36 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(canvas,
                        &XYCanvas::value_changed,
                        widget,
-                       [widget](glm::vec2)
+                       [widget, &attr](glm::vec2)
                        {
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       // Fires once on mouse release — edit_ended.
       QObject::connect(canvas,
                        &XYCanvas::drag_ended,
                        widget,
-                       [widget](glm::vec2) { Q_EMIT widget->edit_ended(); });
+                       [widget, &attr](glm::vec2)
+                       {
+                         Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
+                       });
 
       // Center
       QObject::connect(center_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, min, max, canvas, widget]()
+                       [&attr, min, max, canvas, widget]()
                        {
                          const glm::vec2 center = {(min + max) * 0.5f,
                                                    (min + max) * 0.5f};
-                         value = center;
+                         attr.set_from_any(center);
                          canvas->set_value(center);
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
@@ -200,13 +209,13 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(random_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, min, max, canvas, widget]()
+                       [&attr, min, max, canvas, widget]()
                        {
                          static std::mt19937 rng{std::random_device{}()};
                          std::uniform_real_distribution<float> dist_x(min, max);
                          std::uniform_real_distribution<float> dist_y(min, max);
                          const glm::vec2 rv = {dist_x(rng), dist_y(rng)};
-                         value = rv;
+                         attr.set_from_any(rv);
                          canvas->set_value(rv);
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
@@ -280,6 +289,7 @@ template <> struct WidgetRenderer<glm::vec2>
             {
               QSignalBlocker b(bar);
               bar->set_value(value);
+              bar->update();
             }
           });
 
@@ -288,6 +298,7 @@ template <> struct WidgetRenderer<glm::vec2>
                        &QPushButton::toggled,
                        widget,
                        [&value,
+                        &attr,
                         bar,
                         toggle_btn,
                         set_active,
@@ -302,14 +313,14 @@ template <> struct WidgetRenderer<glm::vec2>
                          if (active)
                          {
                            // Restore last known good range.
-                           value = lav;
+                           attr.set_from_any(lav);
                            bar->set_value(lav);
                          }
                          else
                          {
                            // Save current range before clobbering it.
                            lav = value;
-                           value = {-1.f, 0.f};
+                           attr.set_from_any(glm::vec2{-1.f, 0.f});
                            bar->set_value({-1.f, 0.f});
                          }
 
@@ -338,10 +349,10 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(reset_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, min, max, bar, widget]()
+                       [&attr, min, max, bar, widget]()
                        {
                          bar->set_value({min, max});
-                         value = {min, max};
+                         attr.set_from_any(glm::vec2{min, max});
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -352,13 +363,13 @@ template <> struct WidgetRenderer<glm::vec2>
           center_btn,
           &QPushButton::clicked,
           widget,
-          [&value, min, max, bar, widget]()
+          [&value, &attr, min, max, bar, widget]()
           {
             const float span = value.y - value.x;
             const float mid = 0.f; // (min + max) * 0.5f;
             const float lo = std::clamp(mid - span * 0.5f, min, max - span);
             bar->set_value({lo, lo + span});
-            value = {lo, lo + span};
+            attr.set_from_any(glm::vec2{lo, lo + span});
             Q_EMIT widget->edit_started();
             Q_EMIT widget->value_changed();
             Q_EMIT widget->edit_ended();
@@ -368,12 +379,12 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(unit_btn,
                        &QPushButton::clicked,
                        widget,
-                       [&value, min, max, bar, widget]()
+                       [&attr, min, max, bar, widget]()
                        {
                          const float lo = std::clamp(0.f, min, max);
                          const float hi = std::clamp(1.f, min, max);
                          bar->set_value({lo, hi});
-                         value = {lo, hi};
+                         attr.set_from_any(glm::vec2{lo, hi});
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
@@ -417,7 +428,7 @@ template <> struct WidgetRenderer<glm::vec2>
       angle_spin->setSingleStep(1.0);
       angle_spin->setSuffix("°");
       angle_spin->setValue(double(canvas->angle_deg()));
-      angle_spin->setEnabled(!locked_xy);
+      angle_spin->setEnabled(locked_xy);
       angle_spin->setFixedHeight(22);
 
       form->addRow(QObject::tr("Magnitude"), mag_spin);
@@ -460,6 +471,7 @@ template <> struct WidgetRenderer<glm::vec2>
             {
               QSignalBlocker b(angle_spin);
               angle_spin->setValue(deg);
+              angle_spin->setEnabled(!stored_locked_state);
             }
 
             {
@@ -472,7 +484,7 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(canvas,
                        &VectorCanvas::magnitude_changed,
                        widget,
-                       [mag_spin](float mag)
+                       [&attr, mag_spin](float mag)
                        {
                          QSignalBlocker b(mag_spin);
                          mag_spin->setValue(double(mag));
@@ -481,7 +493,7 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(canvas,
                        &VectorCanvas::angle_changed,
                        widget,
-                       [angle_spin](float deg)
+                       [&attr, angle_spin](float deg)
                        {
                          QSignalBlocker b(angle_spin);
                          angle_spin->setValue(double(deg));
@@ -500,17 +512,20 @@ template <> struct WidgetRenderer<glm::vec2>
                        [canvas](double v) { canvas->set_angle_deg(float(v)); });
 
       // Lock toggle → canvas + angle spinbox enable state
-      QObject::connect(lock_cb,
-                       &QCheckBox::toggled,
-                       widget,
-                       [state, widget_type, canvas, angle_spin](bool checked)
-                       {
-                         canvas->set_locked(checked);
-                         angle_spin->setEnabled(!checked);
+      QObject::connect(
+          lock_cb,
+          &QCheckBox::toggled,
+          widget,
+          [&attr, state, widget_type, canvas, angle_spin](bool checked)
+          {
+            canvas->set_locked(checked);
+            angle_spin->setEnabled(!checked);
 
-                         state->metadata().value<bool>(widget_type +
-                                                       ".locked_xy") = checked;
-                       });
+            state->metadata().value<bool>(widget_type + ".locked_xy") = checked;
+
+            // not using 'set_from_any' method, force emit
+            attr.value_changed.notify(attr.value());
+          });
 
       // --- Graph signals
 
@@ -518,20 +533,36 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(canvas,
                        &VectorCanvas::value_changed,
                        widget,
-                       [widget](glm::vec2)
+                       [&attr, widget](glm::vec2)
                        {
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       // Committed (drag release, lock toggle, spinbox enter)
       QObject::connect(canvas,
                        &VectorCanvas::drag_ended,
                        widget,
-                       [widget](glm::vec2) { Q_EMIT widget->edit_ended(); });
+                       [&attr, widget](glm::vec2)
+                       {
+                         Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
+                       });
 
       // Spinboxes commit on editingFinished (Return / focus-out)
-      auto spinbox_commit = [widget]() { Q_EMIT widget->edit_ended(); };
+      auto spinbox_commit = [&attr, widget]()
+      {
+        Q_EMIT widget->edit_ended();
+
+        // not using 'set_from_any' method, force emit
+        attr.value_changed.notify(attr.value());
+      };
+
       QObject::connect(mag_spin,
                        &QDoubleSpinBox::editingFinished,
                        widget,
@@ -545,7 +576,13 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(lock_cb,
                        &QCheckBox::toggled,
                        widget,
-                       [widget](bool) { Q_EMIT widget->edit_ended(); });
+                       [&attr, widget](bool)
+                       {
+                         Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
+                       });
     }
     else if (widget_type == "LinkedSliders") // --- LinkedSliders
     {
@@ -634,7 +671,7 @@ template <> struct WidgetRenderer<glm::vec2>
       QObject::connect(slider_x,
                        &SliderFloat::value_changed,
                        widget,
-                       [&value, slider_x, slider_y, lock_btn, widget]()
+                       [&attr, &value, slider_x, slider_y, lock_btn, widget]()
                        {
                          value.x = slider_x->get_value();
                          if (lock_btn->isChecked())
@@ -645,35 +682,47 @@ template <> struct WidgetRenderer<glm::vec2>
                          }
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(slider_x,
                        &SliderFloat::edit_ended,
                        widget,
-                       [&value, slider_x, widget]()
+                       [&attr, &value, slider_x, widget]()
                        {
                          value.x = slider_x->get_value();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       // slider_y changed (only reachable when unlocked)
       QObject::connect(slider_y,
                        &SliderFloat::value_changed,
                        widget,
-                       [&value, slider_y, widget]()
+                       [&attr, &value, slider_y, widget]()
                        {
                          value.y = slider_y->get_value();
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       QObject::connect(slider_y,
                        &SliderFloat::edit_ended,
                        widget,
-                       [&value, slider_y, widget]()
+                       [&attr, &value, slider_y, widget]()
                        {
                          value.y = slider_y->get_value();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
 
       // Lock toggle
@@ -683,6 +732,7 @@ template <> struct WidgetRenderer<glm::vec2>
                        [state,
                         widget_type,
                         &value,
+                        &attr,
                         slider_x,
                         slider_y,
                         lock_btn,
@@ -708,6 +758,9 @@ template <> struct WidgetRenderer<glm::vec2>
                          Q_EMIT widget->edit_started();
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
+
+                         // not using 'set_from_any' method, force emit
+                         attr.value_changed.notify(attr.value());
                        });
     }
     else // --- ERROR
@@ -715,6 +768,11 @@ template <> struct WidgetRenderer<glm::vec2>
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](glm::vec2) { widget->sync_widget_from_model(); });
 
     return widget;
   }

@@ -87,6 +87,7 @@ template <> struct WidgetRenderer<std::filesystem::path>
           &QPushButton::clicked,
           widget,
           [&value,
+           &attr,
            widget,
            line_edit,
            is_save_file,
@@ -129,7 +130,7 @@ template <> struct WidgetRenderer<std::filesystem::path>
 
             if (picked.isEmpty()) return;
 
-            value = std::filesystem::path(picked.toStdString());
+            attr.set_from_any(std::filesystem::path(picked.toStdString()));
             line_edit->setText(picked);
 
             Q_EMIT widget->edit_started();
@@ -142,9 +143,9 @@ template <> struct WidgetRenderer<std::filesystem::path>
       QObject::connect(clear_button,
                        &QPushButton::clicked,
                        widget,
-                       [&value, widget, line_edit]()
+                       [&attr, widget, line_edit]()
                        {
-                         value = std::filesystem::path{};
+                         attr.set_from_any(std::filesystem::path{});
                          line_edit->clear();
 
                          Q_EMIT widget->edit_started();
@@ -152,11 +153,16 @@ template <> struct WidgetRenderer<std::filesystem::path>
                          Q_EMIT widget->edit_ended();
                        });
     }
-    else
+    else // --- ERROR
     {
       layout->addWidget(
           make_error_widget(&attr, "unsupported widget type", widget));
     }
+
+    // connection: attribute changed ==> widget update (dies with the
+    // widget destruction)
+    widget->connection_ = attr.value_changed.subscribe(
+        [widget](std::filesystem::path) { widget->sync_widget_from_model(); });
 
     return widget;
   }

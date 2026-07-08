@@ -15,6 +15,7 @@
 #include <nlohmann/json.hpp>
 
 #include "meta/core/abstract_attribute.hpp"
+#include "meta/core/event.hpp"
 #include "meta/type/attribute_traits.hpp"
 #include "meta/type/type_name.hpp"
 
@@ -48,6 +49,8 @@ void deserialize_metadata(AttributeContainer &m, const nlohmann::json &j);
 template <typename T> class Attribute : public AbstractAttribute
 {
 public:
+  Event<T> value_changed;
+
   /**
    * @brief Construct an attribute with a name and initial value.
    *
@@ -82,6 +85,7 @@ public:
     if (value.type() != typeid(T)) return false;
 
     value_ = std::any_cast<T>(value);
+    value_changed.notify(value_);
     return true;
   }
 
