@@ -23,12 +23,14 @@ const std::function<void()> &MetaWidget::get_sync_from_model() const
   return sync_from_model_;
 }
 
+void MetaWidget::on_sync_widget_from_model() { sync_widget_from_model(); }
+
 void MetaWidget::set_sync_from_model(std::function<void()> callback)
 {
   sync_from_model_ = std::move(callback);
 }
 
-void MetaWidget::sync_from_model_widget()
+void MetaWidget::sync_widget_from_model()
 {
   if (sync_from_model_) sync_from_model_();
 }

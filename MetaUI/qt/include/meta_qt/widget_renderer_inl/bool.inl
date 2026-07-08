@@ -42,7 +42,7 @@ template <> struct WidgetRenderer<bool>
       widget->set_sync_from_model([button, &value]()
                                   { button->setChecked(value); });
 
-      widget->sync_from_model_widget();
+      widget->sync_widget_from_model();
 
       QObject::connect(button,
                        &QPushButton::toggled,
@@ -95,7 +95,7 @@ template <> struct WidgetRenderer<bool>
             button_false->setChecked(!value);
           });
 
-      widget->sync_from_model_widget();
+      widget->sync_widget_from_model();
 
       // connect the buttons' clicked signals to update the state
       QObject::connect(button_true,
@@ -145,7 +145,7 @@ template <> struct WidgetRenderer<bool>
       widget->set_sync_from_model([checkbox, &value]()
                                   { checkbox->setChecked(value); });
 
-      widget->sync_from_model_widget();
+      widget->sync_widget_from_model();
 
       checkbox->connect(checkbox,
                         &QCheckBox::toggled,

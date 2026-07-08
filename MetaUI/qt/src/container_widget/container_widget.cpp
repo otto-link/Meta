@@ -356,6 +356,14 @@ MetaWidget *render(AttributeContainer    &container,
                      &MetaWidget::edit_ended);
   }
 
+  // chain the container update request with the collected widget syncing
+  container_widget->set_sync_from_model(
+      [collected_widgets]()
+      {
+        for (auto w : collected_widgets)
+          w->sync_widget_from_model();
+      });
+
   Logger::log()->trace("container_widget::render: {} widgets created",
                        collected_widgets.size());
 
@@ -378,7 +386,7 @@ MetaWidget *render(AttributeContainer    &container,
           for (MetaWidget *w : collected_widgets)
           {
             const QSignalBlocker blocker(w);
-            w->sync_from_model_widget();
+            w->sync_widget_from_model();
           }
 
           Q_EMIT container_widget->value_changed();

@@ -12,8 +12,12 @@
 namespace meta::qt
 {
 
-/// Base widget used in the Meta Qt system.
-/// Provides lifecycle signals and a model synchronization callback.
+/** @brief Base widget used in the Meta Qt system.
+ *
+ * MetaWidget provides a common interface for attribute editor widgets. The
+ * actual synchronization logic depends on the underlying attribute and widget
+ * types and is assigned when the widget is created.
+ */
 class MetaWidget : public QWidget
 {
   Q_OBJECT
@@ -25,11 +29,12 @@ public:
   /// Get sync-from-model callback.
   const std::function<void()> &get_sync_from_model() const;
 
-  /// Set callback used to sync widget from model.
+  /// Set callback used to sync widget from model. The callback is typically
+  /// assigned by the widget factory when the MetaWidget is created.
   void set_sync_from_model(std::function<void()> callback);
 
   /// Call the sync-from-model callback if it exists.
-  void sync_from_model_widget();
+  void sync_widget_from_model();
 
 signals:
   /// Emitted when widget is closed.
@@ -43,6 +48,17 @@ signals:
 
   /// Emitted when value changes.
   void value_changed();
+
+public slots:
+  /** @brief Synchronize the widget from the model.
+   *
+   * This slot simply forwards to sync_widget_from_model(). The actual
+   * synchronization logic is implemented by the callback assigned when the
+   * widget is created. Using a callback avoids requiring each specialized
+   * widget to implement its own Qt slot while still providing a standard slot
+   * that can be connected to Qt signals.
+   */
+  void on_sync_widget_from_model();
 
 protected:
   /// Handle close event.

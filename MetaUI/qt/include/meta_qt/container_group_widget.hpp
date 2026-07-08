@@ -25,6 +25,10 @@ public:
       ContainerRenderOptions options = ContainerRenderOptions{},
       QWidget               *parent = nullptr);
 
+public slots:
+  /// Synchronize the contained MetaWidgets from their model.
+  void on_sync_meta_widgets_from_model();
+
 private:
   /// Build a widget for a single container entry.
   QWidget *build_container_widget(const std::string &key);

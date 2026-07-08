@@ -97,6 +97,17 @@ QWidget *ContainerGroupWidget::build_container_widget(const std::string &key)
   return container_widget;
 }
 
+void ContainerGroupWidget::on_sync_meta_widgets_from_model()
+{
+  Logger::log()->trace("ContainerGroupWidget::on_sync_meta_widgets_from_model");
+
+  for (int i = 0; i < stacked->count(); ++i)
+  {
+    if (auto *meta_widget = qobject_cast<MetaWidget *>(stacked->widget(i)))
+      meta_widget->sync_widget_from_model();
+  }
+}
+
 void ContainerGroupWidget::sync_stack()
 {
   Logger::log()->trace("ContainerGroupWidget::sync_stack");
