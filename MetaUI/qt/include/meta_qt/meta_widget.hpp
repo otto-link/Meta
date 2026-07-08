@@ -29,8 +29,12 @@ public:
   /// Get sync-from-model callback.
   const std::function<void()> &get_sync_from_model() const;
 
-  /// Set callback used to sync widget from model. The callback is typically
-  /// assigned by the widget factory when the MetaWidget is created.
+  /** @brief Set callback used to sync widget from model.
+   *
+   * The callback is typically assigned by the widget factory when the
+   * MetaWidget is created. /!\ Use QBlocker in the callback to avoid infinite
+   * feedback loops.
+   */
   void set_sync_from_model(std::function<void()> callback);
 
   /// Call the sync-from-model callback if it exists.
