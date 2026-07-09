@@ -8,5 +8,6 @@ var classmeta_1_1SnapshotManager =
     [ "load", "classmeta_1_1SnapshotManager.html#ae92540886e4cef091e79fa7bcb3a2c7e", null ],
     [ "names", "classmeta_1_1SnapshotManager.html#a5e27f2bbd5eb4268c21e7b4f3e7bb0d2", null ],
     [ "save", "classmeta_1_1SnapshotManager.html#a4200e1706a8f509747228524b198de03", null ],
-    [ "snapshots_", "classmeta_1_1SnapshotManager.html#acb63f858b0fad43bfebab552ffac570c", null ]
+    [ "snapshots_", "classmeta_1_1SnapshotManager.html#acb63f858b0fad43bfebab552ffac570c", null ],
+    [ "snapshots_modified", "classmeta_1_1SnapshotManager.html#a0f3ed776e809b4a200f4c32c536771d7", null ]
 ];

@@ -4,6 +4,16 @@
 
 {\ttfamily \#include $<$snapshot\+\_\+manager.\+hpp$>$}
 
+
+
+Collaboration diagram for meta\+::Snapshot\+Manager\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=249pt]{classmeta_1_1SnapshotManager__coll__graph}
+\end{center}
+\end{figure}
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -23,6 +33,11 @@ std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classmeta_1_1SnapshotManager
 \begin{DoxyCompactList}\small\item\em Get all saved snapshot names. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classmeta_1_1SnapshotManager_a4200e1706a8f509747228524b198de03}{save}} (const std\+::string \&name, const nlohmann\+::json \&snapshot)
 \begin{DoxyCompactList}\small\item\em Save a snapshot under a given name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmeta_1_1Event}{Event}} \mbox{\hyperlink{classmeta_1_1SnapshotManager_a0f3ed776e809b4a200f4c32c536771d7}{snapshots\+\_\+modified}}
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Private Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -158,6 +173,12 @@ Save a snapshot under a given name.
 \index{snapshots\_@{snapshots\_}!meta::SnapshotManager@{meta::SnapshotManager}}
 \doxysubsubsection{\texorpdfstring{snapshots\_}{snapshots\_}}
 {\footnotesize\ttfamily std\+::unordered\+\_\+map$<$std\+::string, nlohmann\+::json$>$ meta\+::\+Snapshot\+Manager\+::snapshots\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{classmeta_1_1SnapshotManager_a0f3ed776e809b4a200f4c32c536771d7}\label{classmeta_1_1SnapshotManager_a0f3ed776e809b4a200f4c32c536771d7} 
+\index{meta::SnapshotManager@{meta::SnapshotManager}!snapshots\_modified@{snapshots\_modified}}
+\index{snapshots\_modified@{snapshots\_modified}!meta::SnapshotManager@{meta::SnapshotManager}}
+\doxysubsubsection{\texorpdfstring{snapshots\_modified}{snapshots\_modified}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1Event}{Event}} meta\+::\+Snapshot\+Manager\+::snapshots\+\_\+modified}
 
 
 
