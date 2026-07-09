@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 
 #include "meta/core/attribute.hpp"
+#include "meta/serialization/snapshot_manager.hpp"
 
 #include <iostream>
 
@@ -318,9 +319,22 @@ public:
    */
   void json_from(const nlohmann::json &j);
 
+  /**
+   * @brief Access the snapshot manager.
+   * @return Reference to the snapshot manager.
+   */
+  SnapshotManager &snapshot_manager();
+
+  /**
+   * @brief Access the snapshot manager.
+   * @return Const reference to the snapshot manager.
+   */
+  const SnapshotManager &snapshot_manager() const;
+
 private:
   AttrContainerType        attributes_;
   std::vector<std::string> insertion_order_;
+  SnapshotManager          snapshot_manager_;
 
   /**
    * @brief Removes stale entries from insertion_order_ that no longer exist

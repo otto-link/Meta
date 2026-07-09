@@ -238,7 +238,6 @@ void render_category_merged(meta::AttributeContainer        &container,
 
 MetaWidget *render(AttributeContainer    &container,
                    ContainerRenderOptions options,
-                   SnapshotManager       *p_snapshot_manager,
                    QWidget               *parent)
 {
   Logger::log()->trace("container_widget::render");
@@ -283,11 +282,11 @@ MetaWidget *render(AttributeContainer    &container,
 
   PresetComboBox *presets;
 
-  if (p_snapshot_manager)
+  if (options.snapshot_manager)
   {
     Logger::log()->trace("container_widget::render: enabling presets");
 
-    presets = new PresetComboBox(p_snapshot_manager);
+    presets = new PresetComboBox(&container.snapshot_manager());
     layout->addWidget(presets);
 
     // define save snapshot function
@@ -367,7 +366,7 @@ MetaWidget *render(AttributeContainer    &container,
   Logger::log()->trace("container_widget::render: {} widgets created",
                        collected_widgets.size());
 
-  if (p_snapshot_manager)
+  if (options.snapshot_manager)
   {
     Logger::log()->trace("container_widget::render: presets connection");
 

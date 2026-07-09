@@ -33,7 +33,7 @@ PresetComboBox::PresetComboBox(SnapshotManager *snapshot_manager_,
   this->connect(this->combo,
                 QOverload<int>::of(&QComboBox::activated),
                 this,
-                &PresetComboBox::on_index_axtivated);
+                &PresetComboBox::on_index_activated);
 
   // --- Context menu for deletion
 
@@ -80,9 +80,9 @@ std::string PresetComboBox::get_current_preset() const
   return this->current_preset;
 }
 
-void PresetComboBox::on_index_axtivated(int index)
+void PresetComboBox::on_index_activated(int index)
 {
-  Logger::log()->trace("PresetComboBox::on_index_axtivated: index={}", index);
+  Logger::log()->trace("PresetComboBox::on_index_activated: index={}", index);
 
   if (index == PresetComboBox::save_action_index)
   {
@@ -94,7 +94,7 @@ void PresetComboBox::on_index_axtivated(int index)
 
   if (!this->snapshot_manager->has(name))
   {
-    Logger::log()->error("PresetComboBox::on_index_axtivated: selected preset "
+    Logger::log()->error("PresetComboBox::on_index_activated: selected preset "
                          "'{}' no longer exists",
                          name);
     this->populate_combo();
@@ -102,7 +102,7 @@ void PresetComboBox::on_index_axtivated(int index)
   }
 
   Logger::log()->trace(
-      "PresetComboBox::on_index_axtivated: selected preset '{}'",
+      "PresetComboBox::on_index_activated: selected preset '{}'",
       name);
 
   this->current_preset = name;

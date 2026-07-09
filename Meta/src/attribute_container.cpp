@@ -93,13 +93,41 @@ void AttributeContainer::json_from(const nlohmann::json &j)
 {
   Logger::log()->trace("AttributeContainer::json_from: {} entries", j.size());
 
+  if (!j.is_object())
+  {
+    Logger::log()->error("AttributeContainer::json_from: expected JSON object");
+    return;
+  }
+
+  Logger::log()->trace("AttributeContainer::json_from: {} entries", j.size());
+
   for (auto &[name, value] : j.items())
   {
+    // Reserved entry
+    if (name == "snapshot_manager") continue;
+
+    if (!value.is_object())
+    {
+      Logger::log()->warn("json_from: skipping attribute '{}' because its "
+                          "value is not an object",
+                          name);
+      continue;
+    }
+
     auto it = attributes_.find(name);
 
     if (it == attributes_.end())
     {
-      const std::string attr_type = value.at("type");
+      if (!value.contains("type") || !value["type"].is_string())
+      {
+        Logger::log()->warn(
+            "json_from: cannot create attribute '{}' (missing or invalid "
+            "'type' field)",
+            name);
+        continue;
+      }
+
+      const std::string attr_type = value["type"].get<std::string>();
 
       Logger::log()->trace("json_from: creating attribute '{}' of type '{}'",
                            name,
@@ -109,7 +137,9 @@ void AttributeContainer::json_from(const nlohmann::json &j)
 
       if (!new_attr)
       {
-        Logger::log()->error("Unknown attribute type: '{}'", attr_type);
+        Logger::log()->error("json_from: unknown attribute type '{}' for '{}'",
+                             attr_type,
+                             name);
         continue;
       }
 
@@ -123,7 +153,31 @@ void AttributeContainer::json_from(const nlohmann::json &j)
       Logger::log()->trace("json_from: updating attribute '{}'", name);
     }
 
-    it->second->json_from(value);
+    try
+    {
+      it->second->json_from(value);
+    }
+    catch (const std::exception &e)
+    {
+      Logger::log()->error(
+          "json_from: failed to deserialize attribute '{}': {}",
+          name,
+          e.what());
+    }
+  }
+
+  if (j.contains("snapshot_manager"))
+  {
+    try
+    {
+      snapshot_manager_.json_from(j["snapshot_manager"]);
+    }
+    catch (const std::exception &e)
+    {
+      Logger::log()->error(
+          "json_from: failed to deserialize snapshot manager: {}",
+          e.what());
+    }
   }
 }
 
@@ -136,12 +190,24 @@ nlohmann::json AttributeContainer::json_to() const
   for (const auto &[name, attr] : attributes_)
     j[name] = attr->json_to();
 
+  j["snapshot_manager"] = snapshot_manager_.json_to();
+
   return j;
 }
 
 std::size_t AttributeContainer::size() const noexcept
 {
   return attributes_.size();
+}
+
+SnapshotManager &AttributeContainer::snapshot_manager()
+{
+  return snapshot_manager_;
+}
+
+const SnapshotManager &AttributeContainer::snapshot_manager() const
+{
+  return snapshot_manager_;
 }
 
 // --- Functions

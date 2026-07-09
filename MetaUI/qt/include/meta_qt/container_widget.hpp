@@ -31,6 +31,7 @@ struct ContainerRenderOptions
   std::string root_category_name = "";                       ///< Optional root category label
   std::vector<std::string> insertion_order = {};             ///< Explicit ordering of categories
   std::optional<std::regex> collapse_regex = std::nullopt;   ///< Regex used to collapse categories
+  bool snapshot_manager = false;                             ///< Add snapshot manager widget
   // clang-format on
 };
 
@@ -72,7 +73,6 @@ void render_group_merged(meta::AttributeContainer  &container,
 /// Main entry point for rendering an attribute container into widgets.
 MetaWidget *render(meta::AttributeContainer &container,
                    ContainerRenderOptions    options = ContainerRenderOptions{},
-                   SnapshotManager          *p_snapshot_manager = nullptr,
                    QWidget                  *parent = nullptr);
 
 } // namespace meta::qt

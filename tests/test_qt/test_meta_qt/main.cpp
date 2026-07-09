@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
   meta::AttributeContainer container;
 
   const bool base_bool = false;
-  const bool base_float = false;
+  const bool base_float = true;
   const bool base_int = false;
 
   const bool base_string = false;
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
-  const bool base_color_gradient = true;
+  const bool base_color_gradient = false;
 #endif
 
   const bool base_groups = false;
@@ -527,7 +527,7 @@ int main(int argc, char *argv[])
 
   QApplication app(argc, argv);
 
-  if (true)
+  if (false)
   {
     // UI
     bool add_border = false;
@@ -535,23 +535,21 @@ int main(int argc, char *argv[])
     for (const auto &[name, sp_attr] : container)
     {
       make_debug_view(sp_attr.get(), add_border);
-      make_debug_view(sp_attr.get(), add_border);
+      // make_debug_view(sp_attr.get(), add_border); // for sync test
     }
   }
 
-  meta::SnapshotManager snapshots;
-
-  if (false)
+  if (true)
   {
-    snapshots.save("default", container.json_to());
-    snapshots.save("Some Config.", container.json_to());
+    // needs to be managed
+    container.snapshot_manager().save("default", container.json_to());
+    container.snapshot_manager().save("Some Config.", container.json_to());
 
     meta::qt::ContainerRenderOptions options;
     options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+    options.snapshot_manager = true;
 
-    meta::qt::MetaWidget *widget = meta::qt::render(container,
-                                                    options,
-                                                    &snapshots);
+    meta::qt::MetaWidget *widget = meta::qt::render(container, options);
 
     QObject::connect(widget,
                      &meta::qt::MetaWidget::edit_started,
@@ -566,11 +564,20 @@ int main(int argc, char *argv[])
                      []() { std::cout << "    > edit_ended\n"; });
 
     widget->show();
+
+    // debug serialization
+    {
+      auto attr = meta::Attribute("debug",
+                                  std::string(container.json_to().dump(4)));
+      attr.metadata().add(meta::keys::ui::widget_type, "CodeEditor");
+      attr.metadata().add("ui.min_lines", 24);
+      make_debug_view(&attr);
+    }
   }
 
   meta::ContainerGroup group; // watch for lifetime...
 
-  if (false)
+  if (true)
   {
     // Create multiple "views" / contexts
     auto &node_settings = group.add("node_settings");
@@ -613,6 +620,7 @@ int main(int argc, char *argv[])
     meta::qt::ContainerRenderOptions options;
     options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
     options.collapse_regex = std::regex("^Cat 1");
+    options.snapshot_manager = true;
 
     meta::qt::MetaWidget *widget = meta::qt::render(group, options);
 

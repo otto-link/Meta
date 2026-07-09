@@ -56,7 +56,7 @@ signals:
 
 private slots:
   void on_context_menu_requested(const QPoint &pos);
-  void on_index_axtivated(int index);
+  void on_index_activated(int index);
 
 private:
   void delete_preset(const std::string &name);
