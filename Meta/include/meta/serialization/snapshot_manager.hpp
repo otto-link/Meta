@@ -14,12 +14,16 @@
 
 #include <nlohmann/json.hpp>
 
+#include "meta/core/event.hpp"
+
 namespace meta
 {
 
 class SnapshotManager
 {
 public:
+  Event<> snapshots_modified;
+
   /// Remove all saved snapshots.
   void clear();
 

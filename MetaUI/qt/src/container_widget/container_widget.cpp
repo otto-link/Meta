@@ -280,7 +280,7 @@ MetaWidget *render(AttributeContainer    &container,
 
   // --- Snapshots
 
-  PresetComboBox *presets;
+  PresetComboBox *presets = nullptr;
 
   if (options.snapshot_manager)
   {
@@ -378,8 +378,9 @@ MetaWidget *render(AttributeContainer    &container,
          collected_widgets,
          container_widget](std::string /* name */, nlohmann::json snapshot)
         {
-          // update model first
-          container.json_from(snapshot);
+          // update model first (do not overwrite the snapshot data)
+          bool exclude_snapshot_manager = true;
+          container.json_from(snapshot, exclude_snapshot_manager);
 
           // sync all widgets
           for (MetaWidget *w : collected_widgets)

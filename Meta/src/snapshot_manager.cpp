@@ -12,6 +12,7 @@ void SnapshotManager::save(const std::string    &name,
 {
   Logger::log()->trace("SnapshotManager::save: '{}'", name);
   snapshots_[name] = snapshot;
+  snapshots_modified.notify();
 }
 
 void SnapshotManager::clear()
@@ -19,12 +20,14 @@ void SnapshotManager::clear()
   Logger::log()->trace("SnapshotManager::clear ({} snapshots)",
                        snapshots_.size());
   snapshots_.clear();
+  snapshots_modified.notify();
 }
 
 void SnapshotManager::erase(const std::string &name)
 {
   Logger::log()->trace("SnapshotManager::erase: '{}'", name);
   snapshots_.erase(name);
+  snapshots_modified.notify();
 }
 
 bool SnapshotManager::has(const std::string &name) const
@@ -57,6 +60,8 @@ bool SnapshotManager::json_from(const nlohmann::json &j)
 
       snapshots_[it.key()] = it.value();
     }
+
+    snapshots_modified.notify();
 
     return true;
   }

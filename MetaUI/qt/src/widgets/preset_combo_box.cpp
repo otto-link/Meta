@@ -44,6 +44,11 @@ PresetComboBox::PresetComboBox(SnapshotManager *snapshot_manager_,
                 this,
                 &PresetComboBox::on_context_menu_requested);
 
+  // update this widget if the underlying data have been modified
+  // elsewhere
+  connection_ = snapshot_manager->snapshots_modified.subscribe(
+      [this]() { this->refresh(); });
+
   this->populate_combo();
 }
 

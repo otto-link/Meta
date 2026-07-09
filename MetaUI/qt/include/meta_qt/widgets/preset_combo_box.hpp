@@ -10,6 +10,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "meta/core/event.hpp"
 #include "meta/serialization/snapshot_manager.hpp"
 
 namespace meta::qt
@@ -25,6 +26,9 @@ class PresetComboBox : public QWidget
   Q_OBJECT
 
 public:
+  EventConnection connection_;
+
+  /// Ctor
   explicit PresetComboBox(SnapshotManager *snapshot_manager,
                           QWidget         *parent = nullptr);
 

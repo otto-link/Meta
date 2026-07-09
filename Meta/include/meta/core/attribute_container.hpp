@@ -317,7 +317,7 @@ public:
    *
    * Existing attributes are updated; missing ones are created via factory.
    */
-  void json_from(const nlohmann::json &j);
+  void json_from(const nlohmann::json &j, bool exclude_snapshot_manager = true);
 
   /**
    * @brief Access the snapshot manager.

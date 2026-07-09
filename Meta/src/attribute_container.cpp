@@ -89,7 +89,8 @@ const std::vector<std::string> &AttributeContainer::insertion_order() const
   return insertion_order_;
 }
 
-void AttributeContainer::json_from(const nlohmann::json &j)
+void AttributeContainer::json_from(const nlohmann::json &j,
+                                   bool exclude_snapshot_manager)
 {
   Logger::log()->trace("AttributeContainer::json_from: {} entries", j.size());
 
@@ -166,7 +167,7 @@ void AttributeContainer::json_from(const nlohmann::json &j)
     }
   }
 
-  if (j.contains("snapshot_manager"))
+  if (!exclude_snapshot_manager && j.contains("snapshot_manager"))
   {
     try
     {

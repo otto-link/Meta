@@ -129,6 +129,7 @@ public:
   void json_from(const nlohmann::json &j) override
   {
     value_ = AttributeTraits<T>::json_from(j.at("value"));
+    value_changed.notify(value_);
     deserialize_metadata(metadata(), j.at("metadata"));
   }
 

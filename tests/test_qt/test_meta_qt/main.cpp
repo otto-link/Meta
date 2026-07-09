@@ -565,7 +565,11 @@ int main(int argc, char *argv[])
 
     widget->show();
 
+    meta::qt::MetaWidget *widget2 = meta::qt::render(container, options);
+    widget2->show();
+
     // debug serialization
+    if (false)
     {
       auto attr = meta::Attribute("debug",
                                   std::string(container.json_to().dump(4)));
