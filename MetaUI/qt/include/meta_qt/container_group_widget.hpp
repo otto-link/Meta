@@ -18,6 +18,8 @@ namespace meta::qt
 /// Widget that displays and edits a ContainerGroup using a stacked UI.
 class ContainerGroupWidget : public MetaWidget
 {
+  Q_OBJECT
+
 public:
   /// Construct a ContainerGroupWidget.
   ContainerGroupWidget(
@@ -28,6 +30,10 @@ public:
 public slots:
   /// Synchronize the contained MetaWidgets from their model.
   void on_sync_meta_widgets_from_model();
+
+signals:
+  /// User has selected another container.
+  void current_container_changed(const std::string name);
 
 private:
   /// Build a widget for a single container entry.

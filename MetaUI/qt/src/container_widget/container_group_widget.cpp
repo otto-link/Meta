@@ -54,11 +54,15 @@ ContainerGroupWidget::ContainerGroupWidget(meta::ContainerGroup  &group,
           this,
           [this](const QString &text)
           {
-            Logger::log()->trace("ContainerGroupWidget: switching to '{}'",
-                                 text.toStdString());
+            const std::string new_current = text.toStdString();
 
-            this->group.set_current(text.toStdString());
+            Logger::log()->trace("ContainerGroupWidget: switching to '{}'",
+                                 new_current);
+
+            this->group.set_current(new_current);
             sync_stack();
+
+            Q_EMIT current_container_changed(new_current);
           });
 }
 
