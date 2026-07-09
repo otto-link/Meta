@@ -19,6 +19,8 @@ var classmeta_1_1AttributeContainer =
     [ "json_from", "classmeta_1_1AttributeContainer.html#a94dd8ffc3c9e350847a0ced0b7e9058a", null ],
     [ "json_to", "classmeta_1_1AttributeContainer.html#af12dbed3c9932638b4d7c01ad81a25cd", null ],
     [ "size", "classmeta_1_1AttributeContainer.html#a883f07e5f83ad0ccd7d68280164a795c", null ],
+    [ "snapshot_manager", "classmeta_1_1AttributeContainer.html#aeb6e6e1a9f188e3aa53896f9b0c94ebf", null ],
+    [ "snapshot_manager", "classmeta_1_1AttributeContainer.html#a7fb22ee2a8c63bbbf154b30b06d993cf", null ],
     [ "try_add", "classmeta_1_1AttributeContainer.html#a77a7d7e4f8996047524ae81f8403e392", null ],
     [ "try_add", "classmeta_1_1AttributeContainer.html#aefe11d22d3aaa096003ca8fb4aedc38b", null ],
     [ "try_value", "classmeta_1_1AttributeContainer.html#a0ed55442421402c8b7648b694b431ef0", null ],
@@ -26,5 +28,6 @@ var classmeta_1_1AttributeContainer =
     [ "value", "classmeta_1_1AttributeContainer.html#ac04f35f24c44d2a8daf0313e594591c3", null ],
     [ "value", "classmeta_1_1AttributeContainer.html#a7489930ce58c927974e106426e2dbd04", null ],
     [ "attributes_", "classmeta_1_1AttributeContainer.html#ad2c463c8c6d97953e4b244101f3440a3", null ],
-    [ "insertion_order_", "classmeta_1_1AttributeContainer.html#a9fbc2e4dc42987d7b32c49d211b0efeb", null ]
+    [ "insertion_order_", "classmeta_1_1AttributeContainer.html#a9fbc2e4dc42987d7b32c49d211b0efeb", null ],
+    [ "snapshot_manager_", "classmeta_1_1AttributeContainer.html#a70d2a3b47ee9de64a8d61a2fbbb844e2", null ]
 ];

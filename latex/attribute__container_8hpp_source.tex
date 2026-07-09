@@ -17,237 +17,243 @@
 \DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <nlohmann/json.hpp>}}
 \DoxyCodeLine{00019\ }
 \DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{attribute_8hpp}{meta/core/attribute.hpp}}"{}}}
-\DoxyCodeLine{00021\ }
-\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <iostream>}}
-\DoxyCodeLine{00023\ }
-\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}}
-\DoxyCodeLine{00025\ \{}
-\DoxyCodeLine{00026\ }
-\DoxyCodeLine{00032\ \textcolor{keyword}{using\ }\mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{AttrContainerType}}\ =}
-\DoxyCodeLine{00033\ \ \ \ \ std::unordered\_map<std::string,\ std::unique\_ptr<AbstractAttribute>>;}
-\DoxyCodeLine{00034\ }
-\DoxyCodeLine{00036\ \textcolor{keyword}{using\ }\mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{AttrIterator}}\ =\ AttrContainerType::iterator;}
-\DoxyCodeLine{00037\ }
-\DoxyCodeLine{00039\ \textcolor{keyword}{using\ }\mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ =\ AttrContainerType::const\_iterator;}
-\DoxyCodeLine{00040\ }
-\DoxyCodeLine{00041\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
-\DoxyCodeLine{00042\ \textcolor{keyword}{concept\ }\mbox{\hyperlink{conceptmeta_1_1StringLike}{StringLike}}\ =\ std::is\_same\_v<std::decay\_t<T>,\ std::string>\ ||}
-\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *>\ ||}
-\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keywordtype}{char}\ *>\ ||}
-\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ std::string\_view>;}
-\DoxyCodeLine{00046\ }
-\DoxyCodeLine{00057\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classmeta_1_1AttributeContainer}{AttributeContainer}}}
-\DoxyCodeLine{00058\ \{}
-\DoxyCodeLine{00059\ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00060\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00061\ \ \ \textcolor{comment}{//\ Capacity}}
-\DoxyCodeLine{00062\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00063\ }
-\DoxyCodeLine{00065\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad5dc2aebafabcbffaa931d9e3d38b4b8}{empty}}()\ const\ noexcept;}
-\DoxyCodeLine{00066\ }
-\DoxyCodeLine{00068\ \ \ std::\textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a883f07e5f83ad0ccd7d68280164a795c}{size}}()\ const\ noexcept;}
-\DoxyCodeLine{00069\ }
-\DoxyCodeLine{00070\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//\ Iteration}}
-\DoxyCodeLine{00072\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00073\ }
-\DoxyCodeLine{00075\ \ \ \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{AttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24}{begin}}();}
-\DoxyCodeLine{00076\ }
-\DoxyCodeLine{00078\ \ \ \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{AttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2}{end}}();}
-\DoxyCodeLine{00079\ }
-\DoxyCodeLine{00081\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24}{begin}}()\ const;}
-\DoxyCodeLine{00082\ }
-\DoxyCodeLine{00084\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2}{end}}()\ const;}
-\DoxyCodeLine{00085\ }
-\DoxyCodeLine{00087\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a734577c9b988ef88b7848bed60f736e3}{cbegin}}()\ const;}
-\DoxyCodeLine{00088\ }
-\DoxyCodeLine{00090\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a705a07cdbe0585efb11efe74dea9a859}{cend}}()\ const;}
-\DoxyCodeLine{00091\ }
-\DoxyCodeLine{00092\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00093\ \ \ \textcolor{comment}{//\ Lookup}}
-\DoxyCodeLine{00094\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00095\ }
-\DoxyCodeLine{00097\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad8047b000619c911f4349546648af9f7}{contains}}(const\ std::\textcolor{keywordtype}{string}\ \&name)\ const;}
-\DoxyCodeLine{00098\ }
-\DoxyCodeLine{00100\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a075c97f18931680faff54d45cd15ac20}{contains\_all\_keys}}(const\ std::vector<std::\textcolor{keywordtype}{string}>\ \&keys);}
-\DoxyCodeLine{00101\ }
-\DoxyCodeLine{00103\ \ \ \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{AbstractAttribute}}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(const\ std::\textcolor{keywordtype}{string}\ \&name);}
-\DoxyCodeLine{00104\ }
-\DoxyCodeLine{00106\ \ \ const\ \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{AbstractAttribute}}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(const\ std::\textcolor{keywordtype}{string}\ \&name)\ const;}
-\DoxyCodeLine{00107\ }
-\DoxyCodeLine{00108\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00109\ \ \ \textcolor{comment}{//\ Modification}}
-\DoxyCodeLine{00110\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00111\ }
-\DoxyCodeLine{00113\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6dd055c517a101779178fc455fcba2ed}{clear}}();}
-\DoxyCodeLine{00114\ }
-\DoxyCodeLine{00122\ \ \ template\ <typename\ T>}
-\DoxyCodeLine{00123\ \ \ \ \ requires(!\mbox{\hyperlink{conceptmeta_1_1StringLike}{StringLike}}<T>)}
-\DoxyCodeLine{00124\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}<std::decay\_t<T>>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a54da56d3849fe4a85920696e5e843314}{add}}(const\ std::\textcolor{keywordtype}{string}\ \&name,\ T\ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
-\DoxyCodeLine{00125\ \ \ \{}
-\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<T>;}
-\DoxyCodeLine{00127\ }
-\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(name,}
-\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<T>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
-\DoxyCodeLine{00130\ }
-\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
-\DoxyCodeLine{00132\ }
-\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{auto}\ [it,\ inserted]\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.try\_emplace(name,\ std::move(attr));}
-\DoxyCodeLine{00134\ }
-\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordflow}{if}\ (!inserted)}
-\DoxyCodeLine{00136\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ already\ exists:\ "{}}\ +\ name);}
-\DoxyCodeLine{00137\ }
-\DoxyCodeLine{00138\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
-\DoxyCodeLine{00139\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
-\DoxyCodeLine{00140\ }
-\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
-\DoxyCodeLine{00142\ \ \ \}}
-\DoxyCodeLine{00143\ }
-\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
-\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{requires}(!\mbox{\hyperlink{conceptmeta_1_1StringLike}{StringLike<T>}})}
-\DoxyCodeLine{00157\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}<std::decay\_t<T>>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_aefe11d22d3aaa096003ca8fb4aedc38b}{try\_add}}(\textcolor{keyword}{const}\ std::string\ \&name,\ T\ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
-\DoxyCodeLine{00158\ \ \ \{}
-\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<T>;}
-\DoxyCodeLine{00160\ }
-\DoxyCodeLine{00161\ \ \ \ \ \textcolor{comment}{//\ Already\ exists}}
-\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ it\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.find(name);\ it\ !=\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.end())}
-\DoxyCodeLine{00163\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<ValueType>}}\ *\textcolor{keyword}{>}(it-\/>second.get());}
-\DoxyCodeLine{00164\ }
-\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(name,}
-\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<T>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
-\DoxyCodeLine{00167\ }
-\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
-\DoxyCodeLine{00169\ }
-\DoxyCodeLine{00170\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.emplace(name,\ std::move(attr));}
-\DoxyCodeLine{00171\ }
-\DoxyCodeLine{00172\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
-\DoxyCodeLine{00173\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
-\DoxyCodeLine{00174\ }
-\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
-\DoxyCodeLine{00176\ \ \ \}}
-\DoxyCodeLine{00177\ }
-\DoxyCodeLine{00179\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<std::decay\_t<std::string>}}>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a612183a01282e9a19febabc8b9d83d79}{add}}(\textcolor{keyword}{const}\ std::string\ \&name,}
-\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ \ \ \ \ \ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
-\DoxyCodeLine{00181\ \ \ \{}
-\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<std::string>;}
-\DoxyCodeLine{00183\ }
-\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(}
-\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ name,}
-\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ std::forward<std::string>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
-\DoxyCodeLine{00187\ }
-\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
-\DoxyCodeLine{00189\ }
-\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{auto}\ [it,\ inserted]\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.try\_emplace(name,\ std::move(attr));}
-\DoxyCodeLine{00191\ }
-\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordflow}{if}\ (!inserted)}
-\DoxyCodeLine{00193\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ already\ exists:\ "{}}\ +\ name);}
-\DoxyCodeLine{00194\ }
-\DoxyCodeLine{00195\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
-\DoxyCodeLine{00196\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
-\DoxyCodeLine{00197\ }
-\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
-\DoxyCodeLine{00199\ \ \ \}}
-\DoxyCodeLine{00200\ }
-\DoxyCodeLine{00207\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<std::decay\_t<std::string>}}>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392}{try\_add}}(\textcolor{keyword}{const}\ std::string\ \&name,}
-\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ \ \ \ \ \ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
-\DoxyCodeLine{00209\ \ \ \{}
-\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<std::string>;}
-\DoxyCodeLine{00211\ }
-\DoxyCodeLine{00212\ \ \ \ \ \textcolor{comment}{//\ Already\ exists}}
-\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ it\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.find(name);\ it\ !=\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.end())}
-\DoxyCodeLine{00214\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<ValueType>}}\ *\textcolor{keyword}{>}(it-\/>second.get());}
-\DoxyCodeLine{00215\ }
-\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(}
-\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ name,}
-\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ std::forward<std::string>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
-\DoxyCodeLine{00219\ }
-\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
-\DoxyCodeLine{00221\ }
-\DoxyCodeLine{00222\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.emplace(name,\ std::move(attr));}
-\DoxyCodeLine{00223\ }
-\DoxyCodeLine{00224\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
-\DoxyCodeLine{00225\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
-\DoxyCodeLine{00226\ }
-\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
-\DoxyCodeLine{00228\ \ \ \}}
-\DoxyCodeLine{00229\ }
-\DoxyCodeLine{00230\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00231\ \ \ \textcolor{comment}{//\ Accessors}}
-\DoxyCodeLine{00232\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00233\ }
-\DoxyCodeLine{00235\ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a498bc26ac82caf211c49af80a0302825}{insertion\_order}}()\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00236\ }
-\DoxyCodeLine{00243\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ T\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\_value}}(\textcolor{keyword}{const}\ std::string\ \&name)}
-\DoxyCodeLine{00244\ \ \ \{}
-\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{auto}\ *attr\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
-\DoxyCodeLine{00246\ }
-\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keywordflow}{if}\ (!attr)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00248\ }
-\DoxyCodeLine{00249\ \ \ \ \ \textcolor{keyword}{auto}\ *typed\ =\ attr-\/>try\_cast<\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<T>}}>();}
-\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keywordflow}{return}\ typed\ ?\ \&typed-\/>\mbox{\hyperlink{classmeta_1_1Attribute_a2db022681e9afc7664e5d8e47f4c8262}{value}}()\ :\ \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00251\ \ \ \}}
-\DoxyCodeLine{00252\ }
-\DoxyCodeLine{00259\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keyword}{const}\ T\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a9790de41aba2d3b34667707a563d3cb5}{try\_value}}(\textcolor{keyword}{const}\ std::string\ \&name)\textcolor{keyword}{\ const}}
-\DoxyCodeLine{00260\ \textcolor{keyword}{\ \ }\{}
-\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keyword}{auto}\ *attr\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
-\DoxyCodeLine{00262\ }
-\DoxyCodeLine{00263\ \ \ \ \ \textcolor{keywordflow}{if}\ (!attr)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00264\ }
-\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keyword}{auto}\ *typed\ =\ attr-\/>try\_cast<\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<T>}}>();}
-\DoxyCodeLine{00266\ \ \ \ \ \textcolor{keywordflow}{return}\ typed\ ?\ \&typed-\/>\mbox{\hyperlink{classmeta_1_1Attribute_a2db022681e9afc7664e5d8e47f4c8262}{value}}()\ :\ \textcolor{keyword}{nullptr};}
-\DoxyCodeLine{00267\ \ \ \}}
-\DoxyCodeLine{00268\ }
-\DoxyCodeLine{00274\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ T\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}(\textcolor{keyword}{const}\ std::string\ \&name)}
-\DoxyCodeLine{00275\ \ \ \{}
-\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ *ptr\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\_value<T>}}(name))\ \textcolor{keywordflow}{return}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{ptr}};}
-\DoxyCodeLine{00277\ }
-\DoxyCodeLine{00278\ \ \ \ \ \textcolor{keyword}{auto}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
-\DoxyCodeLine{00279\ }
-\DoxyCodeLine{00280\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}})\ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Attribute\ does\ not\ exist:\ "{}}\ +\ name);}
-\DoxyCodeLine{00281\ }
-\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ '"{}}\ +\ name\ +\ \textcolor{stringliteral}{"{}'\ has\ type\ '"{}}\ +}
-\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}-\/>type().name())\ +}
-\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}',\ expected\ '"{}}\ +\ std::string(\textcolor{keyword}{typeid}(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}).name())\ +}
-\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'"{}});}
-\DoxyCodeLine{00286\ \ \ \}}
-\DoxyCodeLine{00287\ }
-\DoxyCodeLine{00293\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a7489930ce58c927974e106426e2dbd04}{value}}(\textcolor{keyword}{const}\ std::string\ \&name)\textcolor{keyword}{\ const}}
-\DoxyCodeLine{00294\ \textcolor{keyword}{\ \ }\{}
-\DoxyCodeLine{00295\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{ptr}}\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\_value<T>}}(name))\ \textcolor{keywordflow}{return}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{ptr}};}
-\DoxyCodeLine{00296\ }
-\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keyword}{auto}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
-\DoxyCodeLine{00298\ }
-\DoxyCodeLine{00299\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}})\ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Attribute\ does\ not\ exist:\ "{}}\ +\ name);}
-\DoxyCodeLine{00300\ }
-\DoxyCodeLine{00301\ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ '"{}}\ +\ name\ +\ \textcolor{stringliteral}{"{}'\ has\ type\ '"{}}\ +}
-\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}-\/>type().name())\ +}
-\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}',\ expected\ '"{}}\ +\ std::string(\textcolor{keyword}{typeid}(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}).name())\ +}
-\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'"{}});}
-\DoxyCodeLine{00305\ \ \ \}}
-\DoxyCodeLine{00306\ }
-\DoxyCodeLine{00307\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00308\ \ \ \textcolor{comment}{//\ Serialization}}
-\DoxyCodeLine{00309\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00310\ }
-\DoxyCodeLine{00312\ \ \ nlohmann::json\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_af12dbed3c9932638b4d7c01ad81a25cd}{json\_to}}()\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00313\ }
-\DoxyCodeLine{00319\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a94dd8ffc3c9e350847a0ced0b7e9058a}{json\_from}}(\textcolor{keyword}{const}\ nlohmann::json\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{j}});}
-\DoxyCodeLine{00320\ }
-\DoxyCodeLine{00321\ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00322\ \ \ \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{AttrContainerType}}\ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}};}
-\DoxyCodeLine{00323\ \ \ std::vector<std::string>\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}};}
-\DoxyCodeLine{00324\ }
-\DoxyCodeLine{00329\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ac1ff885bb63112ce58668059ffb62339}{compact\_insertion\_order}}();}
-\DoxyCodeLine{00330\ \};}
-\DoxyCodeLine{00331\ }
-\DoxyCodeLine{00332\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00333\ \textcolor{comment}{//\ Metadata\ helpers\ (external\ API)}}
-\DoxyCodeLine{00334\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{00335\ }
-\DoxyCodeLine{00337\ nlohmann::json\ \mbox{\hyperlink{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128}{serialize\_metadata}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer}{AttributeContainer}}\ \&m);}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{snapshot__manager_8hpp}{meta/serialization/snapshot\_manager.hpp}}"{}}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespacemeta}{meta}}}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{using\ }\mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{AttrContainerType}}\ =}
+\DoxyCodeLine{00034\ \ \ \ \ std::unordered\_map<std::string,\ std::unique\_ptr<AbstractAttribute>>;}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{using\ }\mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{AttrIterator}}\ =\ AttrContainerType::iterator;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{using\ }\mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ =\ AttrContainerType::const\_iterator;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00043\ \textcolor{keyword}{concept\ }\mbox{\hyperlink{conceptmeta_1_1StringLike}{StringLike}}\ =\ std::is\_same\_v<std::decay\_t<T>,\ std::string>\ ||}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *>\ ||}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keywordtype}{char}\ *>\ ||}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<std::decay\_t<T>,\ std::string\_view>;}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classmeta_1_1AttributeContainer}{AttributeContainer}}}
+\DoxyCodeLine{00059\ \{}
+\DoxyCodeLine{00060\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00061\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00062\ \ \ \textcolor{comment}{//\ Capacity}}
+\DoxyCodeLine{00063\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00066\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad5dc2aebafabcbffaa931d9e3d38b4b8}{empty}}()\ const\ noexcept;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00069\ \ \ std::\textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a883f07e5f83ad0ccd7d68280164a795c}{size}}()\ const\ noexcept;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00072\ \ \ \textcolor{comment}{//\ Iteration}}
+\DoxyCodeLine{00073\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00076\ \ \ \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{AttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24}{begin}}();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00079\ \ \ \mbox{\hyperlink{namespacemeta_a041b3b46016d4565e45294279f021fa4}{AttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2}{end}}();}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00082\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ab7e09a872aad09b5d5dbe10240e95c24}{begin}}()\ const;}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00085\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6cefb44fe311b4095559a53d456e62b2}{end}}()\ const;}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00088\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a734577c9b988ef88b7848bed60f736e3}{cbegin}}()\ const;}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00091\ \ \ \mbox{\hyperlink{namespacemeta_a3819cf59692150303d5cd95dc4bd2979}{ConstAttrIterator}}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a705a07cdbe0585efb11efe74dea9a859}{cend}}()\ const;}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00094\ \ \ \textcolor{comment}{//\ Lookup}}
+\DoxyCodeLine{00095\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00098\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad8047b000619c911f4349546648af9f7}{contains}}(const\ std::\textcolor{keywordtype}{string}\ \&name)\ const;}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00101\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a075c97f18931680faff54d45cd15ac20}{contains\_all\_keys}}(const\ std::vector<std::\textcolor{keywordtype}{string}>\ \&keys);}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00104\ \ \ \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{AbstractAttribute}}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(const\ std::\textcolor{keywordtype}{string}\ \&name);}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00107\ \ \ const\ \mbox{\hyperlink{classmeta_1_1AbstractAttribute}{AbstractAttribute}}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(const\ std::\textcolor{keywordtype}{string}\ \&name)\ const;}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00110\ \ \ \textcolor{comment}{//\ Modification}}
+\DoxyCodeLine{00111\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00114\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a6dd055c517a101779178fc455fcba2ed}{clear}}();}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00123\ \ \ template\ <typename\ T>}
+\DoxyCodeLine{00124\ \ \ \ \ requires(!\mbox{\hyperlink{conceptmeta_1_1StringLike}{StringLike}}<T>)}
+\DoxyCodeLine{00125\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}<std::decay\_t<T>>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a54da56d3849fe4a85920696e5e843314}{add}}(const\ std::\textcolor{keywordtype}{string}\ \&name,\ T\ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
+\DoxyCodeLine{00126\ \ \ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<T>;}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(name,}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<T>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{auto}\ [it,\ inserted]\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.try\_emplace(name,\ std::move(attr));}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordflow}{if}\ (!inserted)}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ already\ exists:\ "{}}\ +\ name);}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
+\DoxyCodeLine{00140\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
+\DoxyCodeLine{00143\ \ \ \}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00156\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keyword}{requires}(!\mbox{\hyperlink{conceptmeta_1_1StringLike}{StringLike<T>}})}
+\DoxyCodeLine{00158\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute}}<std::decay\_t<T>>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_aefe11d22d3aaa096003ca8fb4aedc38b}{try\_add}}(\textcolor{keyword}{const}\ std::string\ \&name,\ T\ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
+\DoxyCodeLine{00159\ \ \ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<T>;}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{comment}{//\ Already\ exists}}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ it\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.find(name);\ it\ !=\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.end())}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<ValueType>}}\ *\textcolor{keyword}{>}(it-\/>second.get());}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(name,}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::forward<T>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.emplace(name,\ std::move(attr));}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
+\DoxyCodeLine{00174\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
+\DoxyCodeLine{00177\ \ \ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00180\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<std::decay\_t<std::string>}}>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a612183a01282e9a19febabc8b9d83d79}{add}}(\textcolor{keyword}{const}\ std::string\ \&name,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ \ \ \ \ \ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
+\DoxyCodeLine{00182\ \ \ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<std::string>;}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ name,}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ std::forward<std::string>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keyword}{auto}\ [it,\ inserted]\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.try\_emplace(name,\ std::move(attr));}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keywordflow}{if}\ (!inserted)}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ already\ exists:\ "{}}\ +\ name);}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
+\DoxyCodeLine{00197\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
+\DoxyCodeLine{00200\ \ \ \}}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00208\ \ \ \mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<std::decay\_t<std::string>}}>\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392}{try\_add}}(\textcolor{keyword}{const}\ std::string\ \&name,}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ \ \ \ \ \ \&\&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}})}
+\DoxyCodeLine{00210\ \ \ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{using\ }ValueType\ =\ std::decay\_t<std::string>;}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{comment}{//\ Already\ exists}}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ it\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.find(name);\ it\ !=\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.end())}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<ValueType>}}\ *\textcolor{keyword}{>}(it-\/>second.get());}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keyword}{auto}\ attr\ =\ std::make\_unique<Attribute<ValueType>>(}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ name,}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ std::forward<std::string>(\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}));}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{keyword}{auto}\ *ptr\ =\ attr.get();}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}}.emplace(name,\ std::move(attr));}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{comment}{//\ keep\ track\ of\ insertion\ order}}
+\DoxyCodeLine{00226\ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}}.push\_back(name);}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordflow}{return}\ ptr;}
+\DoxyCodeLine{00229\ \ \ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00232\ \ \ \textcolor{comment}{//\ Accessors}}
+\DoxyCodeLine{00233\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00236\ \ \ \textcolor{keyword}{const}\ std::vector<std::string>\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a498bc26ac82caf211c49af80a0302825}{insertion\_order}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00244\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ T\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\_value}}(\textcolor{keyword}{const}\ std::string\ \&name)}
+\DoxyCodeLine{00245\ \ \ \{}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{auto}\ *attr\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keywordflow}{if}\ (!attr)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keyword}{auto}\ *typed\ =\ attr-\/>try\_cast<\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<T>}}>();}
+\DoxyCodeLine{00251\ \ \ \ \ \textcolor{keywordflow}{return}\ typed\ ?\ \&typed-\/>\mbox{\hyperlink{classmeta_1_1Attribute_a2db022681e9afc7664e5d8e47f4c8262}{value}}()\ :\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00252\ \ \ \}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keyword}{const}\ T\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a9790de41aba2d3b34667707a563d3cb5}{try\_value}}(\textcolor{keyword}{const}\ std::string\ \&name)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00261\ \textcolor{keyword}{\ \ }\{}
+\DoxyCodeLine{00262\ \ \ \ \ \textcolor{keyword}{auto}\ *attr\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keywordflow}{if}\ (!attr)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \ \ \textcolor{keyword}{auto}\ *typed\ =\ attr-\/>try\_cast<\mbox{\hyperlink{classmeta_1_1Attribute}{Attribute<T>}}>();}
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{keywordflow}{return}\ typed\ ?\ \&typed-\/>\mbox{\hyperlink{classmeta_1_1Attribute_a2db022681e9afc7664e5d8e47f4c8262}{value}}()\ :\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00268\ \ \ \}}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00275\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ T\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_ac04f35f24c44d2a8daf0313e594591c3}{value}}(\textcolor{keyword}{const}\ std::string\ \&name)}
+\DoxyCodeLine{00276\ \ \ \{}
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ *ptr\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\_value<T>}}(name))\ \textcolor{keywordflow}{return}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{ptr}};}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keyword}{auto}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}})\ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Attribute\ does\ not\ exist:\ "{}}\ +\ name);}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ '"{}}\ +\ name\ +\ \textcolor{stringliteral}{"{}'\ has\ type\ '"{}}\ +}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}-\/>type().name())\ +}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}',\ expected\ '"{}}\ +\ std::string(\textcolor{keyword}{typeid}(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}).name())\ +}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'"{}});}
+\DoxyCodeLine{00287\ \ \ \}}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00294\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a7489930ce58c927974e106426e2dbd04}{value}}(\textcolor{keyword}{const}\ std::string\ \&name)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00295\ \textcolor{keyword}{\ \ }\{}
+\DoxyCodeLine{00296\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{ptr}}\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{try\_value<T>}}(name))\ \textcolor{keywordflow}{return}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{ptr}};}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00298\ \ \ \ \ \textcolor{keyword}{auto}\ *\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}\ =\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a327884c4f202e80ac8d0d30d3538b1e2}{find}}(name);}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}})\ \textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}Attribute\ does\ not\ exist:\ "{}}\ +\ name);}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Attribute\ '"{}}\ +\ name\ +\ \textcolor{stringliteral}{"{}'\ has\ type\ '"{}}\ +}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{attr}}-\/>type().name())\ +}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}',\ expected\ '"{}}\ +\ std::string(\textcolor{keyword}{typeid}(\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{T}}).name())\ +}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'"{}});}
+\DoxyCodeLine{00306\ \ \ \}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00309\ \ \ \textcolor{comment}{//\ Serialization}}
+\DoxyCodeLine{00310\ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00313\ \ \ nlohmann::json\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_af12dbed3c9932638b4d7c01ad81a25cd}{json\_to}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00320\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a94dd8ffc3c9e350847a0ced0b7e9058a}{json\_from}}(\textcolor{keyword}{const}\ nlohmann::json\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{j}});}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00326\ \ \ \mbox{\hyperlink{classmeta_1_1SnapshotManager}{SnapshotManager}}\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_aeb6e6e1a9f188e3aa53896f9b0c94ebf}{snapshot\_manager}}();}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00332\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classmeta_1_1SnapshotManager}{SnapshotManager}}\ \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a7fb22ee2a8c63bbbf154b30b06d993cf}{snapshot\_manager}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00333\ }
+\DoxyCodeLine{00334\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00335\ \ \ \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{AttrContainerType}}\ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\_}};}
+\DoxyCodeLine{00336\ \ \ std::vector<std::string>\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\_order\_}};}
+\DoxyCodeLine{00337\ \ \ \mbox{\hyperlink{classmeta_1_1SnapshotManager}{SnapshotManager}}\ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a70d2a3b47ee9de64a8d61a2fbbb844e2}{snapshot\_manager\_}};}
 \DoxyCodeLine{00338\ }
-\DoxyCodeLine{00340\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{namespacemeta_a1ec007edebf611446a66ccb33aff0311}{deserialize\_metadata}}(\mbox{\hyperlink{classmeta_1_1AttributeContainer}{AttributeContainer}}\ \&m,\ \textcolor{keyword}{const}\ nlohmann::json\ \&j);}
-\DoxyCodeLine{00341\ }
-\DoxyCodeLine{00342\ \}\ \textcolor{comment}{//\ namespace\ meta}}
+\DoxyCodeLine{00343\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer_ac1ff885bb63112ce58668059ffb62339}{compact\_insertion\_order}}();}
+\DoxyCodeLine{00344\ \};}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00347\ \textcolor{comment}{//\ Metadata\ helpers\ (external\ API)}}
+\DoxyCodeLine{00348\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00349\ }
+\DoxyCodeLine{00351\ nlohmann::json\ \mbox{\hyperlink{namespacemeta_a7bc00a3e6c82bebf50d9bd6b724d8128}{serialize\_metadata}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classmeta_1_1AttributeContainer}{AttributeContainer}}\ \&m);}
+\DoxyCodeLine{00352\ }
+\DoxyCodeLine{00354\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{namespacemeta_a1ec007edebf611446a66ccb33aff0311}{deserialize\_metadata}}(\mbox{\hyperlink{classmeta_1_1AttributeContainer}{AttributeContainer}}\ \&m,\ \textcolor{keyword}{const}\ nlohmann::json\ \&j);}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \}\ \textcolor{comment}{//\ namespace\ meta}}
 
 \end{DoxyCode}

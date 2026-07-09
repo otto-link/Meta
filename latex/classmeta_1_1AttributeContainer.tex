@@ -9,6 +9,16 @@ Container of named runtime attributes.
 
 {\ttfamily \#include $<$attribute\+\_\+container.\+hpp$>$}
 
+
+
+Collaboration diagram for meta\+::Attribute\+Container\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=251pt]{classmeta_1_1AttributeContainer__coll__graph}
+\end{center}
+\end{figure}
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -61,7 +71,11 @@ requires (!String\+Like$<$\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed5
 nlohmann\+::json \mbox{\hyperlink{classmeta_1_1AttributeContainer_af12dbed3c9932638b4d7c01ad81a25cd}{json\+\_\+to}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
 \begin{DoxyCompactList}\small\item\em Serializes container to JSON. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{void}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a94dd8ffc3c9e350847a0ced0b7e9058a}{json\+\_\+from}} (\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} nlohmann\+::json \&\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{j}})
-\begin{DoxyCompactList}\small\item\em Deserializes container from JSON. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Deserializes container from JSON. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}} \& \mbox{\hyperlink{classmeta_1_1AttributeContainer_aeb6e6e1a9f188e3aa53896f9b0c94ebf}{snapshot\+\_\+manager}} ()
+\begin{DoxyCompactList}\small\item\em Access the snapshot manager. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}} \& \mbox{\hyperlink{classmeta_1_1AttributeContainer_a7fb22ee2a8c63bbbf154b30b06d993cf}{snapshot\+\_\+manager}} () \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}}
+\begin{DoxyCompactList}\small\item\em Access the snapshot manager. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsubsection*{Private Member Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -73,6 +87,8 @@ nlohmann\+::json \mbox{\hyperlink{classmeta_1_1AttributeContainer_af12dbed3c9932
 \mbox{\hyperlink{namespacemeta_a7aa591df94fd2685bcb8e24adcdf9fda}{Attr\+Container\+Type}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_ad2c463c8c6d97953e4b244101f3440a3}{attributes\+\_\+}}
 \item 
 std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classmeta_1_1AttributeContainer_a9fbc2e4dc42987d7b32c49d211b0efeb}{insertion\+\_\+order\+\_\+}}
+\item 
+\mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}} \mbox{\hyperlink{classmeta_1_1AttributeContainer_a70d2a3b47ee9de64a8d61a2fbbb844e2}{snapshot\+\_\+manager\+\_\+}}
 \end{DoxyCompactItemize}
 
 
@@ -288,6 +304,32 @@ Serializes container to JSON.
 
 Returns number of stored attributes. 
 
+\Hypertarget{classmeta_1_1AttributeContainer_aeb6e6e1a9f188e3aa53896f9b0c94ebf}\label{classmeta_1_1AttributeContainer_aeb6e6e1a9f188e3aa53896f9b0c94ebf} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!snapshot\_manager@{snapshot\_manager}}
+\index{snapshot\_manager@{snapshot\_manager}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{snapshot\_manager()}{snapshot\_manager()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}} \& meta\+::\+Attribute\+Container\+::snapshot\+\_\+manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Access the snapshot manager. 
+
+\begin{DoxyReturn}{Returns}
+Reference to the snapshot manager. 
+\end{DoxyReturn}
+\Hypertarget{classmeta_1_1AttributeContainer_a7fb22ee2a8c63bbbf154b30b06d993cf}\label{classmeta_1_1AttributeContainer_a7fb22ee2a8c63bbbf154b30b06d993cf} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!snapshot\_manager@{snapshot\_manager}}
+\index{snapshot\_manager@{snapshot\_manager}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{snapshot\_manager()}{snapshot\_manager()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1AttributeContainer_a0ed55442421402c8b7648b694b431ef0}{const}} \mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}} \& meta\+::\+Attribute\+Container\+::snapshot\+\_\+manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Access the snapshot manager. 
+
+\begin{DoxyReturn}{Returns}
+Const reference to the snapshot manager. 
+\end{DoxyReturn}
 \Hypertarget{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392}\label{classmeta_1_1AttributeContainer_a77a7d7e4f8996047524ae81f8403e392} 
 \index{meta::AttributeContainer@{meta::AttributeContainer}!try\_add@{try\_add}}
 \index{try\_add@{try\_add}!meta::AttributeContainer@{meta::AttributeContainer}}
@@ -408,6 +450,12 @@ Returns the attribute value.
 \index{insertion\_order\_@{insertion\_order\_}!meta::AttributeContainer@{meta::AttributeContainer}}
 \doxysubsubsection{\texorpdfstring{insertion\_order\_}{insertion\_order\_}}
 {\footnotesize\ttfamily std\+::vector$<$std\+::string$>$ meta\+::\+Attribute\+Container\+::insertion\+\_\+order\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+\Hypertarget{classmeta_1_1AttributeContainer_a70d2a3b47ee9de64a8d61a2fbbb844e2}\label{classmeta_1_1AttributeContainer_a70d2a3b47ee9de64a8d61a2fbbb844e2} 
+\index{meta::AttributeContainer@{meta::AttributeContainer}!snapshot\_manager\_@{snapshot\_manager\_}}
+\index{snapshot\_manager\_@{snapshot\_manager\_}!meta::AttributeContainer@{meta::AttributeContainer}}
+\doxysubsubsection{\texorpdfstring{snapshot\_manager\_}{snapshot\_manager\_}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classmeta_1_1SnapshotManager}{Snapshot\+Manager}} meta\+::\+Attribute\+Container\+::snapshot\+\_\+manager\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
 
 
 
