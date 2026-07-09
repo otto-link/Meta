@@ -49,6 +49,7 @@ private:
 /// Render a ContainerGroup into a MetaWidget.
 MetaWidget *render(meta::ContainerGroup  &group,
                    ContainerRenderOptions options = ContainerRenderOptions{},
-                   QWidget               *parent = nullptr);
+                   QWidget               *parent = nullptr,
+                   bool render_single_group_as_a_container = false);
 
 } // namespace meta::qt

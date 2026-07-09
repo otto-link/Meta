@@ -153,4 +153,6 @@ void ContainerGroup::set_current(const std::string &key)
   Logger::log()->trace("ContainerGroup::set_current: success = {}", key);
 }
 
+size_t ContainerGroup::size() const { return containers_.size(); }
+
 } // namespace meta

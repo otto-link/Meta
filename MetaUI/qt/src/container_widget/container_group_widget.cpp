@@ -4,7 +4,9 @@
 #include <QVBoxLayout>
 
 #include "meta/logger.hpp"
+
 #include "meta_qt/container_group_widget.hpp"
+#include "meta_qt/container_widget.hpp"
 
 namespace meta::qt
 {
@@ -149,10 +151,26 @@ void ContainerGroupWidget::sync_stack()
 
 MetaWidget *render(meta::ContainerGroup  &group,
                    ContainerRenderOptions options,
-                   QWidget               *parent)
+                   QWidget               *parent,
+                   bool                   render_single_group_as_a_container)
 {
   Logger::log()->trace("ContainerGroupWidget::render");
 
+  if (group.size() == 0)
+  {
+    Logger::log()->error("render / meta::ContainerGroup: empty group");
+    return nullptr;
+  }
+
+  // group with 1 container => flatten to a single attribute container
+  // if requested
+  if (render_single_group_as_a_container && group.size() == 1)
+  {
+    auto &containers = group.containers();
+    return render(*containers.begin()->second, options, parent);
+  }
+
+  // default
   return new ContainerGroupWidget(group, options, parent);
 }
 

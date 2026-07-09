@@ -90,6 +90,9 @@ public:
    */
   void set_current(const std::string &key);
 
+  /// Returns the number of groups.
+  size_t size() const;
+
 private:
   ContainerMap             containers_;
   std::vector<std::string> insertion_order_;
