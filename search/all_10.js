@@ -10,7 +10,7 @@ var searchData=
   ['set_5fvalue_7',['set_value',['../classmeta_1_1ColorGradient.html#a7e8778ea1096d97411ee37b8142cac57',1,'meta::ColorGradient']]],
   ['setattributecommand_8',['setattributecommand',['../classmeta_1_1SetAttributeCommand.html#a53a701bd7af30efe5dd5616f3c4590cd',1,'meta::SetAttributeCommand::SetAttributeCommand()'],['../classmeta_1_1SetAttributeCommand.html',1,'meta::SetAttributeCommand&lt; T &gt;']]],
   ['sheet_3a_20built_20in_20types_9',['Sheet: Built-in Types',['../md_docs_2builtin__types.html',1,'']]],
-  ['size_10',['size',['../classmeta_1_1AttributeContainer.html#a883f07e5f83ad0ccd7d68280164a795c',1,'meta::AttributeContainer']]],
+  ['size_10',['size',['../classmeta_1_1ContainerGroup.html#a9c03b68dbd3ad3bcdc4f6eaec65db3a9',1,'meta::ContainerGroup::size()'],['../classmeta_1_1AttributeContainer.html#a883f07e5f83ad0ccd7d68280164a795c',1,'meta::AttributeContainer::size() const noexcept']]],
   ['snapshot_5fmanager_11',['snapshot_manager',['../classmeta_1_1AttributeContainer.html#aeb6e6e1a9f188e3aa53896f9b0c94ebf',1,'meta::AttributeContainer::snapshot_manager()'],['../classmeta_1_1AttributeContainer.html#a7fb22ee2a8c63bbbf154b30b06d993cf',1,'meta::AttributeContainer::snapshot_manager() const']]],
   ['snapshot_5fmanager_2ehpp_12',['snapshot_manager.hpp',['../snapshot__manager_8hpp.html',1,'']]],
   ['snapshot_5fmanager_5f_13',['snapshot_manager_',['../classmeta_1_1AttributeContainer.html#a70d2a3b47ee9de64a8d61a2fbbb844e2',1,'meta::AttributeContainer']]],

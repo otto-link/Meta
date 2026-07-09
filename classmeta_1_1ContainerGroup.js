@@ -13,6 +13,7 @@ var classmeta_1_1ContainerGroup =
     [ "find", "classmeta_1_1ContainerGroup.html#a044982d334e14c800ff69eff0428edcc", null ],
     [ "insertion_order", "classmeta_1_1ContainerGroup.html#ab50ef7edf1436674c9b04efbd19dd023", null ],
     [ "set_current", "classmeta_1_1ContainerGroup.html#a869e7c2de22d43cd0a9bf5f55c35229a", null ],
+    [ "size", "classmeta_1_1ContainerGroup.html#a9c03b68dbd3ad3bcdc4f6eaec65db3a9", null ],
     [ "containers_", "classmeta_1_1ContainerGroup.html#ae59f77d5182a0796a6f3e652fb0de9cb", null ],
     [ "current_", "classmeta_1_1ContainerGroup.html#a8e98dc31a645f4f50a43d03c64c58f0b", null ],
     [ "insertion_order_", "classmeta_1_1ContainerGroup.html#a9fc3d761be570b229a6e6f7a3260eff6", null ]
