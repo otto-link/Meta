@@ -239,5 +239,15 @@ int main()
     std::cout << "[data_provider] core OK" << std::endl;
   }
 
+  {
+    meta::AttributeContainer c;
+    c.add<int>("keep", 7);
+    c.add<meta::DataProvider>("skip", meta::DataProvider{[]{ return meta::ProviderData{}; }});
+    auto j = c.json_to();
+    assert(j.contains("keep"));
+    assert(!j.contains("skip"));   // DataProvider omitted from serialization
+    std::cout << "[data_provider] serialize-skip OK" << std::endl;
+  }
+
   return 0;
 }

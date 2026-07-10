@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 
 #include "meta/core/attribute_container.hpp"
+#include "meta/core/data_provider.hpp"
 #include "meta/logger.hpp"
 #include "meta/serialization/attribute_factory.hpp"
 
@@ -189,7 +190,11 @@ nlohmann::json AttributeContainer::json_to() const
   nlohmann::json j;
 
   for (const auto &[name, attr] : attributes_)
+  {
+    if (attr->type() == std::type_index(typeid(meta::DataProvider)))
+      continue;  // non-serializable runtime provider
     j[name] = attr->json_to();
+  }
 
   j["snapshot_manager"] = snapshot_manager_.json_to();
 
