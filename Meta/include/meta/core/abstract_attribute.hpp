@@ -84,7 +84,7 @@ public:
    */
   template <class T = void> const T *try_cast() const
   {
-    T *ptr = dynamic_cast<T *>(this);
+    const T *ptr = dynamic_cast<const T *>(this);
     if (ptr)
       return ptr;
     else
