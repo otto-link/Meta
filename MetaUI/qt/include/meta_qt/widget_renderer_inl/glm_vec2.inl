@@ -6,6 +6,7 @@
 
 #include <QFormLayout>
 
+#include "meta/core/data_provider.hpp"
 #include "meta_qt/widgets/range_bar.hpp"
 #include "meta_qt/widgets/vector_canvas.hpp"
 #include "meta_qt/widgets/xy_canvas.hpp"
@@ -233,6 +234,28 @@ template <> struct WidgetRenderer<glm::vec2>
                                                      : glm::vec2{min, max};
 
       auto *bar = new RangeBar(value, min, max, decimals, widget);
+
+      if (const auto *mp = attr.metadata().find(meta::keys::ui::data_provider))
+      {
+        if (const auto *dp = mp->try_cast<meta::Attribute<meta::DataProvider>>())
+        {
+          const meta::DataProvider &provider = dp->value();
+          if (provider)
+          {
+            try
+            {
+              meta::ProviderData d = provider();
+              if (d.has_series())
+                bar->set_histogram(d.series_x, d.series_y);
+            }
+            catch (...)
+            {
+              // a faulty host provider must not crash the panel
+            }
+          }
+        }
+      }
+
       auto *btn_row = new QHBoxLayout();
       auto *toggle_btn = new QPushButton(widget);
       auto *reset_btn = new QPushButton(QObject::tr("Full"), widget);

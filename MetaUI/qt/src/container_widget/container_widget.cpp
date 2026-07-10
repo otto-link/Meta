@@ -4,6 +4,8 @@
 #include <optional>
 #include <regex>
 
+#include <QString>
+
 #include "meta/logger.hpp"
 #include "meta_common.hpp"
 
@@ -72,6 +74,13 @@ void render_flat(CategoryNode              &node,
                          p_attr ? p_attr->name() : std::string("null"));
 
     MetaWidget *w = meta::qt::render(p_attr);
+
+    if (const std::string tip = meta::common::try_get<std::string>(*p_attr,
+                                                                    meta::keys::ui::tooltip,
+                                                                    "");
+        !tip.empty())
+      w->setToolTip(QString::fromStdString(tip));
+
     layout->addWidget(w);
     collected_widgets.push_back(w);
   }
@@ -135,6 +144,12 @@ void render_category(meta::AttributeContainer  &container,
 
     if (w) // avoid 'None' type widgets
     {
+      if (const std::string tip = meta::common::try_get<std::string>(*p_attr,
+                                                                      meta::keys::ui::tooltip,
+                                                                      "");
+          !tip.empty())
+        w->setToolTip(QString::fromStdString(tip));
+
       current_layout->addWidget(w);
       collected_widgets.push_back(w);
     }
@@ -221,6 +236,12 @@ void render_category_merged(meta::AttributeContainer        &container,
 
       if (w) // 'None' widget is possible
       {
+        if (const std::string tip = meta::common::try_get<std::string>(*p_attr,
+                                                                        meta::keys::ui::tooltip,
+                                                                        "");
+            !tip.empty())
+          w->setToolTip(QString::fromStdString(tip));
+
         layout->addWidget(w);
         collected_widgets.push_back(w);
       }
