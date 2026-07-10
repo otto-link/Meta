@@ -75,11 +75,14 @@ void render_flat(CategoryNode              &node,
 
     MetaWidget *w = meta::qt::render(p_attr);
 
-    if (const std::string tip = meta::common::try_get<std::string>(*p_attr,
-                                                                    meta::keys::ui::tooltip,
-                                                                    "");
-        !tip.empty())
-      w->setToolTip(QString::fromStdString(tip));
+    if (w)
+    {
+      if (const std::string tip = meta::common::try_get<std::string>(*p_attr,
+                                                                     meta::keys::ui::tooltip,
+                                                                     "");
+          !tip.empty())
+        w->setToolTip(QString::fromStdString(tip));
+    }
 
     layout->addWidget(w);
     collected_widgets.push_back(w);
