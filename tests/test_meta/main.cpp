@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "meta.hpp"
+#include "meta/core/data_provider.hpp"
 
 struct Vec2
 {
@@ -214,6 +215,29 @@ int main()
 
   std::cout << "\nUI-facing access:\n";
   std::cout << "draw_bounds = " << ui.value<bool>("draw_bounds") << "\n";
+
+  {
+    // ProviderData predicates
+    meta::ProviderData d;
+    assert(!d.has_series() && !d.has_image());
+    d.series_y = {1.f, 2.f};
+    assert(d.has_series());
+
+    // Attribute<DataProvider> compiles, to_string is the no-op sentinel
+    meta::AttributeContainer c;
+    bool called = false;
+    c.add<meta::DataProvider>("p", meta::DataProvider{[&]{ called = true; return meta::ProviderData{}; }});
+    auto *a = c.find("p");
+    assert(a && a->to_string() == "<data_provider>");
+
+    // the stored provider is callable
+    auto *typed = a->try_cast<meta::Attribute<meta::DataProvider>>();
+    assert(typed && typed->value());
+    typed->value()();
+    assert(called);
+
+    std::cout << "[data_provider] core OK" << std::endl;
+  }
 
   return 0;
 }

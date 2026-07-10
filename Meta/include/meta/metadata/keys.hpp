@@ -27,5 +27,7 @@ inline constexpr char label_true[] = "ui.label_true";
 inline constexpr char label_false[] = "ui.label_false";
 inline constexpr char state[] = "ui.state";
 inline constexpr char widget_type[] = "ui.widget_type";
+inline constexpr char data_provider[] = "ui.data_provider";
+inline constexpr char tooltip[]       = "ui.tooltip";
 
 } // namespace meta::keys::ui
