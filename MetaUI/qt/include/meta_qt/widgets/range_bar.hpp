@@ -3,6 +3,8 @@
    this software. */
 #pragma once
 
+#include <vector>
+
 #include <QWidget>
 #include <glm/glm.hpp>
 
@@ -25,6 +27,7 @@ public:
            QWidget   *parent = nullptr);
 
   void set_value(glm::vec2 v);
+  void set_histogram(const std::vector<float> &x, const std::vector<float> &y);
 
 Q_SIGNALS:
   void value_changed(glm::vec2 v);
@@ -62,6 +65,9 @@ private:
   int    drag_anchor_px_ = 0;    // cursor x at drag start
   float  drag_low_start_ = 0.f;  // value.x at drag start (Track drag)
   float  drag_high_start_ = 0.f; // value.y at drag start (Track drag)
+
+  std::vector<float> hist_x_;
+  std::vector<float> hist_y_;
 
   static constexpr int pad_h_ = 10;   // horizontal padding (handle overhang)
   static constexpr int pad_v_ = 8;    // vertical padding

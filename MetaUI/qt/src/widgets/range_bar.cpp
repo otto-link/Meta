@@ -7,6 +7,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPalette>
 
 #include "meta_qt/widgets/range_bar.hpp"
 
@@ -159,6 +160,29 @@ void RangeBar::mouseReleaseEvent(QMouseEvent *e)
 
 void RangeBar::paintEvent(QPaintEvent *)
 {
+  // Draw histogram if present
+  if (!this->hist_y_.empty())
+  {
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, false);
+    const QRect r = this->rect();
+    const float ymax = *std::max_element(this->hist_y_.begin(), this->hist_y_.end());
+    if (ymax > 0.f)
+    {
+      const int   n  = static_cast<int>(this->hist_y_.size());
+      const float bw = static_cast<float>(r.width()) / static_cast<float>(n);
+      QColor c = this->palette().color(QPalette::Mid);
+      c.setAlpha(90);
+      painter.setPen(Qt::NoPen);
+      painter.setBrush(c);
+      for (int i = 0; i < n; ++i)
+      {
+        const float h = (this->hist_y_[i] / ymax) * r.height();
+        painter.drawRect(QRectF(r.left() + i * bw, r.bottom() - h, bw, h));
+      }
+    }
+  }
+
   QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);
 
@@ -225,6 +249,13 @@ void RangeBar::set_value(glm::vec2 v)
   value_ = v;
   clamp_and_order();
   update();
+}
+
+void RangeBar::set_histogram(const std::vector<float> &x, const std::vector<float> &y)
+{
+  this->hist_x_ = x;
+  this->hist_y_ = y;
+  this->update();
 }
 
 QRect RangeBar::track_rect() const
