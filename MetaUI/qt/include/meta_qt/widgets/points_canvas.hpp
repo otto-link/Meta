@@ -3,6 +3,7 @@
    this software. */
 #pragma once
 
+#include <cstdint>
 #include <vector>
 
 #include <QWidget>
@@ -50,6 +51,7 @@ public:
   void randomize(int count);
   void load_csv(const QString &path); // x,y,z per line (z clamped to [0,1])
   void set_points(const std::vector<glm::vec3> &new_points);
+  void set_background_image(const std::vector<uint8_t> &pixels, int w, int h, int channels);
 
 Q_SIGNALS:
   void points_changed();
@@ -84,6 +86,9 @@ private:
 
   Mode mode_;
   bool closed_;
+
+  std::vector<uint8_t> bg_pixels_;
+  int                  bg_w_ = 0, bg_h_ = 0, bg_channels_ = 0;
 
   static constexpr int   PAD = 10;
   static constexpr float HIT_R = 8.f;

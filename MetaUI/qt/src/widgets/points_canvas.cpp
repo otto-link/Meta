@@ -7,6 +7,7 @@
 
 #include <QFile>
 #include <QFontDatabase>
+#include <QImage>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
@@ -243,6 +244,20 @@ void PointsCanvas::paintEvent(QPaintEvent *)
   // Background
   p.fillRect(rect(), palette().color(QPalette::Base));
 
+  // Background image
+  if (!this->bg_pixels_.empty() && this->bg_w_ > 0 && this->bg_h_ > 0)
+  {
+    const QImage::Format fmt = (this->bg_channels_ == 4) ? QImage::Format_RGBA8888
+                             : (this->bg_channels_ == 1) ? QImage::Format_Grayscale8
+                                                         : QImage::Format_RGB888;
+    const QImage img(this->bg_pixels_.data(),
+                     this->bg_w_,
+                     this->bg_h_,
+                     this->bg_w_ * this->bg_channels_, // bytes per line
+                     fmt);
+    p.drawImage(this->canvas_rect(), img);
+  }
+
   // Grid
   {
     QPen gp(palette().color(QPalette::Mid), 1, Qt::DotLine);
@@ -428,6 +443,16 @@ void PointsCanvas::set_points(const std::vector<glm::vec3> &new_points)
   points_ = new_points;
   update();
   Q_EMIT points_changed();
+}
+
+void PointsCanvas::set_background_image(const std::vector<uint8_t> &pixels,
+                                       int w, int h, int channels)
+{
+  this->bg_pixels_ = pixels;
+  this->bg_w_ = w;
+  this->bg_h_ = h;
+  this->bg_channels_ = channels;
+  this->update();
 }
 
 QPoint PointsCanvas::value_to_canvas(float x, float y) const
