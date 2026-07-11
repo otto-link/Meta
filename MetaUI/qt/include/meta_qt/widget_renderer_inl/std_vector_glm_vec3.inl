@@ -12,6 +12,7 @@
 
 #include <glm/glm.hpp>
 
+#include "meta/core/data_provider.hpp"
 #include "meta_common.hpp"
 #include "meta_qt/meta_widget.hpp"
 #include "meta_qt/widgets/points_canvas.hpp"
@@ -65,6 +66,30 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
                                       closed,
                                       widget);
       layout->addWidget(canvas);
+
+      if (const auto *mp = attr.metadata().find(meta::keys::ui::data_provider))
+      {
+        if (const auto *dp = mp->try_cast<meta::Attribute<meta::DataProvider>>())
+        {
+          const meta::DataProvider &provider = dp->value();
+          if (provider)
+          {
+            try
+            {
+              meta::ProviderData d = provider();
+              if (d.has_image())
+                canvas->set_background_image(d.image_pixels,
+                                             d.image_width,
+                                             d.image_height,
+                                             d.image_channels);
+            }
+            catch (...)
+            {
+              // a faulty host provider must not crash the panel
+            }
+          }
+        }
+      }
 
       // --- Toolbar
 
