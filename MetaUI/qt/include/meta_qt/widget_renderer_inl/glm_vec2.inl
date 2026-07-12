@@ -235,24 +235,22 @@ template <> struct WidgetRenderer<glm::vec2>
 
       auto *bar = new RangeBar(value, min, max, decimals, widget);
 
+      meta::DataProvider range_provider; // empty if none
       if (const auto *mp = attr.metadata().find(meta::keys::ui::data_provider))
-      {
         if (const auto *dp = mp->try_cast<meta::Attribute<meta::DataProvider>>())
+          range_provider = dp->value();
+
+      if (range_provider)
+      {
+        try
         {
-          const meta::DataProvider &provider = dp->value();
-          if (provider)
-          {
-            try
-            {
-              meta::ProviderData d = provider();
-              if (d.has_series())
-                bar->set_histogram(d.series_x, d.series_y);
-            }
-            catch (...)
-            {
-              // a faulty host provider must not crash the panel
-            }
-          }
+          meta::ProviderData d = range_provider();
+          if (d.has_series())
+            bar->set_histogram(d.series_x, d.series_y);
+        }
+        catch (...)
+        {
+          // a faulty host provider must not crash the panel
         }
       }
 
@@ -296,7 +294,7 @@ template <> struct WidgetRenderer<glm::vec2>
       set_active(initially_active);
 
       widget->set_sync_from_model(
-          [&value, bar, toggle_btn, set_active]()
+          [&value, bar, toggle_btn, set_active, widget, range_provider]()
           {
             const bool active = !(value.x == -1.f && value.y == 0.f);
 
@@ -313,6 +311,19 @@ template <> struct WidgetRenderer<glm::vec2>
               QSignalBlocker b(bar);
               bar->set_value(value);
               bar->update();
+            }
+
+            if (range_provider && !widget->is_editing())
+            {
+              try
+              {
+                meta::ProviderData d = range_provider();
+                if (d.has_series())
+                  bar->set_histogram(d.series_x, d.series_y);
+              }
+              catch (...)
+              {
+              }
             }
           });
 

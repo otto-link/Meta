@@ -67,27 +67,25 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
                                       widget);
       layout->addWidget(canvas);
 
+      meta::DataProvider points_provider; // empty if none
       if (const auto *mp = attr.metadata().find(meta::keys::ui::data_provider))
-      {
         if (const auto *dp = mp->try_cast<meta::Attribute<meta::DataProvider>>())
+          points_provider = dp->value();
+
+      if (points_provider)
+      {
+        try
         {
-          const meta::DataProvider &provider = dp->value();
-          if (provider)
-          {
-            try
-            {
-              meta::ProviderData d = provider();
-              if (d.has_image())
-                canvas->set_background_image(d.image_pixels,
-                                             d.image_width,
-                                             d.image_height,
-                                             d.image_channels);
-            }
-            catch (...)
-            {
-              // a faulty host provider must not crash the panel
-            }
-          }
+          meta::ProviderData d = points_provider();
+          if (d.has_image())
+            canvas->set_background_image(d.image_pixels,
+                                         d.image_width,
+                                         d.image_height,
+                                         d.image_channels);
+        }
+        catch (...)
+        {
+          // a faulty host provider must not crash the panel
         }
       }
 
@@ -117,10 +115,26 @@ template <> struct WidgetRenderer<std::vector<glm::vec3>>
       // --- Connections
 
       widget->set_sync_from_model(
-          [&value, canvas]()
+          [&value, canvas, widget, points_provider]()
           {
             QSignalBlocker blocker(canvas);
             canvas->set_points(value);
+
+            if (points_provider && !widget->is_editing())
+            {
+              try
+              {
+                meta::ProviderData d = points_provider();
+                if (d.has_image())
+                  canvas->set_background_image(d.image_pixels,
+                                               d.image_width,
+                                               d.image_height,
+                                               d.image_channels);
+              }
+              catch (...)
+              {
+              }
+            }
           });
 
       // Live edits (add / move / z scroll) → edit_started + value_changed
