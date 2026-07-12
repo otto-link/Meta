@@ -29,7 +29,10 @@ public:
   EventConnection connection_;
 
   /// Construct a MetaWidget.
-  MetaWidget(QWidget *parent = nullptr) : QWidget(parent) {}
+  MetaWidget(QWidget *parent = nullptr);
+
+  /// Check if widget is currently being edited.
+  bool is_editing() const;
 
   /// Get sync-from-model callback.
   const std::function<void()> &get_sync_from_model() const;
@@ -74,6 +77,7 @@ protected:
   void closeEvent(QCloseEvent *event) override;
 
 private:
+  bool editing_ = false;
   std::function<void()> sync_from_model_;
 };
 
