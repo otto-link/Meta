@@ -236,6 +236,15 @@ public:
   const std::vector<std::string> &insertion_order() const;
 
   /**
+   * @brief Reorders the attribute names in insertion order.
+   * @param order New ordering of attribute names; must be a permutation of
+   *        the current keys.
+   * @return true and applies the reorder, or false (leaving order
+   *         unchanged) if `order` is not a permutation of the current keys.
+   */
+  bool set_insertion_order(const std::vector<std::string> &order);
+
+  /**
    * @brief Returns a pointer to the attribute value if it exists and has the
    * requested type.
    * @return Pointer to the value, or nullptr if the attribute is missing or has

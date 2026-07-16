@@ -143,7 +143,21 @@ template <> struct WidgetRenderer<glm::vec2>
     }
     else if (widget_type == "XYCanvas") // --- XYCanvas
     {
-      auto *canvas = new XYCanvas(value, min, max, min, max, show_grid, widget);
+      // Per-axis bounds (compat "xy()" preset stash), falling back to the
+      // shared min/max when absent so asymmetric domains (e.g. x in [0,1],
+      // y in [0,100]) reach the widget.
+      const float min_x = meta::common::try_get<float>(attr, "ui.min_x", min);
+      const float max_x = meta::common::try_get<float>(attr, "ui.max_x", max);
+      const float min_y = meta::common::try_get<float>(attr, "ui.min_y", min);
+      const float max_y = meta::common::try_get<float>(attr, "ui.max_y", max);
+
+      auto *canvas = new XYCanvas(value,
+                                  min_x,
+                                  max_x,
+                                  min_y,
+                                  max_y,
+                                  show_grid,
+                                  widget);
       layout->addWidget(canvas);
 
       // Button row
@@ -235,6 +249,24 @@ template <> struct WidgetRenderer<glm::vec2>
 
       auto *bar = new RangeBar(value, min, max, decimals, widget);
 
+      // Optional secondary "active" toggle, independent from the
+      // enable/disable-full-range toggle_btn above (compat facade:
+      // "ui.has_active_toggle" / "ui.active").
+      const bool has_active_toggle = meta::common::try_get<bool>(
+          attr,
+          "ui.has_active_toggle",
+          false);
+      const bool initial_active = meta::common::try_get<bool>(attr,
+                                                              "ui.active",
+                                                              true);
+
+      QCheckBox *active_box = nullptr;
+      if (has_active_toggle)
+      {
+        active_box = new QCheckBox(widget);
+        active_box->setChecked(initial_active);
+      }
+
       meta::DataProvider range_provider; // empty if none
       if (const auto *mp = attr.metadata().find(meta::keys::ui::data_provider))
         if (const auto *dp = mp->try_cast<meta::Attribute<meta::DataProvider>>())
@@ -279,7 +311,17 @@ template <> struct WidgetRenderer<glm::vec2>
       btn_row->addWidget(center_btn);
       btn_row->addWidget(unit_btn);
 
-      layout->addWidget(bar);
+      if (active_box != nullptr)
+      {
+        auto *bar_row = new QHBoxLayout();
+        bar_row->addWidget(active_box);
+        bar_row->addWidget(bar, 1);
+        layout->addLayout(bar_row);
+      }
+      else
+      {
+        layout->addWidget(bar);
+      }
       layout->addLayout(btn_row);
 
       // Helper: enable or disable all range controls at once.
@@ -293,8 +335,18 @@ template <> struct WidgetRenderer<glm::vec2>
 
       set_active(initially_active);
 
+      if (active_box != nullptr)
+        bar->setEnabled(initially_active && initial_active);
+
       widget->set_sync_from_model(
-          [&value, bar, toggle_btn, set_active, widget, range_provider]()
+          [&value,
+           &attr,
+           bar,
+           toggle_btn,
+           active_box,
+           set_active,
+           widget,
+           range_provider]()
           {
             const bool active = !(value.x == -1.f && value.y == 0.f);
 
@@ -305,6 +357,18 @@ template <> struct WidgetRenderer<glm::vec2>
               toggle_btn->setChecked(active);
               toggle_btn->setText(active ? QObject::tr("On")
                                          : QObject::tr("Off"));
+            }
+
+            if (active_box != nullptr)
+            {
+              const bool is_active = meta::common::try_get<bool>(attr,
+                                                                 "ui.active",
+                                                                 true);
+              {
+                QSignalBlocker b(active_box);
+                active_box->setChecked(is_active);
+              }
+              bar->setEnabled(active && is_active);
             }
 
             {
@@ -362,6 +426,30 @@ template <> struct WidgetRenderer<glm::vec2>
                          Q_EMIT widget->value_changed();
                          Q_EMIT widget->edit_ended();
                        });
+
+      // Active toggle ("ui.active") — independent from the RangeBar's own
+      // enable/disable-full-range toggle_btn above.
+      if (active_box != nullptr)
+      {
+        QObject::connect(
+            active_box,
+            &QCheckBox::toggled,
+            widget,
+            [&attr, bar, toggle_btn, widget](bool checked)
+            {
+              attr.metadata()
+                  .try_add(std::string("ui.active"), checked)
+                  ->value() = checked;
+              bar->setEnabled(checked && toggle_btn->isChecked());
+
+              // is_active affects compute: treat as a value edit.
+              Q_EMIT widget->edit_started();
+              // not using 'set_from_any' method, force emit
+              attr.value_changed.notify(attr.value());
+              Q_EMIT widget->value_changed();
+              Q_EMIT widget->edit_ended();
+            });
+      }
 
       // Live drag → edit_started + value_changed
       QObject::connect(bar,

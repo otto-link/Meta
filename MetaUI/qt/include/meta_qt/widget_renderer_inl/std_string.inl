@@ -267,9 +267,35 @@ template <> struct WidgetRenderer<std::string>
       if (current_index >= 0) combo->setCurrentIndex(current_index);
 
       widget->set_sync_from_model(
-          [combo, &value]()
+          [&attr, combo, &value]()
           {
             const QSignalBlocker blocker(combo);
+
+            // Re-pull the allowed-values list: dynamic sources (e.g. the
+            // Receive node's tag list) can change without a panel rebuild.
+            const std::vector<std::string> current_options =
+                meta::common::allowed_values(attr);
+
+            bool items_differ = combo->count() !=
+                                static_cast<int>(current_options.size());
+            if (!items_differ)
+            {
+              for (int i = 0; i < combo->count(); ++i)
+              {
+                if (combo->itemText(i).toStdString() != current_options[i])
+                {
+                  items_differ = true;
+                  break;
+                }
+              }
+            }
+
+            if (items_differ)
+            {
+              combo->clear();
+              for (const auto &opt : current_options)
+                combo->addItem(QString::fromStdString(opt));
+            }
 
             const QString v = QString::fromStdString(value);
 

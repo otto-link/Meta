@@ -275,5 +275,16 @@ int main()
     std::cout << "presets::compat smoke OK" << std::endl;
   }
 
+  // --- set_insertion_order
+  {
+    meta::AttributeContainer oc;
+    oc.add("a", 1); oc.add("b", 2); oc.add("c", 3);
+    assert(oc.set_insertion_order({"c", "a", "b"}));
+    assert(oc.insertion_order() == (std::vector<std::string>{"c", "a", "b"}));
+    assert(!oc.set_insertion_order({"c", "a"}));          // wrong size
+    assert(!oc.set_insertion_order({"c", "a", "zzz"}));   // unknown key
+    std::cout << "set_insertion_order OK" << std::endl;
+  }
+
   return 0;
 }

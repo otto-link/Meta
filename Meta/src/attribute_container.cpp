@@ -1,6 +1,7 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
+#include <set>
 #include <utility>
 
 #include <nlohmann/json.hpp>
@@ -88,6 +89,22 @@ const AbstractAttribute *AttributeContainer::find(const std::string &name) const
 const std::vector<std::string> &AttributeContainer::insertion_order() const
 {
   return insertion_order_;
+}
+
+bool AttributeContainer::set_insertion_order(
+    const std::vector<std::string> &order)
+{
+  if (order.size() != insertion_order_.size()) return false;
+
+  for (const auto &k : order)
+    if (attributes_.find(k) == attributes_.end()) return false;
+
+  // reject duplicates
+  std::set<std::string> uniq(order.begin(), order.end());
+  if (uniq.size() != order.size()) return false;
+
+  insertion_order_ = order;
+  return true;
 }
 
 void AttributeContainer::json_from(const nlohmann::json &j,
