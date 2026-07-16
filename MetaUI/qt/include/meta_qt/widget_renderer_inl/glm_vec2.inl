@@ -324,19 +324,21 @@ template <> struct WidgetRenderer<glm::vec2>
       }
       layout->addLayout(btn_row);
 
-      // Helper: enable or disable all range controls at once.
-      auto set_active = [bar, reset_btn, center_btn, unit_btn](bool active)
+      // Helper: enable or disable all range controls at once. Gated by
+      // the sentinel toggle (parameter) AND, when present, the "ui.active"
+      // checkbox — bar and buttons always agree.
+      auto set_active =
+          [bar, reset_btn, center_btn, unit_btn, active_box](bool active)
       {
-        bar->setEnabled(active);
-        reset_btn->setEnabled(active);
-        center_btn->setEnabled(active);
-        unit_btn->setEnabled(active);
+        const bool enabled = active && (active_box == nullptr ||
+                                        active_box->isChecked());
+        bar->setEnabled(enabled);
+        reset_btn->setEnabled(enabled);
+        center_btn->setEnabled(enabled);
+        unit_btn->setEnabled(enabled);
       };
 
       set_active(initially_active);
-
-      if (active_box != nullptr)
-        bar->setEnabled(initially_active && initial_active);
 
       widget->set_sync_from_model(
           [&value,
@@ -350,6 +352,17 @@ template <> struct WidgetRenderer<glm::vec2>
           {
             const bool active = !(value.x == -1.f && value.y == 0.f);
 
+            // refresh the "ui.active" checkbox BEFORE set_active so the
+            // helper reads the up-to-date checkbox state
+            if (active_box != nullptr)
+            {
+              const bool is_active = meta::common::try_get<bool>(attr,
+                                                                 "ui.active",
+                                                                 true);
+              QSignalBlocker b(active_box);
+              active_box->setChecked(is_active);
+            }
+
             set_active(active);
 
             {
@@ -357,18 +370,6 @@ template <> struct WidgetRenderer<glm::vec2>
               toggle_btn->setChecked(active);
               toggle_btn->setText(active ? QObject::tr("On")
                                          : QObject::tr("Off"));
-            }
-
-            if (active_box != nullptr)
-            {
-              const bool is_active = meta::common::try_get<bool>(attr,
-                                                                 "ui.active",
-                                                                 true);
-              {
-                QSignalBlocker b(active_box);
-                active_box->setChecked(is_active);
-              }
-              bar->setEnabled(active && is_active);
             }
 
             {
@@ -435,12 +436,13 @@ template <> struct WidgetRenderer<glm::vec2>
             active_box,
             &QCheckBox::toggled,
             widget,
-            [&attr, bar, toggle_btn, widget](bool checked)
+            [&attr, set_active, toggle_btn, widget](bool checked)
             {
               attr.metadata()
                   .try_add(std::string("ui.active"), checked)
                   ->value() = checked;
-              bar->setEnabled(checked && toggle_btn->isChecked());
+              // checkbox already reflects 'checked'; set_active ANDs it in
+              set_active(toggle_btn->isChecked());
 
               // is_active affects compute: treat as a value edit.
               Q_EMIT widget->edit_started();

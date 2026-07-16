@@ -282,7 +282,11 @@ int main()
     assert(oc.set_insertion_order({"c", "a", "b"}));
     assert(oc.insertion_order() == (std::vector<std::string>{"c", "a", "b"}));
     assert(!oc.set_insertion_order({"c", "a"}));          // wrong size
+    assert(oc.insertion_order() == (std::vector<std::string>{"c", "a", "b"}));
     assert(!oc.set_insertion_order({"c", "a", "zzz"}));   // unknown key
+    assert(oc.insertion_order() == (std::vector<std::string>{"c", "a", "b"}));
+    assert(!oc.set_insertion_order({"c", "c", "b"}));     // duplicate key
+    assert(oc.insertion_order() == (std::vector<std::string>{"c", "a", "b"}));
     std::cout << "set_insertion_order OK" << std::endl;
   }
 
