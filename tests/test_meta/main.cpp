@@ -2,6 +2,7 @@
 
 #include "meta.hpp"
 #include "meta/core/data_provider.hpp"
+#include "meta/presets/compat.hpp"
 
 struct Vec2
 {
@@ -247,6 +248,31 @@ int main()
     assert(j.contains("keep"));
     assert(!j.contains("skip"));   // DataProvider omitted from serialization
     std::cout << "[data_provider] serialize-skip OK" << std::endl;
+  }
+
+  // --- presets::compat smoke
+  {
+    meta::AttributeContainer pc;
+    auto &f = meta::presets::slider_float(pc, "f", "Float", 0.5f, 0.f, 1.f);
+    assert(f.value() == 0.5f);
+    assert(pc.value<float>("f") == 0.5f);
+    assert(f.metadata().value<std::string>(meta::keys::ui::widget_type) == "SliderFloat");
+    assert(f.metadata().value<float>(meta::keys::constraints::max) == 1.f);
+
+    std::vector<std::pair<int, std::string>> items = {{0, "a"}, {1, "b"}};
+    auto &e = meta::presets::enum_choice(pc, "e", "Enum", items, 1);
+    assert(e.value() == 1);
+
+    auto &r = meta::presets::range(pc, "r", "Range", {0.f, 1.f}, -1.f, 2.f, false);
+    assert(r.metadata().value<bool>("ui.active") == false);
+
+    auto &ch = meta::presets::string_choice(pc, "c", "Choice", {"x", "y"}, "x");
+    assert(ch.value() == "x");
+
+    auto &sf = meta::presets::file(pc, "p", "File", "out.png", "PNG (*.png)", true);
+    assert(sf.metadata().value<std::string>(meta::keys::ui::widget_type) == "SaveFile");
+
+    std::cout << "presets::compat smoke OK" << std::endl;
   }
 
   return 0;
