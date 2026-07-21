@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -76,7 +77,13 @@ public:
 
     listeners_.push_back({id, std::move(callback)});
 
-    return EventConnection([this, id]() { unsubscribe(id); });
+    // Capture a weak handle to the Event's lifetime token. If the Event is
+    // destroyed before the connection disconnects, the token is gone and the
+    // disconnect becomes a safe no-op (prevents UAF on listeners_).
+    std::weak_ptr<void> alive = alive_token_;
+
+    return EventConnection([this, id, alive]()
+                           { if (!alive.expired()) this->unsubscribe(id); });
   }
 
   void notify(Args... args)
@@ -109,6 +116,11 @@ private:
   std::vector<Listener> listeners_;
 
   listener_id_t next_id_ = 0;
+
+  // Pure lifetime sentinel: destroyed together with the Event. A weak_ptr to
+  // this token lets an outliving EventConnection detect a dead Event and skip
+  // the unsubscribe (see subscribe()).
+  std::shared_ptr<void> alive_token_ = std::make_shared<char>();
 };
 
 } // namespace meta

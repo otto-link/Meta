@@ -290,5 +290,16 @@ int main()
     std::cout << "set_insertion_order OK" << std::endl;
   }
 
+  // --- Event teardown safety: a connection outliving its Event must not UAF
+  {
+    meta::EventConnection conn;
+    {
+      meta::Event<int> ev;
+      conn = ev.subscribe([](int) {});
+    } // ev destroyed; conn still alive
+    // conn's destructor (end of this block) must NOT touch the freed Event.
+    std::cout << "event teardown-safety OK" << std::endl;
+  }
+
   return 0;
 }
