@@ -71,6 +71,14 @@ public:
   using callback_t = std::function<void(Args...)>;
   using listener_id_t = std::size_t;
 
+  Event() = default;
+
+  Event(const Event &) = delete;
+  Event &operator=(const Event &) = delete;
+
+  Event(Event &&) noexcept = default;
+  Event &operator=(Event &&) noexcept = default;
+
   EventConnection subscribe(callback_t callback)
   {
     const listener_id_t id = next_id_++;
