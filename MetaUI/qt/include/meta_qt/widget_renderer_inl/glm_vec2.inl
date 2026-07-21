@@ -8,6 +8,7 @@
 
 #include "meta/core/data_provider.hpp"
 #include "meta_qt/widgets/range_bar.hpp"
+#include "meta_qt/widgets/responsive_box.hpp"
 #include "meta_qt/widgets/vector_canvas.hpp"
 #include "meta_qt/widgets/xy_canvas.hpp"
 
@@ -762,8 +763,16 @@ template <> struct WidgetRenderer<glm::vec2>
         slider_y->setEnabled(false);
       }
 
-      row->addWidget(slider_x, 1); // stretch factor 1
-      row->addWidget(slider_y, 1);
+      // The slider pair lives in a ResponsiveBox: side-by-side when there is
+      // room, stacked vertically when the panel is too narrow to fit both.
+      // The box reports a one-slider minimum width, so the panel is free to
+      // narrow below the two-slider width (which is what triggers stacking).
+      auto *pair = new ResponsiveBox(widget);
+      pair->set_spacing(4);
+      pair->add_widget(slider_x, 1); // stretch factor 1
+      pair->add_widget(slider_y, 1);
+
+      row->addWidget(pair, 1);
       row->addWidget(lock_btn, 0);
       layout->addLayout(row);
 
