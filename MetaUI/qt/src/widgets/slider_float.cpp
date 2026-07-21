@@ -351,19 +351,23 @@ void SliderFloat::paintEvent(QPaintEvent *)
 
   // Value fill bar
   const bool is_bounded = this->vmin != -FLT_MAX && this->vmax != FLT_MAX;
+  const bool has_fill = is_bounded && !this->value_edit->isVisible();
+  QRect      fill_rect;
 
-  if (is_bounded && !this->value_edit->isVisible())
+  if (has_fill)
   {
     const float r = this->value_to_ratio(this->value);
     const int   rcut = int((1.f - r) * float(this->rect_bar.width()));
+
+    fill_rect = this->rect_bar.adjusted(1, 1, -rcut - 1, -1);
 
     p.setBrush(c_fill.darker(130));
     p.setPen(Qt::NoPen);
 
     if (this->add_plus_minus_buttons)
-      p.drawRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1));
+      p.drawRect(fill_rect);
     else
-      p.drawRoundedRect(this->rect_bar.adjusted(1, 1, -rcut - 1, -1),
+      p.drawRoundedRect(fill_rect,
                         this->style.border_radius(),
                         this->style.border_radius());
   }
@@ -379,19 +383,44 @@ void SliderFloat::paintEvent(QPaintEvent *)
   }
 
   // Label (left) and value (right) inside the bar
-  p.setBrush(c_text);
-  p.setPen(c_text);
-
   const QRect label_rect = this->rect_bar.adjusted(this->base_dx,
                                                    0,
                                                    -this->base_dx,
                                                    0);
-  p.drawText(label_rect,
-             Qt::AlignLeft | Qt::AlignVCenter,
-             QString::fromStdString(this->label));
-  p.drawText(label_rect,
-             Qt::AlignRight | Qt::AlignVCenter,
-             QString::fromStdString(this->get_value_as_string()));
+  const QString label_str = QString::fromStdString(this->label);
+  const QString value_str = QString::fromStdString(this->get_value_as_string());
+
+  if (has_fill)
+  {
+    // Two-pass draw: text over the highlighted fill uses HighlightedText
+    // for contrast, text over the plain background uses Text. The two
+    // clip regions are complementary (bar minus fill / fill), so nothing
+    // is drawn twice.
+    const QColor c_highlighted_text = pal.color(QPalette::HighlightedText);
+
+    p.save();
+    p.setClipRect(fill_rect);
+    p.setBrush(c_highlighted_text);
+    p.setPen(c_highlighted_text);
+    p.drawText(label_rect, Qt::AlignLeft | Qt::AlignVCenter, label_str);
+    p.drawText(label_rect, Qt::AlignRight | Qt::AlignVCenter, value_str);
+    p.restore();
+
+    p.save();
+    p.setClipRegion(QRegion(this->rect_bar).subtracted(QRegion(fill_rect)));
+    p.setBrush(c_text);
+    p.setPen(c_text);
+    p.drawText(label_rect, Qt::AlignLeft | Qt::AlignVCenter, label_str);
+    p.drawText(label_rect, Qt::AlignRight | Qt::AlignVCenter, value_str);
+    p.restore();
+  }
+  else
+  {
+    p.setBrush(c_text);
+    p.setPen(c_text);
+    p.drawText(label_rect, Qt::AlignLeft | Qt::AlignVCenter, label_str);
+    p.drawText(label_rect, Qt::AlignRight | Qt::AlignVCenter, value_str);
+  }
 
   // ◁/▶ arrows
   p.drawText(this->rect_minus,
