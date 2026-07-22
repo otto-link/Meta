@@ -30,4 +30,18 @@ inline constexpr char widget_type[] = "ui.widget_type";
 inline constexpr char data_provider[] = "ui.data_provider";
 inline constexpr char tooltip[]       = "ui.tooltip";
 
+// Ad-hoc keys hoisted from raw string literals (Phase C migration). Each value
+// is byte-identical to the literal it replaced; producers set them and
+// renderers/parity consume them across files, so a typo must be a compile error.
+inline constexpr char active[]            = "ui.active";
+inline constexpr char has_active_toggle[] = "ui.has_active_toggle";
+inline constexpr char locked_xy[]         = "ui.locked_xy";
+inline constexpr char min_x[]             = "ui.min_x";
+inline constexpr char max_x[]             = "ui.max_x";
+inline constexpr char min_y[]             = "ui.min_y";
+inline constexpr char max_y[]             = "ui.max_y";
+inline constexpr char log_scale[]         = "ui.log_scale";
+inline constexpr char read_only[]         = "ui.read_only";
+inline constexpr char closed[]            = "ui.closed";
+
 } // namespace meta::keys::ui

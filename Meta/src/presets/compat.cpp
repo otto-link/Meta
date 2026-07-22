@@ -23,7 +23,7 @@ Attribute<float> &slider_float(AttributeContainer &c, std::string_view key,
   m.add(keys::constraints::min, vmin);
   m.add(keys::constraints::max, vmax);
   if (log_scale)
-    m.add(std::string("ui.log_scale"), true); // read by MetaUI float.inl:36
+    m.add(keys::ui::log_scale, true); // read by MetaUI float.inl:36
   return *a;
 }
 
@@ -85,7 +85,7 @@ Attribute<glm::vec2> &wavenumber(AttributeContainer &c, std::string_view key,
   m.add(keys::ui::widget_type, "LinkedSliders");
   m.add(keys::ui::label, std::string(label));
   m.add(keys::ui::format, std::string(format));
-  m.add(std::string("ui.locked_xy"), link_xy); // read by MetaUI glm_vec2.inl:30
+  m.add(keys::ui::locked_xy, link_xy); // read by MetaUI glm_vec2.inl:30
   m.add(keys::constraints::min, vmin);
   m.add(keys::constraints::max, vmax);
   return *a;
@@ -106,8 +106,8 @@ Attribute<glm::vec2> &range(AttributeContainer &c, std::string_view key, std::st
   // value sentinel ({-1, 0} == disabled), not from metadata keys. These two
   // keys are forward-looking metadata for Task 2, which is expected to teach
   // the renderer to read them instead of/in addition to the sentinel.
-  m.add(std::string("ui.has_active_toggle"), true); // Task 2 renders the checkbox
-  m.add(std::string("ui.active"), is_active);
+  m.add(keys::ui::has_active_toggle, true); // Task 2 renders the checkbox
+  m.add(keys::ui::active, is_active);
   return *a;
 }
 
@@ -126,10 +126,10 @@ Attribute<glm::vec2> &xy(AttributeContainer &c, std::string_view key, std::strin
   // range under ad-hoc keys for a future asymmetric-bounds XYCanvas.
   m.add(keys::constraints::min, xmin);
   m.add(keys::constraints::max, xmax);
-  m.add(std::string("ui.min_x"), xmin); // not yet read by XYCanvas renderer
-  m.add(std::string("ui.max_x"), xmax); // not yet read by XYCanvas renderer
-  m.add(std::string("ui.min_y"), ymin); // not yet read by XYCanvas renderer
-  m.add(std::string("ui.max_y"), ymax); // not yet read by XYCanvas renderer
+  m.add(keys::ui::min_x, xmin); // not yet read by XYCanvas renderer
+  m.add(keys::ui::max_x, xmax); // not yet read by XYCanvas renderer
+  m.add(keys::ui::min_y, ymin); // not yet read by XYCanvas renderer
+  m.add(keys::ui::max_y, ymax); // not yet read by XYCanvas renderer
   return *a;
 }
 
@@ -192,7 +192,7 @@ Attribute<std::string> &text(AttributeContainer &c, std::string_view key, std::s
     // NOTE: MetaUI's SingleLineText renderer (std_string.inl) does not
     // currently read a "ui.read_only" key -- keeping the metadata anyway
     // per the migration plan, for a future renderer update.
-    m.add(std::string("ui.read_only"), true);
+    m.add(keys::ui::read_only, true);
   return *a;
 }
 
@@ -217,8 +217,8 @@ Attribute<std::vector<float>> &curve(AttributeContainer &c, std::string_view key
   auto &m = a->metadata();
   m.add(keys::ui::widget_type, "CurveEditor");
   m.add(keys::ui::label, std::string(label));
-  m.add(std::string("ui.min_y"), vmin);
-  m.add(std::string("ui.max_y"), vmax);
+  m.add(keys::ui::min_y, vmin);
+  m.add(keys::ui::max_y, vmax);
   return *a;
 }
 

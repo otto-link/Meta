@@ -34,7 +34,7 @@ template <> struct WidgetRenderer<float>
                                                         "ui.plus_minus",
                                                         false);
     const bool        log_scale = meta::common::try_get<bool>(attr,
-                                                       "ui.log_scale",
+                                                       meta::keys::ui::log_scale,
                                                        false);
 
     float &value = attr.value();

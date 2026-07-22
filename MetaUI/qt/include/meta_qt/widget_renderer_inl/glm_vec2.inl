@@ -28,7 +28,7 @@ template <> struct WidgetRenderer<glm::vec2>
     const bool        show_grid = meta::common::try_get<bool>(attr,
                                                        "ui.show_grid",
                                                        true);
-    bool locked_xy = meta::common::try_get<bool>(attr, "ui.locked_xy", false);
+    bool locked_xy = meta::common::try_get<bool>(attr, meta::keys::ui::locked_xy, false);
     const std::string x_label = meta::common::try_get<std::string>(attr,
                                                                    "ui.label_x",
                                                                    "x");
@@ -147,10 +147,10 @@ template <> struct WidgetRenderer<glm::vec2>
       // Per-axis bounds (compat "xy()" preset stash), falling back to the
       // shared min/max when absent so asymmetric domains (e.g. x in [0,1],
       // y in [0,100]) reach the widget.
-      const float min_x = meta::common::try_get<float>(attr, "ui.min_x", min);
-      const float max_x = meta::common::try_get<float>(attr, "ui.max_x", max);
-      const float min_y = meta::common::try_get<float>(attr, "ui.min_y", min);
-      const float max_y = meta::common::try_get<float>(attr, "ui.max_y", max);
+      const float min_x = meta::common::try_get<float>(attr, meta::keys::ui::min_x, min);
+      const float max_x = meta::common::try_get<float>(attr, meta::keys::ui::max_x, max);
+      const float min_y = meta::common::try_get<float>(attr, meta::keys::ui::min_y, min);
+      const float max_y = meta::common::try_get<float>(attr, meta::keys::ui::max_y, max);
 
       auto *canvas = new XYCanvas(value,
                                   min_x,
@@ -255,10 +255,10 @@ template <> struct WidgetRenderer<glm::vec2>
       // "ui.has_active_toggle" / "ui.active").
       const bool has_active_toggle = meta::common::try_get<bool>(
           attr,
-          "ui.has_active_toggle",
+          meta::keys::ui::has_active_toggle,
           false);
       const bool initial_active = meta::common::try_get<bool>(attr,
-                                                              "ui.active",
+                                                              meta::keys::ui::active,
                                                               true);
 
       QCheckBox *active_box = nullptr;
@@ -358,7 +358,7 @@ template <> struct WidgetRenderer<glm::vec2>
             if (active_box != nullptr)
             {
               const bool is_active = meta::common::try_get<bool>(attr,
-                                                                 "ui.active",
+                                                                 meta::keys::ui::active,
                                                                  true);
               QSignalBlocker b(active_box);
               active_box->setChecked(is_active);
@@ -440,7 +440,7 @@ template <> struct WidgetRenderer<glm::vec2>
             [&attr, set_active, toggle_btn, widget](bool checked)
             {
               attr.metadata()
-                  .try_add(std::string("ui.active"), checked)
+                  .try_add(std::string(meta::keys::ui::active), checked)
                   ->value() = checked;
               // checkbox already reflects 'checked'; set_active ANDs it in
               set_active(toggle_btn->isChecked());
