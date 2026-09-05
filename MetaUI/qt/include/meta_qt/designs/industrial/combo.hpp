@@ -63,22 +63,25 @@ protected:
   void mouseReleaseEvent(QMouseEvent *event) override;
   void keyPressEvent(QKeyEvent *event) override;
   void hideEvent(QHideEvent *event) override;
+  void closeEvent(QCloseEvent *event) override;
 
 private:
   int index_at(const QPoint &pos) const;
   int row_height() const;
+  void animate_to(int height);
 
-  /// Portion of the fixed-size window currently revealed by the open animation.
+  /// Portion of the fixed-size window currently revealed by the animation.
   QRect card_rect() const;
 
   const Theme       *theme_ = nullptr;
   QStringList        items_;
   int                current_ = -1;
   int                hovered_ = -1;
-  QVariantAnimation *open_animation_ = nullptr;
+  QVariantAnimation *animation_ = nullptr;
   int                full_height_ = 0;
   int                revealed_ = 0;
   bool               flipped_ = false;
+  bool               closing_ = false;
 };
 
 /// Shared closed-state painting for both combo flavours.

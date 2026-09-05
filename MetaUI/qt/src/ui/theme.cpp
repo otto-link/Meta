@@ -76,7 +76,19 @@ QFont row_label_font()
   // the host is using, so the panel blends into the application instead of
   // announcing itself.
   QFont font = QApplication::font();
-  font.setPixelSize(12);
+
+  // 13px rather than 12. At 12 the labels sat a step below the host's own
+  // text and the panel read as small print; 13 matches the value field's mono
+  // face, so a row's two halves are the same size.
+  font.setPixelSize(13);
+
+  // Medium rather than the default Normal. At this size a regular weight
+  // leaves the stems thin enough that antialiasing does most of the work of
+  // forming them, which reads as blurry rather than light. One step up puts
+  // enough ink in the glyph to look deliberate, without promoting the row
+  // label to the weight the section titles use.
+  font.setWeight(QFont::Medium);
+
   return font;
 }
 
@@ -149,11 +161,17 @@ Theme Theme::from_palette(const QPalette &palette, const std::string &name)
 
   // --- ink. Dimming blends towards the window, so it reads as "less
   // prominent" whichever side of the light/dark line the scheme sits on.
+  //
+  // Every blend is shallower than the first pass. Dimming towards the window
+  // is the right formula, but it was applied hard enough that a row label and
+  // its value both landed well short of the host's own text, which reads as
+  // washed out rather than as a hierarchy. These keep the same ordering with
+  // less distance between the steps.
   t.ink_primary = text;
-  t.ink_section_title = mix(text, window, 0.12);
-  t.ink_secondary = mix(text, window, 0.38);
-  t.ink_dim = mix(text, window, 0.48);
-  t.ink_icon = mix(text, window, 0.20);
+  t.ink_section_title = mix(text, window, 0.05);
+  t.ink_secondary = mix(text, window, 0.22);
+  t.ink_dim = mix(text, window, 0.34);
+  t.ink_icon = mix(text, window, 0.12);
   t.ink_locked = palette.color(QPalette::Disabled, QPalette::Text);
 
   // BrightText is the maximum-contrast ink, which is exactly what "modified"

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QAbstractScrollArea>
 #include <QEasingCurve>
 #include <QPainter>
 #include <QResizeEvent>
@@ -64,13 +65,36 @@ QString header_stylesheet(const Theme &theme)
                  " min-height: %3px;"
                  " text-align: left;"
                  " font-weight: bold;"
+                 // The header is opaque and sits directly on top of the card
+                 // the section paints, so any corner it does not round itself
+                 // it squares off again. Leaving these unset is what made the
+                 // top of a section look nothing like the bottom: the body
+                 // rounds the lower pair through its own stylesheet, so only
+                 // the upper pair came out square.
+                 //
+                 // All four here, because a collapsed section is nothing but
+                 // its header and has to round the whole card on its own.
+                 " border-top-left-radius: %6px;"
+                 " border-top-right-radius: %6px;"
+                 " border-bottom-left-radius: %6px;"
+                 " border-bottom-right-radius: %6px;"
                  "}"
-                 "QToolButton:hover { background-color: %4; color: %5; }")
+                 "QToolButton:hover { background-color: %4; color: %5; }"
+                 // Expanded, the body underneath carries the bottom corners,
+                 // so the header has to square off or the two round away from
+                 // each other and leave a notch in the seam. Last in the sheet
+                 // so it wins over the grouped rule above whatever else
+                 // matches.
+                 "QToolButton:checked {"
+                 " border-bottom-left-radius: 0px;"
+                 " border-bottom-right-radius: 0px;"
+                 "}")
       .arg(theme.section_header.name())
       .arg(theme.ink_section_title.name())
       .arg(m.section_header_height)
       .arg(theme.section_header_hover.name())
-      .arg(theme.ink_primary.name());
+      .arg(theme.ink_primary.name())
+      .arg(m.section_card_radius);
 }
 
 } // namespace
@@ -104,7 +128,7 @@ bool ClipBox::eventFilter(QObject *watched, QEvent *event)
   if (watched == body_ && event->type() == QEvent::LayoutRequest)
   {
     body_->setGeometry(0, 0, width(), body_height());
-    if (follow_) updateGeometry();
+    if (follow_) update_reveal_geometry();
   }
 
   return QWidget::eventFilter(watched, event);
@@ -124,19 +148,57 @@ void ClipBox::set_reveal(int px)
 {
   follow_ = false;
   reveal_ = std::max(0, px);
-  updateGeometry();
+  update_reveal_geometry();
 }
 
 void ClipBox::follow_body()
 {
   follow_ = true;
+  update_reveal_geometry();
+}
+
+void ClipBox::update_reveal_geometry()
+{
   updateGeometry();
+  if (!isVisible()) return;
+
+  // LayoutRequest travels one parent per event-loop pass. During an animation
+  // that lets inner layouts squeeze sections into the previous frame's height
+  // before the scroll content learns its new minimum. Invalidate the whole
+  // chain first, then allocate from the outside in before anything is painted.
+  QList<QLayout *> ancestors;
+  for (QWidget *widget = parentWidget(); widget; widget = widget->parentWidget())
+  {
+    if (auto *ancestor = widget->layout())
+    {
+      ancestor->invalidate();
+      ancestors.prepend(ancestor);
+    }
+    // The scroll content's minimum drives its viewport. Layouts outside that
+    // scroll area do not need to be recalculated on every animation tick.
+    QWidget *parent = widget->parentWidget();
+    auto *scroll = parent
+                       ? qobject_cast<QAbstractScrollArea *>(parent->parentWidget())
+                       : nullptr;
+    if (scroll && scroll->viewport() == parent) break;
+    if (widget->isWindow()) break;
+  }
+  for (auto *ancestor : ancestors) ancestor->activate();
 }
 
 QSize ClipBox::sizeHint() const
 {
   const int w = body_ ? body_->sizeHint().width() : 0;
   return QSize(w, follow_ ? body_height() : reveal_);
+}
+
+QSize ClipBox::minimumSizeHint() const
+{
+  // A Fixed size policy alone does not protect the reveal when an ancestor
+  // layout is briefly smaller than its new size hint. Propagate the animated
+  // height as a minimum so the scroll content grows instead of clipping every
+  // taller section to the same height. Keep horizontal sizing independent.
+  return QSize(0, sizeHint().height());
 }
 
 void ClipBox::resizeEvent(QResizeEvent *event)
@@ -180,6 +242,15 @@ Section::Section(const QString &title, const Theme &theme, QWidget *parent)
   // non-expanding horizontal policy.
   toggle_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   toggle_button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+  // Pin the header's height instead of leaving it to the stylesheet's
+  // min-height. A QSS min-height styles the button without raising the
+  // minimum the *layout* honours, so while a section is animating and the
+  // panel is handing out less height than the children want, the header is
+  // one of the things that gives. That is what makes the title text creep
+  // upward during a fast collapse and only settle once the animation ends.
+  // A fixed height cannot be taken from.
+  toggle_button->setFixedHeight(theme.metrics.section_header_height);
 
   // Fixed vertically: the base class leaves sections Preferred, which lets the
   // panel's QVBoxLayout hand each one a share of the leftover space and
@@ -279,7 +350,7 @@ void Section::set_expanded(bool new_state)
   // The first call restores persisted state during construction, before
   // anything is on screen. Animating that would play every section open at
   // startup, so seat it directly.
-  if (first_apply_ || was_expanded == new_state)
+  if (first_apply_)
   {
     first_apply_ = false;
     animation_->stop();
@@ -294,11 +365,22 @@ void Section::set_expanded(bool new_state)
     return;
   }
 
+  // Reapplying state must not finish a transition that is already heading there.
+  if (was_expanded == new_state) return;
+
   const int full = clip_->body_height();
+  const int current = clip_->sizeHint().height();
 
   animation_->stop(); // a running animation ignores a retargeted end value
-  animation_->setStartValue(new_state ? 0 : full);
-  animation_->setEndValue(new_state ? full : 0);
+  clip_->set_reveal(current);
+  {
+    // Updating endpoints can emit values at the previous animation time.
+    // Only publish samples after the new transition has been rewound.
+    QSignalBlocker blocker(animation_);
+    animation_->setStartValue(current);
+    animation_->setEndValue(new_state ? full : 0);
+    animation_->setCurrentTime(0);
+  }
   animation_->start();
 
   update();

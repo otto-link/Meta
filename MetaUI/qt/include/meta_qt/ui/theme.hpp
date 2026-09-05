@@ -63,7 +63,7 @@ struct Metrics
 
   // --- rail and thumb
   int rail_height = 6;
-  int rail_radius = 1;
+  int rail_radius = 3;
   int thumb_width = 10;
   int thumb_height = 18;
 
@@ -82,11 +82,11 @@ struct Metrics
   int section_row_spacing = 10;
   int section_card_margin = 14; ///< inset of a card from the panel edge
   int section_card_gap = 10;    ///< vertical gap between consecutive cards
-  int section_card_radius = 6;
+  int section_card_radius = 10;
   int row_bar_height = 30; ///< the bar a value row is drawn inside
 
   // --- shared
-  int radius = 2;
+  int radius = 4;
   int glide_ms = 260;   ///< value glide; nothing snaps
   int switch_ms = 150;  ///< switch knob slide
   int section_ms = 200; ///< disclosure rotation
@@ -155,13 +155,18 @@ struct Theme
   QColor field_border_hover{"#5a5a5a"};
 
   // --- ink. Only text encodes state; see state_ink().
-  QColor ink_primary{"#e0e0e0"};
-  QColor ink_section_title{"#d0d0d0"};
-  QColor ink_secondary{"#9a9a9a"}; ///< value at default
-  QColor ink_dim{"#8a8a8a"};
-  QColor ink_locked{"#606060"};
+  //
+  // Every step here sits closer to white than the first pass did. The design
+  // was sampled at a contrast that looked right in isolation but reads as
+  // washed out next to the host's own panels, and the row label is the text a
+  // user spends the most time on.
+  QColor ink_primary{"#ececec"};
+  QColor ink_section_title{"#e0e0e0"};
+  QColor ink_secondary{"#b9b9b9"}; ///< value at default
+  QColor ink_dim{"#a4a4a4"};
+  QColor ink_locked{"#6c6c6c"};
   QColor ink_modified{"#ffffff"};
-  QColor ink_icon{"#c9c9c9"};
+  QColor ink_icon{"#d6d6d6"};
 
   // --- metal
   QColor thumb_top{"#d6d6d6"};

@@ -1,0 +1,2 @@
+add_executable(test_combo_animation main.cpp)
+target_link_libraries(test_combo_animation meta_qt)
