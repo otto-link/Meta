@@ -41,6 +41,19 @@ struct SliderVisual
   std::string category; ///< selects the group accent for the rail fill
   bool        modified = false;
   bool        locked = false;
+
+  /** @brief The range has no usable limits, so the thumb is a rate handle.
+   *
+   * Changes what the rail means. A bounded rail fills from its left edge to
+   * the thumb, because the thumb's position *is* the value. An unbounded one
+   * has no such position to fill towards: the thumb rests at the centre and
+   * reports drag distance, so a fill would be claiming a proportion that does
+   * not exist.
+   */
+  bool unbounded = false;
+
+  /// Drag in progress. Only read when `unbounded`, to mark the rest position.
+  bool dragging = false;
 };
 
 /** @brief Paint label, rail well, accent fill and thumb.
@@ -63,18 +76,22 @@ void paint_slider_row(QPainter             &painter,
  * A bound of FLT_MAX or INT_MAX does not mean "a very wide slider", it means
  * "no limit". A rail a couple of hundred pixels wide cannot show that: every
  * value a user would type lands in the first pixel, and a drag moves the value
- * by astronomical steps. That is the broken behaviour on the unbounded rows.
+ * by astronomical steps.
  *
- * Declining them here lets them fall through to stock, whose SliderFloat has a
- * proper unbounded mode: the handle sits centred at rest and drags relatively
- * instead of mapping to an absolute position. Using the fallback chain is the
- * point of the design registry, so this belongs in can_render() rather than as
- * a special case inside the paint code.
+ * This used to gate can_render(), so those rows fell through to stock. That
+ * fixed the drag but cost more than it bought: it hit 197 rows, 86 of them the
+ * Seed that sits near the top of nearly every node, so almost every panel grew
+ * a stock row among the industrial ones. The sliders now carry their own
+ * unbounded mode instead, and this selects between the two.
  *
  * The sentinel test deliberately matches stock's `is_range_bounded()` exactly,
  * against the type's own limits. A looser threshold would leave a gap where a
- * merely huge range is declined here but still counted as bounded there, which
- * breaks it in both designs rather than neither.
+ * merely huge range counted as unbounded here but bounded there, so the two
+ * designs would disagree about which control a row gets.
+ *
+ * Note a half-open range still lands here: Seed is [0, INT_MAX], and a lower
+ * bound alone cannot give the rail a span. The real bound is still enforced,
+ * it just clamps the value rather than positioning the thumb.
  */
 template <typename T> bool has_usable_range(T lo, T hi)
 {

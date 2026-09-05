@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include <QLineEdit>
 #include <QLinearGradient>
@@ -19,7 +20,20 @@ namespace meta::qt::industrial
 namespace
 {
 constexpr qreal kLogFloor = 1e-6; ///< below this a log mapping is undefined
-}
+
+/// Thumb position an unbounded row rests at: the middle of the rail.
+constexpr qreal kRestNorm = 0.5;
+
+/** @brief Drag sensitivity for an unbounded row, in pixels per unit.
+ *
+ * Taken from stock SliderFloat's PPU_F rather than picked again, so a row that
+ * used to fall through to stock feels the same now that it does not.
+ */
+constexpr qreal kPixelsPerUnit = 200.0;
+
+/// Ctrl divides the step by this, Shift multiplies it. Stock's PPU_MULT_FINE.
+constexpr qreal kFineMultiplier = 10.0;
+} // namespace
 
 ParamSlider::ParamSlider(Attribute<float> &attr,
                          const RowContext &ctx,
@@ -36,12 +50,25 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
                                            false);
   decimals_ = meta::common::try_get_format_decimals(meta::common::format(attr));
 
+  unbounded_ = !has_usable_range(min_, max_);
+
+  // An inverted or empty range cannot clamp, and std::clamp with hi below lo
+  // is undefined. Widening to the type's own limits keeps every clamp below
+  // well formed; an attribute whose bounds contradict each other is already
+  // the unbounded case as far as the rail is concerned.
+  if (unbounded_ && !(max_ > min_))
+  {
+    min_ = std::numeric_limits<float>::lowest();
+    max_ = std::numeric_limits<float>::max();
+  }
+
   // A log mapping needs a strictly positive lower bound; fall back to linear
-  // rather than producing NaNs across the whole rail.
-  if (log_scale_ && min_ <= kLogFloor) log_scale_ = false;
+  // rather than producing NaNs across the whole rail. An unbounded range has
+  // no span to lay a mapping over in the first place.
+  if (log_scale_ && (unbounded_ || min_ <= kLogFloor)) log_scale_ = false;
 
   value_ = std::clamp(attr.value(), min_, max_);
-  norm_ = to_norm(value_);
+  norm_ = unbounded_ ? kRestNorm : to_norm(value_);
 
   setFixedHeight(theme().metrics.row_height);
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -53,8 +80,16 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
           [this](qreal t)
           {
             norm_ = t;
-            value_ = from_norm(t);
-            refresh_field();
+
+            // Unbounded: the glide carries the thumb home after a drag and
+            // does nothing else. Deriving the value from the thumb here would
+            // drag it back towards the centre along with the thumb.
+            if (!unbounded_)
+            {
+              value_ = from_norm(t);
+              refresh_field();
+            }
+
             update();
           });
 
@@ -66,9 +101,16 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
           [this](qreal t)
           {
             norm_ = t;
+            update();
+
+            // Unbounded: a thumb settling back to centre is not an edit. The
+            // drag published as it went and end_edit() fired on release, so a
+            // commit here would raise a second edit out of an animation the
+            // user has already let go of.
+            if (unbounded_) return;
+
             value_ = from_norm(t);
             refresh_field();
-            update();
             notify_value_changed();
             end_edit();
           });
@@ -95,8 +137,7 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
               return;
             }
 
-            begin_edit();
-            glide_->to(to_norm(std::clamp(typed, min_, max_)));
+            commit_value(typed);
           });
 
   connect(field_,
@@ -114,18 +155,22 @@ bool ParamSlider::can_render(const Attribute<float> &attr)
       !metadata.find(meta::keys::constraints::max))
     return false;
 
-  // Declines unbounded ranges so they fall through to the stock input, which is
-  // the right control for a number with no limits.
-  return has_usable_range(meta::common::min(attr), meta::common::max(attr));
+  // The bounds themselves are not screened: a range with no usable span is
+  // rendered as a rate handle rather than handed to another design.
+  return true;
 }
 
 void ParamSlider::set(const float &value)
 {
   const float clamped = std::clamp(value, min_, max_);
 
+  // Unbounded: the thumb encodes drag distance, not the value, so a sync from
+  // the model leaves it where it rests. jump() also cancels a recentre still
+  // running, which would otherwise fight the position set here.
+  glide_->jump(unbounded_ ? kRestNorm : to_norm(clamped));
+
   // jump() emits tick(), which derives value_ back out of the normalised
   // position -- lossy under a log mapping. Seat the authoritative value after.
-  glide_->jump(to_norm(clamped)); // a model sync seats immediately, no glide
   value_ = clamped;
 
   refresh_field();
@@ -184,6 +229,8 @@ void ParamSlider::paintEvent(QPaintEvent *)
   visual.category = category_;
   visual.modified = is_modified();
   visual.locked = is_locked();
+  visual.unbounded = unbounded_;
+  visual.dragging = dragging_;
 
   QFont label_font = row_label_font();
   visual.label = elide_label(QString::fromStdString(label_),
@@ -228,6 +275,26 @@ void ParamSlider::mousePressEvent(QMouseEvent *event)
   }
 
   setFocus(Qt::MouseFocusReason);
+
+  if (unbounded_)
+  {
+    // Seat the thumb before the drag is measured. A recentre from the previous
+    // drag may still be running, and its finished() would otherwise arrive
+    // mid-drag; jump() cancels it without emitting one.
+    glide_->jump(kRestNorm);
+    norm_ = kRestNorm;
+    drag_origin_x_ = event->pos().x();
+    value_at_press_ = value_;
+
+    dragging_ = true;
+    begin_edit();
+    update();
+
+    // Deliberately no set_from_position(): a rate drag measures from where the
+    // press landed, so pressing the rail must not move the value at all.
+    return;
+  }
+
   dragging_ = true;
   begin_edit();
   set_from_position(event->pos().x());
@@ -236,6 +303,13 @@ void ParamSlider::mousePressEvent(QMouseEvent *event)
 void ParamSlider::mouseMoveEvent(QMouseEvent *event)
 {
   if (!dragging_) return;
+
+  if (unbounded_)
+  {
+    drag_by(event->pos().x(), event->modifiers());
+    return;
+  }
+
   set_from_position(event->pos().x());
 }
 
@@ -244,6 +318,19 @@ void ParamSlider::mouseReleaseEvent(QMouseEvent *event)
   if (!dragging_) return;
 
   dragging_ = false;
+
+  if (unbounded_)
+  {
+    drag_by(event->pos().x(), event->modifiers());
+
+    // The thumb eases back to rest rather than snapping, like everything else
+    // in this design. The edit is over as soon as the button is up, though:
+    // holding it open for the animation would stall the model sync behind it.
+    end_edit();
+    glide_->to(kRestNorm);
+    return;
+  }
+
   set_from_position(event->pos().x());
   end_edit();
 }
@@ -260,10 +347,8 @@ void ParamSlider::mouseDoubleClickEvent(QMouseEvent *event)
 
   try
   {
-    const float target = std::clamp(std::any_cast<float>(def), min_, max_);
     dragging_ = false;
-    begin_edit();
-    glide_->to(to_norm(target)); // the reset glides like everything else
+    commit_value(std::any_cast<float>(def)); // the reset glides where it can
   }
   catch (const std::bad_any_cast &)
   {
@@ -279,6 +364,15 @@ void ParamSlider::handle_wheel(QWheelEvent *event)
   if (steps == 0)
   {
     event->ignore();
+    return;
+  }
+
+  if (unbounded_)
+  {
+    // One unit per notch. A percentage of the rail is the wrong measure when
+    // the rail represents no span, and it is what stock does here too.
+    commit_value(value_ + float(steps));
+    event->accept();
     return;
   }
 
@@ -333,6 +427,63 @@ void ParamSlider::apply_norm(qreal t)
   refresh_field();
   update();
   notify_value_changed();
+}
+
+void ParamSlider::drag_by(int x, Qt::KeyboardModifiers modifiers)
+{
+  const int dx = x - drag_origin_x_;
+
+  qreal ppu = kPixelsPerUnit;
+  if (modifiers & Qt::ControlModifier)
+    ppu *= kFineMultiplier;
+  else if (modifiers & Qt::ShiftModifier)
+    ppu /= kFineMultiplier;
+
+  // The thumb follows the cursor pixel for pixel but stops at the ends of the
+  // rail. Its travel is an affordance, not a measurement: the value carries on
+  // changing after the thumb has run out of room, which is the whole point of
+  // a rate control.
+  const SliderGeometry g = SliderGeometry::compute(theme(),
+                                                   width(),
+                                                   height(),
+                                                   norm_);
+  const int travel = std::max(1, g.rail.width() - theme().metrics.thumb_width);
+
+  norm_ = std::clamp(kRestNorm + qreal(dx) / qreal(travel), 0.0, 1.0);
+  glide_->jump(norm_); // no easing under the cursor, and cancels any recentre
+
+  // Measured from the value at the press rather than accumulated per event, so
+  // a drag out and back returns to exactly where it started.
+  apply_value(float(qreal(value_at_press_) + qreal(dx) / ppu));
+}
+
+void ParamSlider::apply_value(float value)
+{
+  const float clamped = std::clamp(value, min_, max_);
+  const bool  changed = clamped != value_;
+
+  value_ = clamped;
+  refresh_field(); // runs even unchanged, to normalise what was typed
+  update();
+
+  if (changed) notify_value_changed();
+}
+
+void ParamSlider::commit_value(float value)
+{
+  begin_edit();
+
+  const float clamped = std::clamp(value, min_, max_);
+
+  if (!unbounded_)
+  {
+    glide_->to(to_norm(clamped)); // finished() commits and ends the edit
+    return;
+  }
+
+  // Nothing to glide towards: the thumb is already at rest and stays there.
+  apply_value(clamped);
+  end_edit();
 }
 
 QString ParamSlider::format_value(float value) const

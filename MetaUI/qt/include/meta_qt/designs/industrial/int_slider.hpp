@@ -35,7 +35,13 @@ public:
             const RowContext &ctx,
             QWidget          *parent = nullptr);
 
-  /// A rail needs max > min to span; without it the row falls back to stock.
+  /** @brief Accept any attribute that declares a range, bounded or not.
+   *
+   * Both constraint keys must be present, but their values are not screened.
+   * Seed is the case that matters: it declares [0, INT_MAX], which no rail can
+   * span, and it appears on nearly every node. It is rendered in the unbounded
+   * mode below rather than handed to another design.
+   */
   static bool can_render(const Attribute<int> &attr);
 
   int  get() const override { return value_; }
@@ -63,6 +69,21 @@ private:
   void refresh_field();
   void restyle_field(bool editing = false);
 
+  /** @brief Advance an unbounded drag to cursor position `x`.
+   *
+   * Moves the value by whole steps over the distance dragged rather than to
+   * the position under the cursor. Ctrl is fine, Shift is coarse, as in stock.
+   */
+  void drag_by(int x, Qt::KeyboardModifiers modifiers);
+
+  /** @brief Move to `value` as one complete edit.
+   *
+   * Glides when the rail can show the motion and seats immediately when it
+   * cannot, so the three callers that just want "go there and commit" -- typed
+   * value, wheel notch, double-click reset -- do not each repeat the branch.
+   */
+  void commit_value(int value);
+
   int         min_ = 0;
   int         max_ = 1;
   int         value_ = 0;
@@ -70,10 +91,20 @@ private:
   std::string category_;
   std::string key_;
 
+  /** @brief No usable range, so the thumb reports drag rate, not position.
+   *
+   * Fixed at construction: an attribute's constraints do not change under it.
+   */
+  bool unbounded_ = false;
+
   Glide     *glide_ = nullptr; ///< animates the painted position only
   qreal      norm_ = 0.0;
   QLineEdit *field_ = nullptr;
   bool       dragging_ = false;
+
+  // --- unbounded drag reference, both only meaningful while dragging_
+  int drag_origin_x_ = 0;
+  int value_at_press_ = 0;
 };
 
 } // namespace meta::qt::industrial
