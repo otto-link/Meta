@@ -37,8 +37,8 @@ ComboPopup::ComboPopup(const Theme       &theme,
                        const QStringList &items,
                        int                current,
                        QWidget           *parent)
-    : QWidget(parent, Qt::Popup | Qt::FramelessWindowHint |
-                          Qt::NoDropShadowWindowHint),
+    : QWidget(parent,
+              Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint),
       theme_(&theme),
       items_(items),
       current_(current),
@@ -57,14 +57,21 @@ ComboPopup::ComboPopup(const Theme       &theme,
   animation_ = new QVariantAnimation(this);
   animation_->setDuration(theme_->metrics.section_ms);
   animation_->setEasingCurve(QEasingCurve::OutCubic);
-  connect(animation_, &QVariantAnimation::valueChanged, this,
+  connect(animation_,
+          &QVariantAnimation::valueChanged,
+          this,
           [this](const QVariant &value)
           {
             revealed_ = value.toInt();
             update();
           });
-  connect(animation_, &QVariantAnimation::finished, this,
-          [this]() { if (closing_) close(); });
+  connect(animation_,
+          &QVariantAnimation::finished,
+          this,
+          [this]()
+          {
+            if (closing_) close();
+          });
 }
 
 int ComboPopup::row_height() const { return kRowHeight; }
@@ -132,7 +139,8 @@ QRect ComboPopup::card_rect() const
 int ComboPopup::index_at(const QPoint &pos) const
 {
   if (!card_rect().contains(pos) || pos.y() < kPopupPadding ||
-      pos.y() >= full_height_ - kPopupPadding) return -1;
+      pos.y() >= full_height_ - kPopupPadding)
+    return -1;
 
   const int index = (pos.y() - kPopupPadding) / row_height();
   return index >= 0 && index < items_.size() ? index : -1;

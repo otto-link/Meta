@@ -15,24 +15,29 @@
 #include "meta/ext/color_gradient/gradient_library.hpp"
 #include "meta_qt/widgets/gradient_picker.hpp"
 
-namespace {
+namespace
+{
 
-std::vector<meta::Preset> host_presets() {
+std::vector<meta::Preset> host_presets()
+{
   return {
       {"Host B", {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {1.f, 0.f, 0.f, 1.f}}}},
       {"Host A", {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {0.f, 0.f, 1.f, 1.f}}}}};
 }
 
-meta::Preset lib_preset(const std::string &name) {
+meta::Preset lib_preset(const std::string &name)
+{
   return {name, {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {0.f, 1.f, 0.f, 1.f}}}};
 }
 
 // Points the process-wide library at a scratch file and empties it, so the
 // tests never touch a real per-user library.
-struct IsolatedLibrary {
-  IsolatedLibrary() {
-    const auto dir =
-        std::filesystem::temp_directory_path() / "meta_gradient_picker_test";
+struct IsolatedLibrary
+{
+  IsolatedLibrary()
+  {
+    const auto dir = std::filesystem::temp_directory_path() /
+                     "meta_gradient_picker_test";
     std::filesystem::remove_all(dir);
 
     auto &lib = meta::GradientLibrary::instance();
@@ -41,7 +46,8 @@ struct IsolatedLibrary {
     lib.set_sort(meta::GradientSort::Default);
   }
 
-  ~IsolatedLibrary() {
+  ~IsolatedLibrary()
+  {
     auto &lib = meta::GradientLibrary::instance();
     lib.clear();
     lib.set_sort(meta::GradientSort::Default);
@@ -49,23 +55,26 @@ struct IsolatedLibrary {
 };
 
 // Library notifications rebuild the grid through a queued call.
-void flush() {
+void flush()
+{
   QCoreApplication::sendPostedEvents();
   QCoreApplication::processEvents();
 }
 
-int swatch_count(const meta::qt::GradientPicker &picker) {
+int swatch_count(const meta::qt::GradientPicker &picker)
+{
   return static_cast<int>(picker.findChildren<QPushButton *>().size());
 }
 
 } // namespace
 
-TEST(GradientPickerTest, MergesHostAndLibraryPresets) {
+TEST(GradientPickerTest, MergesHostAndLibraryPresets)
+{
   IsolatedLibrary isolated;
   meta::GradientLibrary::instance().add(lib_preset("Lib"));
 
-  std::vector<meta::Stop> stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
-                                   {1.f, {1.f, 1.f, 1.f, 1.f}}};
+  std::vector<meta::Stop>  stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
+                                    {1.f, {1.f, 1.f, 1.f, 1.f}}};
   meta::qt::GradientPicker picker(stops, host_presets());
 
   EXPECT_EQ(picker.entry_names(),
@@ -74,18 +83,18 @@ TEST(GradientPickerTest, MergesHostAndLibraryPresets) {
 
   int user_count = 0;
   for (auto *button : picker.findChildren<QPushButton *>())
-    if (button->property("preset_user").toBool())
-      ++user_count;
+    if (button->property("preset_user").toBool()) ++user_count;
   EXPECT_EQ(user_count, 1);
 }
 
-TEST(GradientPickerTest, FavoritesPinnedFirstThenSortKey) {
+TEST(GradientPickerTest, FavoritesPinnedFirstThenSortKey)
+{
   IsolatedLibrary isolated;
-  auto &lib = meta::GradientLibrary::instance();
+  auto           &lib = meta::GradientLibrary::instance();
   lib.add(lib_preset("Lib"));
 
-  std::vector<meta::Stop> stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
-                                   {1.f, {1.f, 1.f, 1.f, 1.f}}};
+  std::vector<meta::Stop>  stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
+                                    {1.f, {1.f, 1.f, 1.f, 1.f}}};
   meta::qt::GradientPicker picker(stops, host_presets());
 
   lib.set_favorite("Lib", true);
@@ -104,28 +113,30 @@ TEST(GradientPickerTest, FavoritesPinnedFirstThenSortKey) {
             (std::vector<std::string>{"Host A", "Host B", "Lib"}));
 }
 
-TEST(GradientPickerTest, LuminanceSortGoesDarkToLight) {
+TEST(GradientPickerTest, LuminanceSortGoesDarkToLight)
+{
   IsolatedLibrary isolated;
-  auto &lib = meta::GradientLibrary::instance();
+  auto           &lib = meta::GradientLibrary::instance();
   lib.add(
       {"Bright", {{0.f, {1.f, 1.f, 1.f, 1.f}}, {1.f, {1.f, 1.f, 1.f, 1.f}}}});
   lib.add(
       {"Dark", {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {0.1f, 0.1f, 0.1f, 1.f}}}});
   lib.set_sort(meta::GradientSort::Luminance);
 
-  std::vector<meta::Stop> stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
-                                   {1.f, {1.f, 1.f, 1.f, 1.f}}};
+  std::vector<meta::Stop>  stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
+                                    {1.f, {1.f, 1.f, 1.f, 1.f}}};
   meta::qt::GradientPicker picker(stops, {});
 
   EXPECT_EQ(picker.entry_names(), (std::vector<std::string>{"Dark", "Bright"}));
 }
 
-TEST(GradientPickerTest, SaveCurrentAsPresetAvoidsHostNames) {
+TEST(GradientPickerTest, SaveCurrentAsPresetAvoidsHostNames)
+{
   IsolatedLibrary isolated;
-  auto &lib = meta::GradientLibrary::instance();
+  auto           &lib = meta::GradientLibrary::instance();
 
-  std::vector<meta::Stop> stops = {{1.f, {1.f, 1.f, 0.f, 1.f}},
-                                   {0.f, {0.f, 0.f, 0.f, 1.f}}};
+  std::vector<meta::Stop>  stops = {{1.f, {1.f, 1.f, 0.f, 1.f}},
+                                    {0.f, {0.f, 0.f, 0.f, 1.f}}};
   meta::qt::GradientPicker picker(stops, host_presets());
 
   EXPECT_EQ(picker.save_current_as_preset("Mine"), "Mine");
@@ -143,12 +154,13 @@ TEST(GradientPickerTest, SaveCurrentAsPresetAvoidsHostNames) {
   EXPECT_EQ(swatch_count(picker), 5);
 }
 
-TEST(GradientPickerTest, LibraryChangesRebuildTheGrid) {
+TEST(GradientPickerTest, LibraryChangesRebuildTheGrid)
+{
   IsolatedLibrary isolated;
-  auto &lib = meta::GradientLibrary::instance();
+  auto           &lib = meta::GradientLibrary::instance();
 
-  std::vector<meta::Stop> stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
-                                   {1.f, {1.f, 1.f, 1.f, 1.f}}};
+  std::vector<meta::Stop>  stops = {{0.f, {0.f, 0.f, 0.f, 1.f}},
+                                    {1.f, {1.f, 1.f, 1.f, 1.f}}};
   meta::qt::GradientPicker picker(stops, host_presets());
   EXPECT_EQ(swatch_count(picker), 2);
 

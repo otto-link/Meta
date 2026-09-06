@@ -16,17 +16,20 @@ using meta::GradientSort;
 using meta::Preset;
 using meta::Stop;
 
-static Preset make(const std::string &name, std::vector<Stop> stops) {
+static Preset make(const std::string &name, std::vector<Stop> stops)
+{
   return {name, std::move(stops)};
 }
 
-static void snap(QWidget &w, const QString &path) {
+static void snap(QWidget &w, const QString &path)
+{
   w.resize(320, 260);
   w.grab().save(path);
 }
 
-int main(int argc, char **argv) {
-  QApplication app(argc, argv);
+int main(int argc, char **argv)
+{
+  QApplication  app(argc, argv);
   const QString dir = argc > 1 ? argv[1] : ".";
   QDir().mkpath(dir);
 
@@ -41,21 +44,25 @@ int main(int argc, char **argv) {
            {{0.f, {0.78f, 0.86f, 1.f, 1.f}}, {1.f, {1.f, 1.f, 1.f, 1.f}}}),
       make("Sand",
            {{0.f, {0.76f, 0.7f, 0.5f, 1.f}}, {1.f, {0.94f, 0.9f, 0.7f, 1.f}}}),
-      make("Grass", {{0.f, {0.12f, 0.27f, 0.12f, 1.f}},
-                     {1.f, {0.5f, 0.75f, 0.3f, 1.f}}}),
+      make(
+          "Grass",
+          {{0.f, {0.12f, 0.27f, 0.12f, 1.f}}, {1.f, {0.5f, 0.75f, 0.3f, 1.f}}}),
       make("Ocean",
            {{0.f, {0.f, 0.05f, 0.25f, 1.f}}, {1.f, {0.2f, 0.6f, 0.9f, 1.f}}}),
-      make("Lava", {{0.f, {0.1f, 0.f, 0.f, 1.f}},
-                    {0.6f, {0.9f, 0.2f, 0.f, 1.f}},
-                    {1.f, {1.f, 0.9f, 0.3f, 1.f}}}),
+      make("Lava",
+           {{0.f, {0.1f, 0.f, 0.f, 1.f}},
+            {0.6f, {0.9f, 0.2f, 0.f, 1.f}},
+            {1.f, {1.f, 0.9f, 0.3f, 1.f}}}),
       make("Greys",
            {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {1.f, 1.f, 1.f, 1.f}}})};
 
-  lib.add(make("My sunset", {{0.f, {0.2f, 0.f, 0.3f, 1.f}},
-                             {0.5f, {0.9f, 0.3f, 0.2f, 1.f}},
-                             {1.f, {1.f, 0.8f, 0.4f, 1.f}}}));
-  lib.add(make("Mint", {{0.f, {0.f, 0.3f, 0.25f, 1.f}},
-                        {1.f, {0.6f, 1.f, 0.85f, 1.f}}}));
+  lib.add(make("My sunset",
+               {{0.f, {0.2f, 0.f, 0.3f, 1.f}},
+                {0.5f, {0.9f, 0.3f, 0.2f, 1.f}},
+                {1.f, {1.f, 0.8f, 0.4f, 1.f}}}));
+  lib.add(
+      make("Mint",
+           {{0.f, {0.f, 0.3f, 0.25f, 1.f}}, {1.f, {0.6f, 1.f, 0.85f, 1.f}}}));
   lib.set_favorite("Ocean", true);
   lib.set_favorite("Mint", true);
 
@@ -63,8 +70,11 @@ int main(int argc, char **argv) {
                              {0.5f, {0.9f, 0.5f, 0.1f, 1.f}},
                              {1.f, {1.f, 1.f, 0.8f, 1.f}}};
 
-  for (GradientSort sort : {GradientSort::Default, GradientSort::Name,
-                            GradientSort::Luminance, GradientSort::Hue}) {
+  for (GradientSort sort : {GradientSort::Default,
+                            GradientSort::Name,
+                            GradientSort::Luminance,
+                            GradientSort::Hue})
+  {
     lib.set_sort(sort);
     meta::qt::GradientPicker picker(stops, host);
     snap(picker,

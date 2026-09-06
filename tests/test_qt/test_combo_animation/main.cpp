@@ -50,27 +50,35 @@ void key(ComboPopup *popup, int code)
 
 void mouse(ComboPopup *popup, QEvent::Type type, const QPoint &pos)
 {
-  QMouseEvent event(type, QPointF(pos), QPointF(popup->mapToGlobal(pos)),
-                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+  QMouseEvent event(type,
+                    QPointF(pos),
+                    QPointF(popup->mapToGlobal(pos)),
+                    Qt::LeftButton,
+                    Qt::LeftButton,
+                    Qt::NoModifier);
   QApplication::sendEvent(popup, &event);
 }
 
 void exercise(bool flipped, int dismissal, bool interrupt_open)
 {
-  meta::qt::Theme theme;
-  QWidget owner;
+  meta::qt::Theme      theme;
+  QWidget              owner;
   QPointer<ComboPopup> popup = new ComboPopup(
-      theme, {"add", "exclusion", "gradients", "maximum", "replace"}, 0,
+      theme,
+      {"add", "exclusion", "gradients", "maximum", "replace"},
+      0,
       &owner);
   popup->setAttribute(Qt::WA_DontShowOnScreen);
   int selections = 0;
-  QObject::connect(popup, &ComboPopup::selected,
+  QObject::connect(popup,
+                   &ComboPopup::selected,
                    [&selections](int) { ++selections; });
 
   const QRect screen = QApplication::primaryScreen()->availableGeometry();
   const QRect field(screen.left() + 100,
-                     flipped ? screen.bottom() - 30 : screen.top() + 30,
-                     240, 24);
+                    flipped ? screen.bottom() - 30 : screen.top() + 30,
+                    240,
+                    24);
   popup->popup_for(field);
   auto *animation = popup->findChild<QVariantAnimation *>();
   animation->pause();
@@ -92,14 +100,14 @@ void exercise(bool flipped, int dismissal, bool interrupt_open)
 
   animation->setCurrentTime(theme.metrics.section_ms / 5);
   const QImage opening = frame(popup);
-  const int partial = opaque_rows(opening);
-  check(partial > 0 && partial < opening.height(), "opening must reveal gradually");
+  const int    partial = opaque_rows(opening);
+  check(partial > 0 && partial < opening.height(),
+        "opening must reveal gradually");
   const int hidden_y = flipped ? 0 : opening.height() - 1;
   check(qAlpha(opening.pixel(opening.width() / 2, hidden_y)) == 0,
         "unrevealed popup surface must be transparent");
 
-  if (!interrupt_open)
-    animation->setCurrentTime(theme.metrics.section_ms);
+  if (!interrupt_open) animation->setCurrentTime(theme.metrics.section_ms);
   const int before_close = opaque_rows(frame(popup));
   switch (dismissal)
   {
@@ -107,11 +115,13 @@ void exercise(bool flipped, int dismissal, bool interrupt_open)
   case 1: mouse(popup, QEvent::MouseButtonPress, QPoint(-10, -10)); break;
   case 2: key(popup, Qt::Key_Return); break;
   case 3:
-    mouse(popup, QEvent::MouseButtonRelease,
+    mouse(popup,
+          QEvent::MouseButtonRelease,
           QPoint(popup->width() / 2, flipped ? popup->height() - 16 : 16));
     break;
   }
-  check(popup && popup->isVisible(), "dismissal must keep popup visible while closing");
+  check(popup && popup->isVisible(),
+        "dismissal must keep popup visible while closing");
   if (!popup || !popup->isVisible()) return;
   check(opaque_rows(frame(popup)) == before_close,
         "closing must start at current reveal without jumping");
@@ -139,7 +149,8 @@ int main(int argc, char **argv)
   QApplication app(argc, argv);
   for (bool flipped : {false, true})
     for (int dismissal = 0; dismissal < 4; ++dismissal)
-      for (bool interrupt : {false, true}) exercise(flipped, dismissal, interrupt);
+      for (bool interrupt : {false, true})
+        exercise(flipped, dismissal, interrupt);
   std::cout << "16 popup scenarios; failures=" << failures << '\n';
   return failures ? 1 : 0;
 }

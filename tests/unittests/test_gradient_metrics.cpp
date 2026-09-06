@@ -9,18 +9,21 @@
 
 #include "meta/ext/color_gradient/gradient_metrics.hpp"
 
-namespace {
+namespace
+{
 
-meta::Stop stop(float t, float r, float g, float b, float a = 1.f) {
+meta::Stop stop(float t, float r, float g, float b, float a = 1.f)
+{
   return {t, {r, g, b, a}};
 }
 
 } // namespace
 
-TEST(GradientMetricsTest, StopAndPresetEquality) {
+TEST(GradientMetricsTest, StopAndPresetEquality)
+{
   const meta::Preset a{"x",
                        {stop(0.f, 0.f, 0.f, 0.f), stop(1.f, 1.f, 1.f, 1.f)}};
-  meta::Preset b = a;
+  meta::Preset       b = a;
   EXPECT_EQ(a, b);
   b.stops[1].color[0] = 0.5f;
   EXPECT_NE(a, b);
@@ -29,7 +32,8 @@ TEST(GradientMetricsTest, StopAndPresetEquality) {
   EXPECT_NE(a, b);
 }
 
-TEST(GradientMetricsTest, SampleInterpolatesAndClamps) {
+TEST(GradientMetricsTest, SampleInterpolatesAndClamps)
+{
   // deliberately unsorted
   const std::vector<meta::Stop> stops = {stop(1.f, 1.f, 1.f, 1.f, 1.f),
                                          stop(0.f, 0.f, 0.f, 0.f, 0.f)};
@@ -46,7 +50,8 @@ TEST(GradientMetricsTest, SampleInterpolatesAndClamps) {
   EXPECT_FLOAT_EQ(empty[3], 1.f);
 }
 
-TEST(GradientMetricsTest, SampleHoldsEndColorsOutsideStopRange) {
+TEST(GradientMetricsTest, SampleHoldsEndColorsOutsideStopRange)
+{
   const std::vector<meta::Stop> stops = {stop(0.25f, 1.f, 0.f, 0.f),
                                          stop(0.75f, 0.f, 0.f, 1.f)};
   EXPECT_FLOAT_EQ(meta::sample_gradient(stops, 0.1f)[0], 1.f);
@@ -54,7 +59,8 @@ TEST(GradientMetricsTest, SampleHoldsEndColorsOutsideStopRange) {
   EXPECT_NEAR(meta::sample_gradient(stops, 0.5f)[0], 0.5f, 1e-5f);
 }
 
-TEST(GradientMetricsTest, LuminanceOrdersDarkToLight) {
+TEST(GradientMetricsTest, LuminanceOrdersDarkToLight)
+{
   const std::vector<meta::Stop> black = {stop(0.f, 0.f, 0.f, 0.f),
                                          stop(1.f, 0.f, 0.f, 0.f)};
   const std::vector<meta::Stop> grey = {stop(0.f, 0.5f, 0.5f, 0.5f),
@@ -71,7 +77,8 @@ TEST(GradientMetricsTest, LuminanceOrdersDarkToLight) {
   EXPECT_FLOAT_EQ(meta::gradient_luminance({}), 0.f);
 }
 
-TEST(GradientMetricsTest, HueOfPrimaries) {
+TEST(GradientMetricsTest, HueOfPrimaries)
+{
   const std::vector<meta::Stop> red = {stop(0.f, 1.f, 0.f, 0.f),
                                        stop(1.f, 1.f, 0.f, 0.f)};
   const std::vector<meta::Stop> green = {stop(0.f, 0.f, 1.f, 0.f),
@@ -85,15 +92,17 @@ TEST(GradientMetricsTest, HueOfPrimaries) {
   EXPECT_NEAR(meta::gradient_hue(blue), 240.f, 0.5f);
 }
 
-TEST(GradientMetricsTest, HueAveragesAcrossWrapAround) {
+TEST(GradientMetricsTest, HueAveragesAcrossWrapAround)
+{
   // 350 deg -> 10 deg through red: the circular mean sits near 0, not 180
   const std::vector<meta::Stop> stops = {stop(0.f, 1.f, 0.f, 1.f / 6.f),
                                          stop(1.f, 1.f, 1.f / 6.f, 0.f)};
-  const float h = meta::gradient_hue(stops);
+  const float                   h = meta::gradient_hue(stops);
   EXPECT_TRUE(h < 5.f || h > 355.f) << h;
 }
 
-TEST(GradientMetricsTest, AchromaticGradientHasNoHue) {
+TEST(GradientMetricsTest, AchromaticGradientHasNoHue)
+{
   const std::vector<meta::Stop> ramp = {stop(0.f, 0.f, 0.f, 0.f),
                                         stop(1.f, 1.f, 1.f, 1.f)};
   EXPECT_FLOAT_EQ(meta::gradient_hue(ramp), -1.f);

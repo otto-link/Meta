@@ -33,21 +33,26 @@
 #include "meta/logger.hpp"
 #include "meta_qt/widgets/gradient_picker.hpp"
 
-namespace meta::qt {
+namespace meta::qt
+{
 
 // ---------------------------------------------------------------------------
 // Colour conversion helpers
 // ---------------------------------------------------------------------------
 
-static QColor to_qcolor(const std::array<float, 4> &c) {
+static QColor to_qcolor(const std::array<float, 4> &c)
+{
   return QColor(int(std::clamp(c[0], 0.f, 1.f) * 255.f),
                 int(std::clamp(c[1], 0.f, 1.f) * 255.f),
                 int(std::clamp(c[2], 0.f, 1.f) * 255.f),
                 int(std::clamp(c[3], 0.f, 1.f) * 255.f));
 }
 
-static std::array<float, 4> from_qcolor(const QColor &c) {
-  return {float(c.redF()), float(c.greenF()), float(c.blueF()),
+static std::array<float, 4> from_qcolor(const QColor &c)
+{
+  return {float(c.redF()),
+          float(c.greenF()),
+          float(c.blueF()),
           float(c.alphaF())};
 }
 
@@ -57,17 +62,18 @@ static std::array<float, 4> from_qcolor(const QColor &c) {
 
 // Gives the process-wide GradientLibrary a per-user file on first use, unless
 // the host already chose one (set_path() before any picker exists).
-static void ensure_gradient_library() {
+static void ensure_gradient_library()
+{
   GradientLibrary &lib = GradientLibrary::instance();
-  if (!lib.path().empty())
-    return;
+  if (!lib.path().empty()) return;
 
-  QString dir =
-      QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+  QString dir = QStandardPaths::writableLocation(
+      QStandardPaths::AppConfigLocation);
   if (dir.isEmpty())
     dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 
-  if (dir.isEmpty()) {
+  if (dir.isEmpty())
+  {
     static bool warned = false;
     if (!warned)
       Logger::log()->warn("GradientPicker: no writable config location, the "
@@ -83,13 +89,16 @@ static void ensure_gradient_library() {
                        lib.path().string());
 }
 
-static QString gradient_file_filter() {
+static QString gradient_file_filter()
+{
   return QObject::tr("Gradient files (*.json);;All files (*)");
 }
 
-static void draw_star(QPainter &p, const QPointF &center, qreal radius) {
+static void draw_star(QPainter &p, const QPointF &center, qreal radius)
+{
   QPolygonF star;
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 10; ++i)
+  {
     const qreal r = (i % 2 == 0) ? radius : radius * 0.45;
     const qreal a = -std::numbers::pi / 2.0 + i * std::numbers::pi / 5.0;
     star << QPointF(center.x() + r * std::cos(a), center.y() + r * std::sin(a));
@@ -104,22 +113,26 @@ static void draw_star(QPainter &p, const QPointF &center, qreal radius) {
 // ---------------------------------------------------------------------------
 
 GradientBarWidget::GradientBarWidget(std::vector<Stop> &stops, QWidget *parent)
-    : QWidget(parent), stops_(stops) {
+    : QWidget(parent), stops_(stops)
+{
   setFixedHeight(TOTAL_H);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
-void GradientBarWidget::sort_stops() {
-  std::sort(stops_.begin(), stops_.end(), [](const Stop &a, const Stop &b) {
-    return a.position < b.position;
-  });
+void GradientBarWidget::sort_stops()
+{
+  std::sort(stops_.begin(),
+            stops_.end(),
+            [](const Stop &a, const Stop &b)
+            { return a.position < b.position; });
 }
 
-void GradientBarWidget::paintEvent(QPaintEvent *) {
+void GradientBarWidget::paintEvent(QPaintEvent *)
+{
   QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);
 
-  const QRectF br = bar_rect();
+  const QRectF    br = bar_rect();
   const QPalette &pal = palette();
 
   // Gradient bar
@@ -133,14 +146,15 @@ void GradientBarWidget::paintEvent(QPaintEvent *) {
   }
 
   // Stop handles
-  for (int i = 0; i < static_cast<int>(stops_.size()); ++i) {
+  for (int i = 0; i < static_cast<int>(stops_.size()); ++i)
+  {
     const QRectF r = stop_rect(stops_[i]);
-    const bool sel = (i == selected_idx_);
+    const bool   sel = (i == selected_idx_);
 
     // Small triangle pointing up from bar bottom to handle
     const float cx = float(r.center().x());
     const float ty = float(br.bottom());
-    QPolygonF tri;
+    QPolygonF   tri;
     tri << QPointF(cx - 4, ty + 8) << QPointF(cx + 4, ty + 8)
         << QPointF(cx, ty + 1);
     p.setPen(Qt::NoPen);
@@ -156,39 +170,50 @@ void GradientBarWidget::paintEvent(QPaintEvent *) {
   }
 }
 
-void GradientBarWidget::mouseDoubleClickEvent(QMouseEvent *e) {
+void GradientBarWidget::mouseDoubleClickEvent(QMouseEvent *e)
+{
   const int idx = hit_test(e->pos());
 
-  if (idx >= 0) {
+  if (idx >= 0)
+  {
     // Edit existing stop colour
     const QColor picked = QColorDialog::getColor(
-        to_qcolor(stops_[idx].color), this, QString(),
+        to_qcolor(stops_[idx].color),
+        this,
+        QString(),
         QColorDialog::ShowAlphaChannel | QColorDialog::DontUseNativeDialog);
 
-    if (picked.isValid()) {
+    if (picked.isValid())
+    {
       stops_[idx].color = from_qcolor(picked);
       update();
       Q_EMIT value_changed();
       Q_EMIT edit_ended();
     }
-  } else if (bar_rect().contains(QPointF(e->pos()))) {
+  }
+  else if (bar_rect().contains(QPointF(e->pos())))
+  {
     // Add new stop
-    const double pos = std::clamp(
-        (e->pos().x() - bar_rect().left()) / bar_rect().width(), 0.0, 1.0);
+    const double pos = std::clamp((e->pos().x() - bar_rect().left()) /
+                                      bar_rect().width(),
+                                  0.0,
+                                  1.0);
 
     constexpr double eps = 1e-3;
-    const bool too_close =
-        std::any_of(stops_.begin(), stops_.end(), [&](const Stop &s) {
-          return std::abs(double(s.position) - pos) < eps;
-        });
+    const bool       too_close = std::any_of(
+        stops_.begin(),
+        stops_.end(),
+        [&](const Stop &s)
+        { return std::abs(double(s.position) - pos) < eps; });
 
-    if (!too_close) {
+    if (!too_close)
+    {
       stops_.push_back({float(pos), {1.f, 1.f, 1.f, 1.f}});
       sort_stops();
-      auto it =
-          std::find_if(stops_.begin(), stops_.end(), [pos](const Stop &s) {
-            return s.position == float(pos);
-          });
+      auto it = std::find_if(stops_.begin(),
+                             stops_.end(),
+                             [pos](const Stop &s)
+                             { return s.position == float(pos); });
       if (it != stops_.end())
         selected_idx_ = static_cast<int>(std::distance(stops_.begin(), it));
       update();
@@ -198,36 +223,41 @@ void GradientBarWidget::mouseDoubleClickEvent(QMouseEvent *e) {
   }
 }
 
-void GradientBarWidget::mousePressEvent(QMouseEvent *e) {
-  if (e->button() == Qt::LeftButton) {
+void GradientBarWidget::mousePressEvent(QMouseEvent *e)
+{
+  if (e->button() == Qt::LeftButton)
+  {
     selected_idx_ = hit_test(e->pos());
     dragging_ = selected_idx_ >= 0;
     update();
   }
 }
 
-void GradientBarWidget::mouseMoveEvent(QMouseEvent *e) {
+void GradientBarWidget::mouseMoveEvent(QMouseEvent *e)
+{
   if (!dragging_ || selected_idx_ < 0 ||
       selected_idx_ >= static_cast<int>(stops_.size()))
     return;
 
   const QRectF br = bar_rect();
-  if (br.width() <= 0)
-    return;
+  if (br.width() <= 0) return;
 
-  const double pos =
-      std::clamp((e->pos().x() - br.left()) / br.width(), 0.0, 1.0);
+  const double pos = std::clamp((e->pos().x() - br.left()) / br.width(),
+                                0.0,
+                                1.0);
 
   stops_[selected_idx_].position = float(pos);
 
   // Maintain sorted order while keeping selected_idx_ tracking the moved stop
   while (selected_idx_ > 0 &&
-         stops_[selected_idx_].position < stops_[selected_idx_ - 1].position) {
+         stops_[selected_idx_].position < stops_[selected_idx_ - 1].position)
+  {
     std::swap(stops_[selected_idx_], stops_[selected_idx_ - 1]);
     --selected_idx_;
   }
   while (selected_idx_ + 1 < static_cast<int>(stops_.size()) &&
-         stops_[selected_idx_].position > stops_[selected_idx_ + 1].position) {
+         stops_[selected_idx_].position > stops_[selected_idx_ + 1].position)
+  {
     std::swap(stops_[selected_idx_], stops_[selected_idx_ + 1]);
     ++selected_idx_;
   }
@@ -236,26 +266,28 @@ void GradientBarWidget::mouseMoveEvent(QMouseEvent *e) {
   Q_EMIT value_changed();
 }
 
-void GradientBarWidget::mouseReleaseEvent(QMouseEvent *) {
-  if (dragging_) {
+void GradientBarWidget::mouseReleaseEvent(QMouseEvent *)
+{
+  if (dragging_)
+  {
     dragging_ = false;
     Q_EMIT edit_ended();
   }
 }
 
-void GradientBarWidget::contextMenuEvent(QContextMenuEvent *e) {
+void GradientBarWidget::contextMenuEvent(QContextMenuEvent *e)
+{
   const int idx = hit_test(e->pos());
-  if (idx < 0)
-    return;
+  if (idx < 0) return;
 
   // Only offer removal when at least 3 stops (keep minimum 2).
-  if (static_cast<int>(stops_.size()) <= 2)
-    return;
+  if (static_cast<int>(stops_.size()) <= 2) return;
 
-  QMenu menu(this);
+  QMenu    menu(this);
   QAction *rm = menu.addAction(QObject::tr("Remove stop"));
 
-  if (menu.exec(e->globalPos()) == rm) {
+  if (menu.exec(e->globalPos()) == rm)
+  {
     stops_.erase(stops_.begin() + idx);
 
     if (selected_idx_ == idx)
@@ -269,18 +301,21 @@ void GradientBarWidget::contextMenuEvent(QContextMenuEvent *e) {
   }
 }
 
-QRectF GradientBarWidget::bar_rect() const {
+QRectF GradientBarWidget::bar_rect() const
+{
   return QRectF(PAD, PAD, width() - 2 * PAD, BAR_H);
 }
 
-QRectF GradientBarWidget::stop_rect(const Stop &s) const {
+QRectF GradientBarWidget::stop_rect(const Stop &s) const
+{
   const QRectF br = bar_rect();
   const double cx = br.left() + double(s.position) * br.width();
   const double cy = br.bottom() + 3 + STOP_R;
   return QRectF(cx - STOP_R, cy - STOP_R, STOP_R * 2, STOP_R * 2);
 }
 
-int GradientBarWidget::hit_test(const QPoint &pos) const {
+int GradientBarWidget::hit_test(const QPoint &pos) const
+{
   for (int i = static_cast<int>(stops_.size()) - 1; i >= 0; --i)
     if (stop_rect(stops_[i]).adjusted(-2, -2, 2, 2).contains(QPointF(pos)))
       return i;
@@ -291,12 +326,18 @@ int GradientBarWidget::hit_test(const QPoint &pos) const {
 // PresetGridWidget: responsive grid that wraps swatches based on width
 // ---------------------------------------------------------------------------
 
-class PresetGridWidget : public QWidget {
+class PresetGridWidget : public QWidget
+{
 public:
-  explicit PresetGridWidget(int swatch_w, int swatch_h, int spacing = 4,
+  explicit PresetGridWidget(int      swatch_w,
+                            int      swatch_h,
+                            int      spacing = 4,
                             QWidget *parent = nullptr)
-      : QWidget(parent), swatch_w_(swatch_w), swatch_h_(swatch_h),
-        spacing_(spacing) {
+      : QWidget(parent),
+        swatch_w_(swatch_w),
+        swatch_h_(swatch_h),
+        spacing_(spacing)
+  {
     // Tell the layout system that our height depends on our width, so
     // QVBoxLayout / QScrollArea can query heightForWidth() instead of
     // relying on a stale, width-independent sizeHint().
@@ -307,18 +348,20 @@ public:
     init_layout();
   }
 
-  void set_buttons(const std::vector<QPushButton *> &buttons) {
+  void set_buttons(const std::vector<QPushButton *> &buttons)
+  {
     buttons_ = buttons;
     current_cols_ = -1;
     reflow(width());
   }
 
-  void reflow(int avail_w) {
-    if (buttons_.empty())
-      return;
+  void reflow(int avail_w)
+  {
+    if (buttons_.empty()) return;
 
     const int cols = compute_cols(avail_w);
-    if (cols == current_cols_) {
+    if (cols == current_cols_)
+    {
       const int h = heightForWidth(avail_w);
       setMinimumHeight(h);
       return;
@@ -331,7 +374,8 @@ public:
     init_layout();
 
     for (size_t i = 0; i < buttons_.size(); ++i)
-      grid_->addWidget(buttons_[i], static_cast<int>(i / cols),
+      grid_->addWidget(buttons_[i],
+                       static_cast<int>(i / cols),
                        static_cast<int>(i % cols));
 
     const int h = heightForWidth(avail_w);
@@ -341,43 +385,46 @@ public:
 
   bool hasHeightForWidth() const override { return true; }
 
-  int heightForWidth(int w) const override {
-    if (buttons_.empty())
-      return 0;
+  int heightForWidth(int w) const override
+  {
+    if (buttons_.empty()) return 0;
     const int cols = compute_cols(w);
     const int rows = (static_cast<int>(buttons_.size()) + cols - 1) / cols;
     return 4 + rows * swatch_h_ + (rows - 1) * spacing_;
   }
 
-  QSize sizeHint() const override {
-    if (buttons_.empty())
-      return QSize(0, 0);
+  QSize sizeHint() const override
+  {
+    if (buttons_.empty()) return QSize(0, 0);
     const int cols = current_cols_ > 0 ? current_cols_ : 1;
     const int w = 4 + cols * swatch_w_ + (cols - 1) * spacing_;
     return QSize(w, heightForWidth(width() > 0 ? width() : w));
   }
 
-  QSize minimumSizeHint() const override {
-    if (buttons_.empty())
-      return QSize(0, 0);
+  QSize minimumSizeHint() const override
+  {
+    if (buttons_.empty()) return QSize(0, 0);
     return QSize(swatch_w_ + 4,
                  heightForWidth(width() > 0 ? width() : swatch_w_ + 4));
   }
 
 protected:
-  void resizeEvent(QResizeEvent *event) override {
+  void resizeEvent(QResizeEvent *event) override
+  {
     QWidget::resizeEvent(event);
     reflow(event->size().width());
   }
 
 private:
-  int compute_cols(int avail_w) const {
+  int compute_cols(int avail_w) const
+  {
     const int margins_w = 4;
     return std::max(1,
                     (avail_w - margins_w + spacing_) / (swatch_w_ + spacing_));
   }
 
-  void init_layout() {
+  void init_layout()
+  {
     grid_ = new QGridLayout(this);
     grid_->setContentsMargins(2, 2, 2, 2);
     grid_->setSpacing(spacing_);
@@ -385,11 +432,11 @@ private:
     grid_->setSizeConstraint(QLayout::SetNoConstraint);
   }
 
-  int swatch_w_;
-  int swatch_h_;
-  int spacing_;
-  int current_cols_ = -1;
-  QGridLayout *grid_ = nullptr;
+  int                        swatch_w_;
+  int                        swatch_h_;
+  int                        spacing_;
+  int                        current_cols_ = -1;
+  QGridLayout               *grid_ = nullptr;
   std::vector<QPushButton *> buttons_;
 };
 
@@ -397,10 +444,11 @@ private:
 // Constructor
 // ---------------------------------------------------------------------------
 
-GradientPicker::GradientPicker(std::vector<Stop> &stops,
+GradientPicker::GradientPicker(std::vector<Stop>         &stops,
                                const std::vector<Preset> &presets,
-                               QWidget *parent)
-    : QWidget(parent), stops_(stops), presets_(presets) {
+                               QWidget                   *parent)
+    : QWidget(parent), stops_(stops), presets_(presets)
+{
   ensure_gradient_library();
 
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -435,9 +483,13 @@ GradientPicker::GradientPicker(std::vector<Stop> &stops,
   // the toolbar stays under the bar instead of floating mid-widget.
   main_layout->addStretch(0);
 
-  connect(bar_widget_, &GradientBarWidget::value_changed, this,
+  connect(bar_widget_,
+          &GradientBarWidget::value_changed,
+          this,
           &GradientPicker::value_changed);
-  connect(bar_widget_, &GradientBarWidget::edit_ended, this,
+  connect(bar_widget_,
+          &GradientBarWidget::edit_ended,
+          this,
           &GradientPicker::edit_ended);
 
   // Any picker (or the host) editing the library refreshes this grid
@@ -451,13 +503,15 @@ GradientPicker::GradientPicker(std::vector<Stop> &stops,
 // Toolbar
 // ---------------------------------------------------------------------------
 
-QWidget *GradientPicker::build_toolbar() {
+QWidget *GradientPicker::build_toolbar()
+{
   auto *bar = new QWidget(this);
   auto *layout = new QHBoxLayout(bar);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(4);
 
-  const auto make_button = [bar](const QString &text, const QString &tip) {
+  const auto make_button = [bar](const QString &text, const QString &tip)
+  {
     auto *button = new QToolButton(bar);
     button->setText(text);
     button->setToolTip(tip);
@@ -470,16 +524,22 @@ QWidget *GradientPicker::build_toolbar() {
 
   save_button_ = make_button(tr("Save..."),
                              tr("Save the current gradient to your library"));
-  import_button_ =
-      make_button(tr("Import..."), tr("Import gradients from JSON files"));
-  export_button_ =
-      make_button(tr("Export..."), tr("Export your library to a JSON file"));
+  import_button_ = make_button(tr("Import..."),
+                               tr("Import gradients from JSON files"));
+  export_button_ = make_button(tr("Export..."),
+                               tr("Export your library to a JSON file"));
 
-  connect(save_button_, &QToolButton::clicked, this,
+  connect(save_button_,
+          &QToolButton::clicked,
+          this,
           &GradientPicker::on_save_clicked);
-  connect(import_button_, &QToolButton::clicked, this,
+  connect(import_button_,
+          &QToolButton::clicked,
+          this,
           &GradientPicker::on_import_clicked);
-  connect(export_button_, &QToolButton::clicked, this,
+  connect(export_button_,
+          &QToolButton::clicked,
+          this,
           &GradientPicker::on_export_clicked);
 
   sort_combo_ = new QComboBox(bar);
@@ -491,7 +551,9 @@ QWidget *GradientPicker::build_toolbar() {
 
   // `activated` fires for user picks only, so syncing the index from the
   // library in rebuild_preset_grid() cannot loop back.
-  connect(sort_combo_, QOverload<int>::of(&QComboBox::activated), this,
+  connect(sort_combo_,
+          QOverload<int>::of(&QComboBox::activated),
+          this,
           [](int index) {
             GradientLibrary::instance().set_sort(
                 static_cast<GradientSort>(index));
@@ -511,40 +573,44 @@ QWidget *GradientPicker::build_toolbar() {
 // Preset grid
 // ---------------------------------------------------------------------------
 
-void GradientPicker::set_presets(const std::vector<Preset> &presets) {
+void GradientPicker::set_presets(const std::vector<Preset> &presets)
+{
   presets_ = presets;
   rebuild_preset_grid();
 }
 
-void GradientPicker::update_bar() {
-  if (bar_widget_)
-    bar_widget_->update();
+void GradientPicker::update_bar()
+{
+  if (bar_widget_) bar_widget_->update();
 }
 
-void GradientPicker::schedule_rebuild() {
+void GradientPicker::schedule_rebuild()
+{
   // Deferred: the notification may come from a slot of a swatch button that
   // the rebuild is about to delete, and bursts (imports) coalesce.
-  if (rebuild_pending_)
-    return;
+  if (rebuild_pending_) return;
   rebuild_pending_ = true;
 
   QMetaObject::invokeMethod(
       this,
-      [this]() {
+      [this]()
+      {
         rebuild_pending_ = false;
         rebuild_preset_grid();
       },
       Qt::QueuedConnection);
 }
 
-void GradientPicker::rebuild_entries() {
+void GradientPicker::rebuild_entries()
+{
   const GradientLibrary &lib = GradientLibrary::instance();
-  const GradientSort sort = lib.sort();
+  const GradientSort     sort = lib.sort();
 
-  struct Keyed {
-    Entry entry;
-    bool favorite;
-    float key;
+  struct Keyed
+  {
+    Entry       entry;
+    bool        favorite;
+    float       key;
     std::string lower_name;
     std::size_t index;
   };
@@ -552,17 +618,23 @@ void GradientPicker::rebuild_entries() {
   std::vector<Keyed> keyed;
   keyed.reserve(presets_.size() + lib.presets().size());
 
-  const auto push = [&](const Preset &preset, bool user) {
-    Keyed k{Entry{preset, user}, lib.is_favorite(preset.name), 0.f, preset.name,
+  const auto push = [&](const Preset &preset, bool user)
+  {
+    Keyed k{Entry{preset, user},
+            lib.is_favorite(preset.name),
+            0.f,
+            preset.name,
             keyed.size()};
 
-    std::transform(k.lower_name.begin(), k.lower_name.end(),
+    std::transform(k.lower_name.begin(),
+                   k.lower_name.end(),
                    k.lower_name.begin(),
                    [](unsigned char c) { return char(std::tolower(c)); });
 
     if (sort == GradientSort::Luminance)
       k.key = gradient_luminance(preset.stops);
-    else if (sort == GradientSort::Hue) {
+    else if (sort == GradientSort::Hue)
+    {
       const float hue = gradient_hue(preset.stops);
       k.key = hue < 0.f ? 1e6f : hue; // achromatic last
     }
@@ -575,22 +647,22 @@ void GradientPicker::rebuild_entries() {
   for (const auto &preset : lib.presets())
     push(preset, true);
 
-  std::stable_sort(keyed.begin(), keyed.end(),
-                   [sort](const Keyed &a, const Keyed &b) {
-                     if (a.favorite != b.favorite)
-                       return a.favorite;
+  std::stable_sort(keyed.begin(),
+                   keyed.end(),
+                   [sort](const Keyed &a, const Keyed &b)
+                   {
+                     if (a.favorite != b.favorite) return a.favorite;
 
-                     switch (sort) {
+                     switch (sort)
+                     {
                      case GradientSort::Name:
                        return a.lower_name < b.lower_name;
                      case GradientSort::Luminance:
                      case GradientSort::Hue:
-                       if (a.key != b.key)
-                         return a.key < b.key;
+                       if (a.key != b.key) return a.key < b.key;
                        return a.lower_name < b.lower_name;
                      case GradientSort::Default:
-                     default:
-                       return a.index < b.index;
+                     default: return a.index < b.index;
                      }
                    });
 
@@ -600,8 +672,9 @@ void GradientPicker::rebuild_entries() {
     entries_.push_back(std::move(k.entry));
 }
 
-QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const {
-  QPixmap pix(SWATCH_W, SWATCH_H);
+QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const
+{
+  QPixmap  pix(SWATCH_W, SWATCH_H);
   QPainter pp(&pix);
   pp.setRenderHint(QPainter::Antialiasing);
 
@@ -618,10 +691,10 @@ QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const {
               QString::fromStdString(entry.preset.name));
 
   // Favourite star (top-left) and library marker (top-right)
-  if (favorite)
-    draw_star(pp, QPointF(8, 8), 5.5);
+  if (favorite) draw_star(pp, QPointF(8, 8), 5.5);
 
-  if (entry.user) {
+  if (entry.user)
+  {
     pp.setPen(QPen(QColor(40, 40, 40), 1));
     pp.setBrush(Qt::white);
     pp.drawEllipse(QPointF(pix.width() - 7, 7), 3, 3);
@@ -631,35 +704,39 @@ QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const {
   pp.setPen(QPen(QColor(80, 80, 80), 1));
   pp.setBrush(Qt::NoBrush);
   pp.drawRoundedRect(pix.rect().adjusted(0, 0, -1, -1),
-                     GradientBarWidget::RADIUS, GradientBarWidget::RADIUS);
+                     GradientBarWidget::RADIUS,
+                     GradientBarWidget::RADIUS);
 
   return pix;
 }
 
-void GradientPicker::rebuild_preset_grid() {
+void GradientPicker::rebuild_preset_grid()
+{
   const GradientLibrary &lib = GradientLibrary::instance();
 
   rebuild_entries();
 
-  if (sort_combo_) {
+  if (sort_combo_)
+  {
     const QSignalBlocker blocker(sort_combo_);
     sort_combo_->setCurrentIndex(static_cast<int>(lib.sort()));
   }
-  if (export_button_)
-    export_button_->setEnabled(!lib.presets().empty());
+  if (export_button_) export_button_->setEnabled(!lib.presets().empty());
 
   scroll_area_->setVisible(!entries_.empty());
 
   // Delete all existing child buttons inside preset_grid_
-  qDeleteAll(preset_grid_->findChildren<QPushButton *>(
-      QString(), Qt::FindDirectChildrenOnly));
+  qDeleteAll(
+      preset_grid_->findChildren<QPushButton *>(QString(),
+                                                Qt::FindDirectChildrenOnly));
 
   std::vector<QPushButton *> buttons;
   buttons.reserve(entries_.size());
 
-  for (std::size_t i = 0; i < entries_.size(); ++i) {
-    const Entry &entry = entries_[i];
-    const bool favorite = lib.is_favorite(entry.preset.name);
+  for (std::size_t i = 0; i < entries_.size(); ++i)
+  {
+    const Entry  &entry = entries_[i];
+    const bool    favorite = lib.is_favorite(entry.preset.name);
     const QString name = QString::fromStdString(entry.preset.name);
 
     auto *btn = new QPushButton(preset_grid_);
@@ -678,11 +755,16 @@ void GradientPicker::rebuild_preset_grid() {
     btn->setContextMenuPolicy(Qt::CustomContextMenu);
 
     const std::vector<Stop> preset_stops = entry.preset.stops;
-    connect(btn, &QPushButton::clicked, this,
+    connect(btn,
+            &QPushButton::clicked,
+            this,
             [this, preset_stops]() { apply_stops(preset_stops); });
 
-    connect(btn, &QPushButton::customContextMenuRequested, this,
-            [this, btn, i](const QPoint &pos) {
+    connect(btn,
+            &QPushButton::customContextMenuRequested,
+            this,
+            [this, btn, i](const QPoint &pos)
+            {
               if (i < entries_.size())
                 show_entry_menu(entries_[i], btn->mapToGlobal(pos));
             });
@@ -697,9 +779,11 @@ void GradientPicker::rebuild_preset_grid() {
   updateGeometry();
 }
 
-void GradientPicker::apply_stops(const std::vector<Stop> &stops) {
+void GradientPicker::apply_stops(const std::vector<Stop> &stops)
+{
   stops_ = stops;
-  if (bar_widget_) {
+  if (bar_widget_)
+  {
     bar_widget_->sort_stops();
     bar_widget_->update();
   }
@@ -707,7 +791,8 @@ void GradientPicker::apply_stops(const std::vector<Stop> &stops) {
   Q_EMIT edit_ended();
 }
 
-std::vector<std::string> GradientPicker::host_names() const {
+std::vector<std::string> GradientPicker::host_names() const
+{
   std::vector<std::string> names;
   names.reserve(presets_.size());
   for (const auto &preset : presets_)
@@ -715,7 +800,8 @@ std::vector<std::string> GradientPicker::host_names() const {
   return names;
 }
 
-std::vector<std::string> GradientPicker::entry_names() const {
+std::vector<std::string> GradientPicker::entry_names() const
+{
   std::vector<std::string> names;
   names.reserve(entries_.size());
   for (const auto &entry : entries_)
@@ -727,7 +813,8 @@ std::vector<std::string> GradientPicker::entry_names() const {
 // Library actions
 // ---------------------------------------------------------------------------
 
-std::string GradientPicker::save_current_as_preset(const std::string &name) {
+std::string GradientPicker::save_current_as_preset(const std::string &name)
+{
   GradientLibrary &lib = GradientLibrary::instance();
 
   Preset preset;
@@ -737,33 +824,41 @@ std::string GradientPicker::save_current_as_preset(const std::string &name) {
   return lib.add(std::move(preset));
 }
 
-void GradientPicker::on_save_clicked() {
+void GradientPicker::on_save_clicked()
+{
   GradientLibrary &lib = GradientLibrary::instance();
 
-  bool ok = false;
+  bool          ok = false;
   const QString text = QInputDialog::getText(
-      this, tr("Save gradient"), tr("Preset name:"), QLineEdit::Normal,
-      QString::fromStdString(lib.unique_name("Gradient", host_names())), &ok);
+      this,
+      tr("Save gradient"),
+      tr("Preset name:"),
+      QLineEdit::Normal,
+      QString::fromStdString(lib.unique_name("Gradient", host_names())),
+      &ok);
 
-  if (!ok || text.trimmed().isEmpty())
-    return;
+  if (!ok || text.trimmed().isEmpty()) return;
 
   save_current_as_preset(text.trimmed().toStdString());
 }
 
-void GradientPicker::on_import_clicked() {
+void GradientPicker::on_import_clicked()
+{
   const QStringList files = QFileDialog::getOpenFileNames(
-      this, tr("Import gradients"), QString(), gradient_file_filter());
-  if (files.isEmpty())
-    return;
+      this,
+      tr("Import gradients"),
+      QString(),
+      gradient_file_filter());
+  if (files.isEmpty()) return;
 
   GradientLibrary &lib = GradientLibrary::instance();
-  QStringList failed;
-  std::size_t imported = 0;
+  QStringList      failed;
+  std::size_t      imported = 0;
 
-  for (const QString &file : files) {
-    const GradientImportReport report =
-        lib.import_file(std::filesystem::path(file.toStdString()));
+  for (const QString &file : files)
+  {
+    const GradientImportReport report = lib.import_file(
+        std::filesystem::path(file.toStdString()));
     if (!report.ok)
       failed << QFileInfo(file).fileName();
     else
@@ -772,49 +867,58 @@ void GradientPicker::on_import_clicked() {
 
   Logger::log()->trace("GradientPicker::on_import_clicked: {} imported from "
                        "{} file(s), {} failed",
-                       imported, files.size(), failed.size());
+                       imported,
+                       files.size(),
+                       failed.size());
 
   if (!failed.isEmpty())
     QMessageBox::warning(
-        this, tr("Import gradients"),
+        this,
+        tr("Import gradients"),
         tr("No gradients could be read from:\n%1").arg(failed.join('\n')));
 }
 
-void GradientPicker::on_export_clicked() {
+void GradientPicker::on_export_clicked()
+{
   export_presets(GradientLibrary::instance().presets(), "gradients.json");
 }
 
 void GradientPicker::export_presets(const std::vector<Preset> &presets,
-                                    const QString &suggested_file) {
-  QString file = QFileDialog::getSaveFileName(
-      this, tr("Export gradients"), suggested_file, gradient_file_filter());
-  if (file.isEmpty())
-    return;
-  if (!file.endsWith(".json", Qt::CaseInsensitive))
-    file += ".json";
+                                    const QString             &suggested_file)
+{
+  QString file = QFileDialog::getSaveFileName(this,
+                                              tr("Export gradients"),
+                                              suggested_file,
+                                              gradient_file_filter());
+  if (file.isEmpty()) return;
+  if (!file.endsWith(".json", Qt::CaseInsensitive)) file += ".json";
 
   if (!GradientLibrary::instance().export_file(
-          std::filesystem::path(file.toStdString()), presets))
-    QMessageBox::warning(this, tr("Export gradients"),
+          std::filesystem::path(file.toStdString()),
+          presets))
+    QMessageBox::warning(this,
+                         tr("Export gradients"),
                          tr("Could not write \"%1\".").arg(file));
 }
 
-void GradientPicker::show_entry_menu(Entry entry, const QPoint &global_pos) {
+void GradientPicker::show_entry_menu(Entry entry, const QPoint &global_pos)
+{
   // `entry` is a copy on purpose: the menu runs a nested event loop during
   // which entries_ may be rebuilt.
-  GradientLibrary &lib = GradientLibrary::instance();
+  GradientLibrary  &lib = GradientLibrary::instance();
   const std::string name = entry.preset.name;
 
   QMenu menu(this);
 
-  QAction *favorite =
-      menu.addAction(lib.is_favorite(name) ? tr("Remove from favorites")
-                                           : tr("Add to favorites"));
+  QAction *favorite = menu.addAction(lib.is_favorite(name)
+                                         ? tr("Remove from favorites")
+                                         : tr("Add to favorites"));
 
   QAction *rename = nullptr;
   QAction *replace = nullptr;
   QAction *remove = nullptr;
-  if (entry.user) {
+  if (entry.user)
+  {
     menu.addSeparator();
     rename = menu.addAction(tr("Rename..."));
     replace = menu.addAction(tr("Replace with current gradient"));
@@ -825,33 +929,44 @@ void GradientPicker::show_entry_menu(Entry entry, const QPoint &global_pos) {
   QAction *export_action = menu.addAction(tr("Export..."));
 
   QAction *chosen = menu.exec(global_pos);
-  if (!chosen)
-    return;
+  if (!chosen) return;
 
-  if (chosen == favorite) {
+  if (chosen == favorite)
+  {
     lib.set_favorite(name, !lib.is_favorite(name));
-  } else if (chosen == rename) {
-    bool ok = false;
-    const QString text = QInputDialog::getText(
-        this, tr("Rename gradient"), tr("New name:"), QLineEdit::Normal,
-        QString::fromStdString(name), &ok);
-    if (!ok || text.trimmed().isEmpty())
-      return;
+  }
+  else if (chosen == rename)
+  {
+    bool          ok = false;
+    const QString text = QInputDialog::getText(this,
+                                               tr("Rename gradient"),
+                                               tr("New name:"),
+                                               QLineEdit::Normal,
+                                               QString::fromStdString(name),
+                                               &ok);
+    if (!ok || text.trimmed().isEmpty()) return;
 
     if (!lib.rename(name, text.trimmed().toStdString()))
       QMessageBox::warning(
-          this, tr("Rename gradient"),
+          this,
+          tr("Rename gradient"),
           tr("A gradient named \"%1\" already exists.").arg(text.trimmed()));
-  } else if (chosen == replace) {
+  }
+  else if (chosen == replace)
+  {
     lib.update(name, stops_);
-  } else if (chosen == remove) {
-    const auto answer =
-        QMessageBox::question(this, tr("Delete gradient"),
-                              tr("Delete \"%1\" from your library?")
-                                  .arg(QString::fromStdString(name)));
-    if (answer == QMessageBox::Yes)
-      lib.remove(name);
-  } else if (chosen == export_action) {
+  }
+  else if (chosen == remove)
+  {
+    const auto answer = QMessageBox::question(
+        this,
+        tr("Delete gradient"),
+        tr("Delete \"%1\" from your library?")
+            .arg(QString::fromStdString(name)));
+    if (answer == QMessageBox::Yes) lib.remove(name);
+  }
+  else if (chosen == export_action)
+  {
     export_presets({entry.preset}, QString::fromStdString(name) + ".json");
   }
 }
@@ -860,30 +975,35 @@ void GradientPicker::show_entry_menu(Entry entry, const QPoint &global_pos) {
 // Geometry
 // ---------------------------------------------------------------------------
 
-void GradientPicker::resizeEvent(QResizeEvent *e) {
+void GradientPicker::resizeEvent(QResizeEvent *e)
+{
   QWidget::resizeEvent(e);
-  if (scroll_area_ && scroll_area_->viewport() && preset_grid_) {
+  if (scroll_area_ && scroll_area_->viewport() && preset_grid_)
+  {
     preset_grid_->reflow(scroll_area_->viewport()->width());
   }
 }
 
-bool GradientPicker::eventFilter(QObject *watched, QEvent *event) {
+bool GradientPicker::eventFilter(QObject *watched, QEvent *event)
+{
   if (scroll_area_ && watched == scroll_area_->viewport() &&
-      event->type() == QEvent::Resize) {
+      event->type() == QEvent::Resize)
+  {
     auto *re = static_cast<QResizeEvent *>(event);
-    if (preset_grid_)
-      preset_grid_->reflow(re->size().width());
+    if (preset_grid_) preset_grid_->reflow(re->size().width());
   }
   return QWidget::eventFilter(watched, event);
 }
 
-QSize GradientPicker::sizeHint() const {
+QSize GradientPicker::sizeHint() const
+{
   const int top_h = GradientBarWidget::TOTAL_H + 4 + TOOLBAR_H;
   const int preset_h = entries_.empty() ? 0 : (SWATCH_H + 4) * 3 + 8;
   return {300, top_h + (entries_.empty() ? 0 : 4 + preset_h)};
 }
 
-QSize GradientPicker::minimumSizeHint() const {
+QSize GradientPicker::minimumSizeHint() const
+{
   const int top_h = GradientBarWidget::TOTAL_H + 4 + TOOLBAR_H;
   const int preset_h = entries_.empty() ? 0 : SWATCH_H + 8;
   return {160, top_h + (entries_.empty() ? 0 : 4 + preset_h)};

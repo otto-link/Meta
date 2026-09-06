@@ -36,7 +36,8 @@ void register_design()
         //
         // Resolved per section rather than captured, because the theme can be
         // set after the design registers.
-        return new Section(title, DesignRegistry::instance().theme(kDesignName));
+        return new Section(title,
+                           DesignRegistry::instance().theme(kDesignName));
       });
 
   // --- float: 58% of the rows in a Hesiod node panel

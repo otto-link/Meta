@@ -12,23 +12,27 @@
 
 #include "meta/ext/color_gradient/gradient_library.hpp"
 
-namespace {
+namespace
+{
 
-std::filesystem::path make_temp_dir(const std::string &tag) {
-  const auto dir =
-      std::filesystem::temp_directory_path() / ("meta_gradient_library_" + tag);
+std::filesystem::path make_temp_dir(const std::string &tag)
+{
+  const auto dir = std::filesystem::temp_directory_path() /
+                   ("meta_gradient_library_" + tag);
   std::filesystem::remove_all(dir);
   std::filesystem::create_directories(dir);
   return dir;
 }
 
-meta::Preset make_preset(const std::string &name, float r, float g, float b) {
+meta::Preset make_preset(const std::string &name, float r, float g, float b)
+{
   return {name, {{0.f, {0.f, 0.f, 0.f, 1.f}}, {1.f, {r, g, b, 1.f}}}};
 }
 
 } // namespace
 
-TEST(GradientLibraryTest, AddMakesNamesUnique) {
+TEST(GradientLibraryTest, AddMakesNamesUnique)
+{
   meta::GradientLibrary lib;
 
   EXPECT_EQ(lib.add(make_preset("Fire", 1.f, 0.f, 0.f)), "Fire");
@@ -45,7 +49,8 @@ TEST(GradientLibraryTest, AddMakesNamesUnique) {
   EXPECT_FALSE(lib.has("Water"));
 }
 
-TEST(GradientLibraryTest, AddSortsStopsByPosition) {
+TEST(GradientLibraryTest, AddSortsStopsByPosition)
+{
   meta::GradientLibrary lib;
   lib.add({"Rev", {{1.f, {1.f, 1.f, 1.f, 1.f}}, {0.f, {0.f, 0.f, 0.f, 1.f}}}});
 
@@ -56,7 +61,8 @@ TEST(GradientLibraryTest, AddSortsStopsByPosition) {
   EXPECT_EQ(lib.find("nope"), nullptr);
 }
 
-TEST(GradientLibraryTest, UpdateRenameRemove) {
+TEST(GradientLibraryTest, UpdateRenameRemove)
+{
   meta::GradientLibrary lib;
   lib.add(make_preset("A", 1.f, 0.f, 0.f));
   lib.add(make_preset("B", 0.f, 1.f, 0.f));
@@ -83,7 +89,8 @@ TEST(GradientLibraryTest, UpdateRenameRemove) {
   EXPECT_TRUE(lib.presets().empty());
 }
 
-TEST(GradientLibraryTest, FavoritesFollowRenameAndRemoval) {
+TEST(GradientLibraryTest, FavoritesFollowRenameAndRemoval)
+{
   meta::GradientLibrary lib;
   lib.add(make_preset("A", 1.f, 0.f, 0.f));
 
@@ -104,10 +111,11 @@ TEST(GradientLibraryTest, FavoritesFollowRenameAndRemoval) {
   EXPECT_TRUE(lib.favorites().empty());
 }
 
-TEST(GradientLibraryTest, ChangedFiresOncePerEffectiveMutation) {
+TEST(GradientLibraryTest, ChangedFiresOncePerEffectiveMutation)
+{
   meta::GradientLibrary lib;
-  int count = 0;
-  auto conn = lib.changed.subscribe([&count]() { ++count; });
+  int                   count = 0;
+  auto                  conn = lib.changed.subscribe([&count]() { ++count; });
 
   lib.add(make_preset("A", 1.f, 0.f, 0.f));
   EXPECT_EQ(count, 1);
@@ -125,7 +133,8 @@ TEST(GradientLibraryTest, ChangedFiresOncePerEffectiveMutation) {
   EXPECT_EQ(count, 4);
 }
 
-TEST(GradientLibraryTest, JsonRoundTrip) {
+TEST(GradientLibraryTest, JsonRoundTrip)
+{
   meta::GradientLibrary lib;
   lib.add(make_preset("A", 1.f, 0.f, 0.f));
   lib.add(make_preset("B", 0.f, 1.f, 0.f));
@@ -155,7 +164,8 @@ TEST(GradientLibraryTest, JsonRoundTrip) {
   EXPECT_TRUE(empty.presets().empty());
 }
 
-TEST(GradientLibraryTest, AutosaveAndLoad) {
+TEST(GradientLibraryTest, AutosaveAndLoad)
+{
   const auto dir = make_temp_dir("autosave");
   const auto file = dir / "nested" / "gradients.json";
 
@@ -194,7 +204,8 @@ TEST(GradientLibraryTest, AutosaveAndLoad) {
   EXPECT_TRUE(std::filesystem::exists(dir / "manual.json"));
 }
 
-TEST(GradientLibraryTest, CorruptFileLeavesStateUntouched) {
+TEST(GradientLibraryTest, CorruptFileLeavesStateUntouched)
+{
   const auto dir = make_temp_dir("corrupt");
 
   meta::GradientLibrary lib;
@@ -217,7 +228,8 @@ TEST(GradientLibraryTest, CorruptFileLeavesStateUntouched) {
   EXPECT_EQ(lib.presets().size(), 1u);
 }
 
-TEST(GradientLibraryTest, ImportPolicy) {
+TEST(GradientLibraryTest, ImportPolicy)
+{
   const auto dir = make_temp_dir("import");
 
   meta::GradientLibrary source;
@@ -251,7 +263,8 @@ TEST(GradientLibraryTest, ImportPolicy) {
   EXPECT_EQ(lib.presets().size(), 4u);
 }
 
-TEST(GradientLibraryTest, ParsesHesiodFileShapes) {
+TEST(GradientLibraryTest, ParsesHesiodFileShapes)
+{
   // Hesiod data/color_gradients/<stem>.json: Meta's ColorGradient::json_to
   // shape, no name -> the fallback (file stem) is used
   const auto per_file = nlohmann::json::parse(R"({
@@ -260,7 +273,7 @@ TEST(GradientLibraryTest, ParsesHesiodFileShapes) {
       {"color": [0.1, 0.2, 0.3, 1.0], "position": 0.0},
       {"color": [0.5, 0.6, 0.7, 1.0], "position": 1.0}
     ]})");
-  auto parsed = meta::parse_gradient_file(per_file, "051c4a");
+  auto       parsed = meta::parse_gradient_file(per_file, "051c4a");
   ASSERT_TRUE(parsed.has_value());
   ASSERT_EQ(parsed->size(), 1u);
   EXPECT_EQ((*parsed)[0].name, "051c4a");
@@ -305,10 +318,14 @@ TEST(GradientLibraryTest, ParsesHesiodFileShapes) {
   EXPECT_FALSE(meta::parse_gradient_file(nlohmann::json::object()).has_value());
 }
 
-TEST(GradientLibraryTest, SortNamesRoundTrip) {
+TEST(GradientLibraryTest, SortNamesRoundTrip)
+{
   using meta::GradientSort;
-  for (GradientSort s : {GradientSort::Default, GradientSort::Name,
-                         GradientSort::Luminance, GradientSort::Hue}) {
+  for (GradientSort s : {GradientSort::Default,
+                         GradientSort::Name,
+                         GradientSort::Luminance,
+                         GradientSort::Hue})
+  {
     const auto back = meta::gradient_sort_from_string(meta::to_string(s));
     ASSERT_TRUE(back.has_value());
     EXPECT_EQ(*back, s);

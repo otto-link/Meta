@@ -7,7 +7,8 @@
 
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
-namespace meta {
+namespace meta
+{
 
 /**
  * @brief Colour of a gradient at position `t`.

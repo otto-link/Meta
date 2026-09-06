@@ -167,7 +167,8 @@ void ClipBox::update_reveal_geometry()
   // before the scroll content learns its new minimum. Invalidate the whole
   // chain first, then allocate from the outside in before anything is painted.
   QList<QLayout *> ancestors;
-  for (QWidget *widget = parentWidget(); widget; widget = widget->parentWidget())
+  for (QWidget *widget = parentWidget(); widget;
+       widget = widget->parentWidget())
   {
     if (auto *ancestor = widget->layout())
     {
@@ -177,13 +178,14 @@ void ClipBox::update_reveal_geometry()
     // The scroll content's minimum drives its viewport. Layouts outside that
     // scroll area do not need to be recalculated on every animation tick.
     QWidget *parent = widget->parentWidget();
-    auto *scroll = parent
-                       ? qobject_cast<QAbstractScrollArea *>(parent->parentWidget())
-                       : nullptr;
+    auto    *scroll = parent ? qobject_cast<QAbstractScrollArea *>(
+                                parent->parentWidget())
+                             : nullptr;
     if (scroll && scroll->viewport() == parent) break;
     if (widget->isWindow()) break;
   }
-  for (auto *ancestor : ancestors) ancestor->activate();
+  for (auto *ancestor : ancestors)
+    ancestor->activate();
 }
 
 QSize ClipBox::sizeHint() const
@@ -365,7 +367,8 @@ void Section::set_expanded(bool new_state)
     return;
   }
 
-  // Reapplying state must not finish a transition that is already heading there.
+  // Reapplying state must not finish a transition that is already heading
+  // there.
   if (was_expanded == new_state) return;
 
   const int full = clip_->body_height();

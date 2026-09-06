@@ -66,8 +66,8 @@ protected:
   void closeEvent(QCloseEvent *event) override;
 
 private:
-  int index_at(const QPoint &pos) const;
-  int row_height() const;
+  int  index_at(const QPoint &pos) const;
+  int  row_height() const;
   void animate_to(int height);
 
   /// Portion of the fixed-size window currently revealed by the animation.

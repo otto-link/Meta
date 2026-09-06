@@ -14,10 +14,12 @@
 #include "meta/core/event.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
-namespace meta {
+namespace meta
+{
 
 /// Ordering applied to preset grids. Favourites are always pinned first.
-enum class GradientSort {
+enum class GradientSort
+{
   Default,   ///< host order, then library insertion order
   Name,      ///< case-insensitive name
   Luminance, ///< dark to light (gradient_luminance)
@@ -31,11 +33,12 @@ std::string_view to_string(GradientSort sort);
 std::optional<GradientSort> gradient_sort_from_string(std::string_view text);
 
 /// Outcome of GradientLibrary::import_file().
-struct GradientImportReport {
+struct GradientImportReport
+{
   std::size_t added = 0;   ///< stored under their own name
   std::size_t renamed = 0; ///< stored under a suffixed name (name clash)
   std::size_t skipped = 0; ///< identical to an existing preset
-  bool ok = false;         ///< file could be read and held gradients
+  bool        ok = false;  ///< file could be read and held gradients
 };
 
 /**
@@ -61,9 +64,9 @@ nlohmann::json gradient_file_json(const std::vector<Preset> &presets);
  *
  * @return The parsed presets, or std::nullopt when nothing usable was found.
  */
-std::optional<std::vector<Preset>>
-parse_gradient_file(const nlohmann::json &json,
-                    std::string_view fallback_name = "Gradient");
+std::optional<std::vector<Preset>> parse_gradient_file(
+    const nlohmann::json &json,
+    std::string_view      fallback_name = "Gradient");
 
 /**
  * @brief The user's gradient presets, shared by every gradient widget in the
@@ -78,7 +81,8 @@ parse_gradient_file(const nlohmann::json &json,
  * The Qt GradientPicker assigns a default per-user path on first use when
  * none is set; call set_path() + load() beforehand to choose another.
  */
-class GradientLibrary {
+class GradientLibrary
+{
 public:
   /// Fired after every effective mutation and after a successful load.
   Event<> changed;
@@ -113,8 +117,8 @@ public:
   // --- user presets
 
   const std::vector<Preset> &presets() const;
-  bool has(std::string_view name) const;
-  const Preset *find(std::string_view name) const;
+  bool                       has(std::string_view name) const;
+  const Preset              *find(std::string_view name) const;
 
   /**
    * @brief Stores a preset. The name is trimmed ("Gradient" when empty) and
@@ -138,19 +142,19 @@ public:
 
   /// `base` if free, otherwise "base (2)", "base (3)", ...; names in
   /// `reserved` (e.g. host presets) count as taken.
-  std::string unique_name(std::string_view base,
+  std::string unique_name(std::string_view                base,
                           const std::vector<std::string> &reserved = {}) const;
 
   // --- favourites
 
-  bool is_favorite(std::string_view name) const;
-  void set_favorite(std::string_view name, bool on);
+  bool                            is_favorite(std::string_view name) const;
+  void                            set_favorite(std::string_view name, bool on);
   const std::vector<std::string> &favorites() const;
 
   // --- sort preference
 
   GradientSort sort() const;
-  void set_sort(GradientSort sort);
+  void         set_sort(GradientSort sort);
 
   // --- serialization
 
@@ -171,16 +175,16 @@ public:
 
   /// Writes `presets` as a gradient file (no favourites, no sort).
   bool export_file(const std::filesystem::path &path,
-                   const std::vector<Preset> &presets) const;
+                   const std::vector<Preset>   &presets) const;
 
 private:
   void on_modified();
 
-  std::vector<Preset> presets_;
+  std::vector<Preset>      presets_;
   std::vector<std::string> favorites_;
-  GradientSort sort_ = GradientSort::Default;
-  std::filesystem::path path_;
-  bool autosave_ = true;
+  GradientSort             sort_ = GradientSort::Default;
+  std::filesystem::path    path_;
+  bool                     autosave_ = true;
 };
 
 } // namespace meta

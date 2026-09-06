@@ -2,8 +2,8 @@
 #include <QCoreApplication>
 #include <QLabel>
 #include <QScrollArea>
-#include <QVariantAnimation>
 #include <QVBoxLayout>
+#include <QVariantAnimation>
 
 #include <array>
 #include <iostream>
@@ -29,9 +29,9 @@ class PanelCheck : public QObject
 {
 public:
   std::array<Section *, 4> sections{};
-  int failures = 0;
-  int paints = 0;
-  bool watching = false;
+  int                      failures = 0;
+  int                      paints = 0;
+  bool                     watching = false;
 
   void check()
   {
@@ -46,9 +46,8 @@ public:
         fail("section height differs from its requested reveal");
       }
       const auto *layout = s->parentWidget()->layout();
-      const int expected_y = i
-                                 ? sections[i - 1]->geometry().bottom() + 1
-                                       + layout->spacing()
+      const int   expected_y = i ? sections[i - 1]->geometry().bottom() + 1 +
+                                     layout->spacing()
                                  : layout->contentsMargins().top();
       if (s->y() != expected_y) fail("section position or gap changed");
     }
@@ -73,7 +72,7 @@ public:
 int exercise(int viewport_height)
 {
   meta::qt::Theme theme;
-  QScrollArea scroll;
+  QScrollArea     scroll;
   scroll.setAttribute(Qt::WA_DontShowOnScreen);
   scroll.setWidgetResizable(true);
   scroll.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -90,7 +89,7 @@ int exercise(int viewport_height)
   layout->setAlignment(Qt::AlignTop);
   node_layout->addWidget(page);
 
-  PanelCheck checker;
+  PanelCheck               checker;
   const std::array<int, 4> rows{3, 3, 2, 8};
   for (int i = 0; i < 4; ++i)
   {
@@ -130,7 +129,7 @@ int exercise(int viewport_height)
   // must start at the displayed height, including repeated same-state calls.
   for (int i = 0; i < 4; ++i)
   {
-    auto *s = checker.sections[i];
+    auto      *s = checker.sections[i];
     const bool initially_open = i != 3;
     s->set_expanded(!initially_open);
     advance(s, 48);
@@ -166,8 +165,8 @@ int exercise(int viewport_height)
 int main(int argc, char **argv)
 {
   QApplication app(argc, argv);
-  int failures = 0;
-  for (int height : {1100, 740, 400}) failures += exercise(height);
+  int          failures = 0;
+  for (int height : {1100, 740, 400})
+    failures += exercise(height);
   return failures ? 1 : 0;
 }
-

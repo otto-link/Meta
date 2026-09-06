@@ -16,7 +16,8 @@ class QPixmap;
 class QScrollArea;
 class QToolButton;
 
-namespace meta::qt {
+namespace meta::qt
+{
 
 class PresetGridWidget;
 
@@ -26,7 +27,8 @@ class PresetGridWidget;
 // Custom-painted gradient bar with interactive stop handles.
 // ---------------------------------------------------------------------------
 
-class GradientBarWidget : public QWidget {
+class GradientBarWidget : public QWidget
+{
   Q_OBJECT
 
 public:
@@ -37,7 +39,7 @@ public:
   static constexpr int RADIUS = 4;
 
   explicit GradientBarWidget(std::vector<Stop> &stops,
-                             QWidget *parent = nullptr);
+                             QWidget           *parent = nullptr);
 
   void sort_stops();
 
@@ -56,11 +58,11 @@ protected:
 private:
   QRectF bar_rect() const;
   QRectF stop_rect(const Stop &s) const;
-  int hit_test(const QPoint &pos) const;
+  int    hit_test(const QPoint &pos) const;
 
   std::vector<Stop> &stops_;
-  int selected_idx_ = -1;
-  bool dragging_ = false;
+  int                selected_idx_ = -1;
+  bool               dragging_ = false;
 };
 
 // ---------------------------------------------------------------------------
@@ -81,13 +83,14 @@ private:
 // height never squashes or clips the gradient visualization.
 // ---------------------------------------------------------------------------
 
-class GradientPicker : public QWidget {
+class GradientPicker : public QWidget
+{
   Q_OBJECT
 
 public:
-  explicit GradientPicker(std::vector<Stop> &stops,
+  explicit GradientPicker(std::vector<Stop>         &stops,
                           const std::vector<Preset> &presets,
-                          QWidget *parent = nullptr);
+                          QWidget                   *parent = nullptr);
 
   // Called externally when the attribute's preset list changes.
   void set_presets(const std::vector<Preset> &presets);
@@ -109,23 +112,24 @@ Q_SIGNALS:
   void edit_ended(); // committed (drag release, colour picked, preset applied)
 
 protected:
-  void resizeEvent(QResizeEvent *e) override;
-  bool eventFilter(QObject *watched, QEvent *event) override;
+  void  resizeEvent(QResizeEvent *e) override;
+  bool  eventFilter(QObject *watched, QEvent *event) override;
   QSize sizeHint() const override;
   QSize minimumSizeHint() const override;
 
 private:
-  struct Entry {
+  struct Entry
+  {
     Preset preset;
-    bool user = false; // true: GradientLibrary entry, false: host preset
+    bool   user = false; // true: GradientLibrary entry, false: host preset
   };
 
   QWidget *build_toolbar();
-  void schedule_rebuild();
-  void rebuild_entries();
-  void rebuild_preset_grid();
-  QPixmap make_swatch(const Entry &entry, bool favorite) const;
-  void apply_stops(const std::vector<Stop> &stops);
+  void     schedule_rebuild();
+  void     rebuild_entries();
+  void     rebuild_preset_grid();
+  QPixmap  make_swatch(const Entry &entry, bool favorite) const;
+  void     apply_stops(const std::vector<Stop> &stops);
 
   std::vector<std::string> host_names() const;
 
@@ -134,20 +138,20 @@ private:
   void on_export_clicked();
   void show_entry_menu(Entry entry, const QPoint &global_pos);
   void export_presets(const std::vector<Preset> &presets,
-                      const QString &suggested_file);
+                      const QString             &suggested_file);
 
-  std::vector<Stop> &stops_;
+  std::vector<Stop>  &stops_;
   std::vector<Preset> presets_; // host presets (attribute metadata)
-  std::vector<Entry> entries_;  // host + library, display order
+  std::vector<Entry>  entries_; // host + library, display order
 
   GradientBarWidget *bar_widget_ = nullptr;
-  QToolButton *save_button_ = nullptr;
-  QToolButton *import_button_ = nullptr;
-  QToolButton *export_button_ = nullptr;
-  QComboBox *sort_combo_ = nullptr;
-  QScrollArea *scroll_area_ = nullptr;
-  PresetGridWidget *preset_grid_ = nullptr;
-  bool rebuild_pending_ = false;
+  QToolButton       *save_button_ = nullptr;
+  QToolButton       *import_button_ = nullptr;
+  QToolButton       *export_button_ = nullptr;
+  QComboBox         *sort_combo_ = nullptr;
+  QScrollArea       *scroll_area_ = nullptr;
+  PresetGridWidget  *preset_grid_ = nullptr;
+  bool               rebuild_pending_ = false;
 
   static constexpr int SWATCH_W = 60;  // each preset swatch width
   static constexpr int SWATCH_H = 32;  // each preset swatch height
