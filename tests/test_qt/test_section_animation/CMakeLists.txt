@@ -1,0 +1,2 @@
+add_executable(test_section_animation main.cpp)
+target_link_libraries(test_section_animation meta_qt)

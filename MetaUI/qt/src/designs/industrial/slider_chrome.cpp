@@ -72,8 +72,7 @@ void paint_slider_row(QPainter             &painter,
   const Metrics &m = theme.metrics;
 
   // --- label. Text is the only thing state is allowed to change.
-  QFont label_font = ui_font(12, false, 1.0);
-  label_font.setCapitalization(QFont::AllUppercase);
+  QFont label_font = row_label_font();
   painter.setFont(label_font);
   painter.setPen(theme.state_ink(visual.modified, visual.locked));
   painter.drawText(geometry.label,
@@ -90,7 +89,10 @@ void paint_slider_row(QPainter             &painter,
                           m.rail_radius);
 
   // --- fill. Always the group accent; never a state colour.
-  if (geometry.fill.width() > 0)
+  //
+  // Skipped when unbounded: with no limits there is no proportion of the rail
+  // to fill, and a bar growing from the left would read as one.
+  if (!visual.unbounded && geometry.fill.width() > 0)
   {
     painter.setPen(Qt::NoPen);
     painter.setBrush(theme.rail_fill(visual.category, visual.locked));
@@ -98,6 +100,19 @@ void paint_slider_row(QPainter             &painter,
         QRectF(geometry.fill).adjusted(0.5, 0.5, -0.5, -0.5),
         m.rail_radius,
         m.rail_radius);
+  }
+
+  // --- rest marker. Only while an unbounded drag is under way, and only then:
+  // at rest the thumb covers this exactly, so drawing it always would look
+  // like a stray hairline under the thumb.
+  if (visual.unbounded && visual.dragging)
+  {
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(theme.thumb_grip);
+    painter.drawRect(QRect(geometry.rail.center().x(),
+                           geometry.thumb.top(),
+                           1,
+                           geometry.thumb.height()));
   }
 
   // --- thumb

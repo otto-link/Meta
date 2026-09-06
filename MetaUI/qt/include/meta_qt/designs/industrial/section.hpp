@@ -41,6 +41,7 @@ public:
   int body_height() const;
 
   QSize sizeHint() const override;
+  QSize minimumSizeHint() const override;
 
 protected:
   void resizeEvent(QResizeEvent *event) override;
@@ -49,6 +50,8 @@ protected:
   bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
+  void update_reveal_geometry();
+
   QWidget *body_ = nullptr;
   int      reveal_ = 0;
   bool     follow_ = true;

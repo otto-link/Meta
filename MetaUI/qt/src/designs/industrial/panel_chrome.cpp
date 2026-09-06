@@ -17,7 +17,7 @@ QString scrollbar_stylesheet(const Theme &theme)
                  "QScrollBar::handle:vertical {"
                  " background: %1;"
                  " min-height: 30px;"
-                 " border-radius: 2px;"
+                 " border-radius: %3px;"
                  " margin: 2px 3px 2px 3px;"
                  "}"
                  "QScrollBar::handle:vertical:hover { background: %2; }"
@@ -28,7 +28,8 @@ QString scrollbar_stylesheet(const Theme &theme)
                  "QScrollBar::add-page:vertical,"
                  "QScrollBar::sub-page:vertical { background: transparent; }")
       .arg(theme.field_border.name())
-      .arg(theme.field_border_hover.name());
+      .arg(theme.field_border_hover.name())
+      .arg(theme.metrics.radius);
 }
 
 QString tooltip_stylesheet(const Theme &theme)

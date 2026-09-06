@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include <QApplication>
+#include <QCloseEvent>
 #include <QDateTime>
 #include <QEasingCurve>
 #include <QKeyEvent>
@@ -36,23 +37,41 @@ ComboPopup::ComboPopup(const Theme       &theme,
                        const QStringList &items,
                        int                current,
                        QWidget           *parent)
-    : QWidget(parent, Qt::Popup),
+    : QWidget(parent,
+              Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint),
       theme_(&theme),
       items_(items),
       current_(current),
       hovered_(current)
 {
-  // Must be set before the native window is created, which happens on the first
-  // show(). Setting it later leaves the unrevealed part of the surface painting
-  // opaque black instead of nothing.
-  //
-  // WA_NoSystemBackground is deliberately *not* set alongside it: together they
-  // leave the surface undefined here rather than clear.
+  // Windows needs BOTH the frameless flag and an alpha backing store before
+  // show(); otherwise the unrevealed part of the popup is an opaque black box.
+  // Disable the native popup shadow too: it outlines the full window even
+  // while the card is only partially revealed. paintEvent owns the border.
   setAttribute(Qt::WA_TranslucentBackground);
 
   setAttribute(Qt::WA_DeleteOnClose);
   setMouseTracking(true);
   setFocusPolicy(Qt::StrongFocus);
+
+  animation_ = new QVariantAnimation(this);
+  animation_->setDuration(theme_->metrics.section_ms);
+  animation_->setEasingCurve(QEasingCurve::OutCubic);
+  connect(animation_,
+          &QVariantAnimation::valueChanged,
+          this,
+          [this](const QVariant &value)
+          {
+            revealed_ = value.toInt();
+            update();
+          });
+  connect(animation_,
+          &QVariantAnimation::finished,
+          this,
+          [this]()
+          {
+            if (closing_) close();
+          });
 }
 
 int ComboPopup::row_height() const { return kRowHeight; }
@@ -85,30 +104,30 @@ void ComboPopup::popup_for(const QRect &field_global)
   // to full size, and resizing a native window every frame is expensive anyway.
   // Reveal the card inside a fixed, translucent window instead.
   setGeometry(left, y, width, full_height_);
+  revealed_ = 0;
+  closing_ = false;
+  animate_to(full_height_);
   show();
   setFocus(Qt::PopupFocusReason);
+}
 
-  open_animation_ = new QVariantAnimation(this);
-  open_animation_->setDuration(theme_->metrics.section_ms);
-  open_animation_->setEasingCurve(QEasingCurve::OutCubic);
-  open_animation_->setStartValue(0);
-  open_animation_->setEndValue(full_height_);
-
-  connect(open_animation_,
-          &QVariantAnimation::valueChanged,
-          this,
-          [this](const QVariant &v)
-          {
-            revealed_ = v.toInt();
-            update();
-          });
-
-  open_animation_->start();
+void ComboPopup::animate_to(int height)
+{
+  animation_->stop();
+  {
+    // Retarget from the current reveal without emitting samples at the old
+    // animation time, including when dismissed before opening has finished.
+    QSignalBlocker blocker(animation_);
+    animation_->setStartValue(revealed_);
+    animation_->setEndValue(height);
+    animation_->setCurrentTime(0);
+  }
+  animation_->start();
 }
 
 QRect ComboPopup::card_rect() const
 {
-  const int h = revealed_ > 0 ? revealed_ : full_height_;
+  const int h = std::clamp(revealed_, 0, full_height_);
 
   // Opening downward, the card grows from its top edge, which sits against the
   // field. Flipped, it grows upward from its bottom edge, which is the edge
@@ -119,7 +138,9 @@ QRect ComboPopup::card_rect() const
 
 int ComboPopup::index_at(const QPoint &pos) const
 {
-  if (!rect().contains(pos)) return -1;
+  if (!card_rect().contains(pos) || pos.y() < kPopupPadding ||
+      pos.y() >= full_height_ - kPopupPadding)
+    return -1;
 
   const int index = (pos.y() - kPopupPadding) / row_height();
   return index >= 0 && index < items_.size() ? index : -1;
@@ -128,10 +149,15 @@ int ComboPopup::index_at(const QPoint &pos) const
 void ComboPopup::paintEvent(QPaintEvent *)
 {
   QPainter painter(this);
+  // Clear the entire backing store, including the area uncovered by closing.
+  painter.setCompositionMode(QPainter::CompositionMode_Source);
+  painter.fillRect(rect(), Qt::transparent);
+  painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
   painter.setRenderHint(QPainter::Antialiasing, true);
 
   const Theme &t = *theme_;
   const QRect  card = card_rect();
+  if (card.isEmpty()) return;
 
   // Everything is clipped to the revealed card, so the rows stay put and are
   // uncovered rather than sliding. Laying them out against the animating height
@@ -172,6 +198,7 @@ void ComboPopup::paintEvent(QPaintEvent *)
 
 void ComboPopup::mouseMoveEvent(QMouseEvent *event)
 {
+  if (closing_) return;
   const int index = index_at(event->pos());
   if (index != hovered_)
   {
@@ -182,9 +209,10 @@ void ComboPopup::mouseMoveEvent(QMouseEvent *event)
 
 void ComboPopup::mousePressEvent(QMouseEvent *event)
 {
+  if (closing_) return;
   // Overriding this at all suppresses Qt's built-in "press outside dismisses",
   // so an outside press has to be handled here.
-  if (!rect().contains(event->pos()))
+  if (!card_rect().contains(event->pos()))
   {
     close();
     return;
@@ -195,19 +223,21 @@ void ComboPopup::mousePressEvent(QMouseEvent *event)
 
 void ComboPopup::mouseReleaseEvent(QMouseEvent *event)
 {
+  if (closing_) return;
   const int index = index_at(event->pos());
   if (index >= 0)
   {
-    Q_EMIT selected(index);
     close();
+    Q_EMIT selected(index);
     return;
   }
 
-  if (!rect().contains(event->pos())) close();
+  if (!card_rect().contains(event->pos())) close();
 }
 
 void ComboPopup::keyPressEvent(QKeyEvent *event)
 {
+  if (closing_) return;
   switch (event->key())
   {
   case Qt::Key_Down:
@@ -220,8 +250,8 @@ void ComboPopup::keyPressEvent(QKeyEvent *event)
     return;
   case Qt::Key_Return:
   case Qt::Key_Enter:
-    if (hovered_ >= 0) Q_EMIT selected(hovered_);
     close();
+    if (hovered_ >= 0) Q_EMIT selected(hovered_);
     return;
   case Qt::Key_Escape: close(); return;
   default: break;
@@ -230,8 +260,26 @@ void ComboPopup::keyPressEvent(QKeyEvent *event)
   QWidget::keyPressEvent(event);
 }
 
+void ComboPopup::closeEvent(QCloseEvent *event)
+{
+  if (!isVisible() || revealed_ == 0)
+  {
+    animation_->stop();
+    QWidget::closeEvent(event);
+    return;
+  }
+
+  // Keep the popup alive until its card reaches zero height. Further dismissal
+  // events must not restart the animation or select an item a second time.
+  event->ignore();
+  if (closing_) return;
+  closing_ = true;
+  animate_to(0);
+}
+
 void ComboPopup::hideEvent(QHideEvent *event)
 {
+  animation_->stop();
   // hideEvent rather than destroyed(): WA_DeleteOnClose defers deletion by an
   // event-loop pass, by which point the dismissing click has already been
   // processed and reopened the popup.
@@ -260,8 +308,7 @@ void paint_combo_field(QWidget       &widget,
                         m.label_min_width,
                         m.label_max_width));
 
-  QFont label_font = ui_font(12, false, 1.0);
-  label_font.setCapitalization(QFont::AllUppercase);
+  QFont label_font = row_label_font();
   painter.setFont(label_font);
   painter.setPen(theme.state_ink(modified, locked));
   painter.drawText(QRect(0, 0, label_width, height),

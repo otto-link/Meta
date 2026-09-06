@@ -19,6 +19,8 @@ struct Stop
 
   /// RGBA color.
   std::array<float, 4> color;
+
+  bool operator==(const Stop &) const = default;
 };
 
 /// A named color gradient preset.
@@ -29,6 +31,8 @@ struct Preset
 
   /// Gradient stops.
   std::vector<Stop> stops;
+
+  bool operator==(const Preset &) const = default;
 };
 
 /// Editable color gradient. Presets are deliberately NOT part of this value

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include <QLineEdit>
 #include <QMouseEvent>
@@ -14,6 +15,22 @@
 
 namespace meta::qt::industrial
 {
+
+namespace
+{
+/// Thumb position an unbounded row rests at: the middle of the rail.
+constexpr qreal kRestNorm = 0.5;
+
+/** @brief Drag sensitivity for an unbounded row, in pixels per whole step.
+ *
+ * Taken from stock SliderInt's PPU_UNBOUNDED rather than picked again, so a
+ * Seed feels the same now that it no longer falls through to stock.
+ */
+constexpr qreal kPixelsPerStep = 4.0;
+
+/// Ctrl divides the step by this, Shift multiplies it. Stock's PPU_MULT_FINE.
+constexpr qreal kFineMultiplier = 10.0;
+} // namespace
 
 IntSlider::IntSlider(Attribute<int>   &attr,
                      const RowContext &ctx,
@@ -26,8 +43,20 @@ IntSlider::IntSlider(Attribute<int>   &attr,
   min_ = meta::common::min(attr);
   max_ = meta::common::max(attr);
 
+  unbounded_ = !has_usable_range(min_, max_);
+
+  // An inverted or empty range cannot clamp, and std::clamp with hi below lo
+  // is undefined. Widening to the type's own limits keeps every clamp below
+  // well formed; an attribute whose bounds contradict each other is already
+  // the unbounded case as far as the rail is concerned.
+  if (unbounded_ && !(max_ > min_))
+  {
+    min_ = std::numeric_limits<int>::lowest();
+    max_ = std::numeric_limits<int>::max();
+  }
+
   value_ = std::clamp(attr.value(), min_, max_);
-  norm_ = to_norm(value_);
+  norm_ = unbounded_ ? kRestNorm : to_norm(value_);
 
   setFixedHeight(theme().metrics.row_height);
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -53,6 +82,12 @@ IntSlider::IntSlider(Attribute<int>   &attr,
           {
             norm_ = t;
             update();
+
+            // Unbounded: a thumb settling back to centre is not an edit. The
+            // drag published as it went and end_edit() fired on release, so
+            // ending one here would close an edit the user has since started.
+            if (unbounded_) return;
+
             end_edit();
           });
   glide_->jump(norm_);
@@ -78,8 +113,7 @@ IntSlider::IntSlider(Attribute<int>   &attr,
               return;
             }
 
-            begin_edit();
-            apply_value(std::clamp(typed, min_, max_), true);
+            commit_value(typed);
           });
 
   connect(field_,
@@ -95,14 +129,22 @@ bool IntSlider::can_render(const Attribute<int> &attr)
       !metadata.find(meta::keys::constraints::max))
     return false;
 
-  return meta::common::max(attr) > meta::common::min(attr);
+  // The bounds themselves are not screened: a range with no usable span is
+  // rendered as a rate handle rather than handed to another design.
+  return true;
 }
 
 void IntSlider::set(const int &value)
 {
   value_ = std::clamp(value, min_, max_);
-  glide_->jump(to_norm(value_)); // a model sync seats immediately
-  norm_ = to_norm(value_);
+
+  // Unbounded: the thumb encodes drag distance, not the value, so a sync from
+  // the model leaves it where it rests. jump() also cancels a recentre still
+  // running, which would otherwise fight the position set here.
+  const qreal target = unbounded_ ? kRestNorm : to_norm(value_);
+
+  glide_->jump(target); // a model sync seats immediately
+  norm_ = target;
   refresh_field();
   update();
 }
@@ -139,9 +181,10 @@ void IntSlider::paintEvent(QPaintEvent *)
   visual.category = category_;
   visual.modified = is_modified();
   visual.locked = is_locked();
+  visual.unbounded = unbounded_;
+  visual.dragging = dragging_;
 
-  QFont label_font = ui_font(12, false, 1.0);
-  label_font.setCapitalization(QFont::AllUppercase);
+  QFont label_font = row_label_font();
   visual.label = elide_label(QString::fromStdString(label_),
                              label_font,
                              geometry.label.width());
@@ -180,6 +223,26 @@ void IntSlider::mousePressEvent(QMouseEvent *event)
   }
 
   setFocus(Qt::MouseFocusReason);
+
+  if (unbounded_)
+  {
+    // Seat the thumb before the drag is measured. A recentre from the previous
+    // drag may still be running, and its finished() would otherwise arrive
+    // mid-drag; jump() cancels it without emitting one.
+    glide_->jump(kRestNorm);
+    norm_ = kRestNorm;
+    drag_origin_x_ = event->pos().x();
+    value_at_press_ = value_;
+
+    dragging_ = true;
+    begin_edit();
+    update();
+
+    // Deliberately no set_from_position(): a rate drag measures from where the
+    // press landed, so pressing the rail must not move the value at all.
+    return;
+  }
+
   dragging_ = true;
   begin_edit();
   set_from_position(event->pos().x());
@@ -188,6 +251,13 @@ void IntSlider::mousePressEvent(QMouseEvent *event)
 void IntSlider::mouseMoveEvent(QMouseEvent *event)
 {
   if (!dragging_) return;
+
+  if (unbounded_)
+  {
+    drag_by(event->pos().x(), event->modifiers());
+    return;
+  }
+
   set_from_position(event->pos().x());
 }
 
@@ -196,6 +266,19 @@ void IntSlider::mouseReleaseEvent(QMouseEvent *event)
   if (!dragging_) return;
 
   dragging_ = false;
+
+  if (unbounded_)
+  {
+    drag_by(event->pos().x(), event->modifiers());
+
+    // The thumb eases back to rest rather than snapping, like everything else
+    // in this design. The edit is over as soon as the button is up, though:
+    // holding it open for the animation would stall the model sync behind it.
+    end_edit();
+    glide_->to(kRestNorm);
+    return;
+  }
+
   set_from_position(event->pos().x());
   end_edit();
 }
@@ -213,8 +296,7 @@ void IntSlider::mouseDoubleClickEvent(QMouseEvent *event)
   try
   {
     dragging_ = false;
-    begin_edit();
-    apply_value(std::clamp(std::any_cast<int>(def), min_, max_), true);
+    commit_value(std::any_cast<int>(def)); // the reset glides where it can
   }
   catch (const std::bad_any_cast &)
   {
@@ -234,9 +316,11 @@ void IntSlider::handle_wheel(QWheelEvent *event)
   }
 
   // One notch is one unit, which is what an integer control should do
-  // regardless of how wide its range happens to be.
-  begin_edit();
-  apply_value(std::clamp(value_ + steps, min_, max_), true);
+  // regardless of how wide its range happens to be. Widened to 64 bits before
+  // the clamp because a Seed sits in [0, INT_MAX] and value_ + steps would
+  // otherwise overflow at the top of it.
+  const long long stepped = static_cast<long long>(value_) + steps;
+  commit_value(int(std::clamp<long long>(stepped, min_, max_)));
   event->accept();
 }
 
@@ -277,19 +361,67 @@ void IntSlider::set_from_position(int x)
   apply_value(from_norm(t), false);
 }
 
+void IntSlider::drag_by(int x, Qt::KeyboardModifiers modifiers)
+{
+  const int dx = x - drag_origin_x_;
+
+  qreal ppu = kPixelsPerStep;
+  if (modifiers & Qt::ControlModifier)
+    ppu *= kFineMultiplier;
+  else if (modifiers & Qt::ShiftModifier)
+    ppu /= kFineMultiplier;
+
+  // The thumb follows the cursor pixel for pixel but stops at the ends of the
+  // rail. Its travel is an affordance, not a measurement: the value carries on
+  // changing after the thumb has run out of room, which is the whole point of
+  // a rate control.
+  const SliderGeometry g = SliderGeometry::compute(theme(),
+                                                   width(),
+                                                   height(),
+                                                   norm_);
+  const int travel = std::max(1, g.rail.width() - theme().metrics.thumb_width);
+
+  norm_ = std::clamp(kRestNorm + qreal(dx) / qreal(travel), 0.0, 1.0);
+  glide_->jump(norm_); // no easing under the cursor, and cancels any recentre
+
+  // Whole steps only, measured from the value at the press rather than
+  // accumulated per event: an integer row must never show a fraction, and a
+  // drag out and back has to land exactly where it started. Widened to 64 bits
+  // because a Seed sits in [0, INT_MAX] and this would overflow near the top.
+  const long long moved = static_cast<long long>(qreal(dx) / ppu);
+  const long long target = static_cast<long long>(value_at_press_) + moved;
+
+  apply_value(int(std::clamp<long long>(target, min_, max_)), false);
+}
+
+void IntSlider::commit_value(int value)
+{
+  begin_edit();
+  apply_value(std::clamp(value, min_, max_), !unbounded_);
+
+  // A bounded row ends its edit when the glide settles. An unbounded one has
+  // no glide to wait on, so it ends here.
+  if (unbounded_) end_edit();
+}
+
 void IntSlider::apply_value(int value, bool glide)
 {
   const bool changed = value != value_;
   value_ = value;
 
-  if (glide)
+  // Unbounded: the thumb is a rate affordance rather than a position, so it is
+  // never driven from the value. drag_by() owns it and release eases it home.
+  if (!unbounded_)
   {
-    glide_->to(to_norm(value_));
-  }
-  else
-  {
-    glide_->jump(to_norm(value_)); // a drag tracks the cursor, no glide
-    norm_ = to_norm(value_);
+    if (glide)
+    {
+      glide_->to(to_norm(value_));
+    }
+    else
+    {
+      glide_->jump(to_norm(value_)); // a drag tracks the cursor, no glide
+      norm_ = to_norm(value_);
+    }
   }
 
   refresh_field();
