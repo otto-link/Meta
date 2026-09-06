@@ -153,9 +153,9 @@ private:
   PresetGridWidget  *preset_grid_ = nullptr;
   bool               rebuild_pending_ = false;
 
-  static constexpr int SWATCH_W = 60;  // each preset swatch width
-  static constexpr int SWATCH_H = 32;  // each preset swatch height
-  static constexpr int TOOLBAR_H = 24; // toolbar row height
+  static constexpr int SWATCH_W = 72;  // each preset swatch width
+  static constexpr int SWATCH_H = 36;  // each preset swatch height
+  static constexpr int TOOLBAR_H = 28; // toolbar row height
 
   // Declared last so it disconnects before the members its callback touches
   // are destroyed.

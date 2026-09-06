@@ -2,6 +2,7 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #include "meta_qt/designs/industrial/param_slider.hpp"
+#include "meta_qt/ui/number_format.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -67,7 +68,8 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
   // no span to lay a mapping over in the first place.
   if (log_scale_ && (unbounded_ || min_ <= kLogFloor)) log_scale_ = false;
 
-  value_ = std::clamp(attr.value(), min_, max_);
+  input_max_ = max_ == 64 ? std::numeric_limits<float>::max() : max_;
+  value_ = std::clamp(attr.value(), min_, input_max_);
   norm_ = unbounded_ ? kRestNorm : to_norm(value_);
 
   setFixedHeight(theme().metrics.row_height);
@@ -114,7 +116,7 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
             notify_value_changed();
             end_edit();
           });
-  glide_->jump(norm_);
+  { const QSignalBlocker blocker(glide_); glide_->jump(norm_); }
 
   field_ = new QLineEdit(this);
   field_->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -162,7 +164,7 @@ bool ParamSlider::can_render(const Attribute<float> &attr)
 
 void ParamSlider::set(const float &value)
 {
-  const float clamped = std::clamp(value, min_, max_);
+  const float clamped = std::clamp(value, min_, input_max_);
 
   // Unbounded: the thumb encodes drag distance, not the value, so a sync from
   // the model leaves it where it rests. jump() also cancels a recentre still
@@ -459,7 +461,7 @@ void ParamSlider::drag_by(int x, Qt::KeyboardModifiers modifiers)
 
 void ParamSlider::apply_value(float value)
 {
-  const float clamped = std::clamp(value, min_, max_);
+  const float clamped = std::clamp(value, min_, input_max_);
   const bool  changed = clamped != value_;
 
   value_ = clamped;
@@ -473,22 +475,25 @@ void ParamSlider::commit_value(float value)
 {
   begin_edit();
 
-  const float clamped = std::clamp(value, min_, max_);
+  const float clamped = std::clamp(value, min_, input_max_);
 
   if (!unbounded_)
   {
-    glide_->to(to_norm(clamped)); // finished() commits and ends the edit
-    return;
+    // Typed numbers are authoritative, even where normalising a wide range
+    // cannot represent all their digits. Position the rail, then seat the value.
+    glide_->jump(to_norm(clamped));
   }
 
-  // Nothing to glide towards: the thumb is already at rest and stays there.
-  apply_value(clamped);
+  value_ = clamped;
+  refresh_field();
+  update();
+  notify_value_changed();
   end_edit();
 }
 
 QString ParamSlider::format_value(float value) const
 {
-  return QString::number(value, 'f', decimals_);
+  return display_float(value);
 }
 
 void ParamSlider::refresh_field()
