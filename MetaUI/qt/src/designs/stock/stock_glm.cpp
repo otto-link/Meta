@@ -523,6 +523,13 @@ MetaWidget *render_vec2(AbstractAttribute &abstract_attr,
         {
           toggle_btn->setText(active ? QObject::tr("On") : QObject::tr("Off"));
 
+          Q_EMIT widget->edit_started();
+          // Publish the state before the value: value changes synchronously
+          // refresh the widget through the model subscription.
+          if (auto *p = attr.state().try_value<bool>(meta::keys::state::active))
+            *p = active;
+          set_active(active);
+
           if (active)
           {
             attr.set_from_any(lav);
@@ -535,12 +542,6 @@ MetaWidget *render_vec2(AbstractAttribute &abstract_attr,
             bar->set_value({-1.f, 0.f});
           }
 
-          if (auto *p = attr.state().try_value<bool>(meta::keys::state::active))
-            *p = active;
-
-          set_active(active);
-
-          Q_EMIT widget->edit_started();
           Q_EMIT widget->value_changed();
           Q_EMIT widget->edit_ended();
         });

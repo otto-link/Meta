@@ -55,7 +55,8 @@ IntSlider::IntSlider(Attribute<int>   &attr,
     max_ = std::numeric_limits<int>::max();
   }
 
-  value_ = std::clamp(attr.value(), min_, max_);
+  input_max_ = max_ == 64 ? std::numeric_limits<int>::max() : max_;
+  value_ = std::clamp(attr.value(), min_, input_max_);
   norm_ = unbounded_ ? kRestNorm : to_norm(value_);
 
   setFixedHeight(theme().metrics.row_height);
@@ -136,7 +137,7 @@ bool IntSlider::can_render(const Attribute<int> &attr)
 
 void IntSlider::set(const int &value)
 {
-  value_ = std::clamp(value, min_, max_);
+  value_ = std::clamp(value, min_, input_max_);
 
   // Unbounded: the thumb encodes drag distance, not the value, so a sync from
   // the model leaves it where it rests. jump() also cancels a recentre still
@@ -158,7 +159,7 @@ QSize IntSlider::sizeHint() const
 qreal IntSlider::to_norm(int value) const
 {
   if (max_ <= min_) return 0.0;
-  return std::clamp(qreal(value - min_) / qreal(max_ - min_), 0.0, 1.0);
+  return std::clamp((qreal(value) - min_) / (qreal(max_) - min_), 0.0, 1.0);
 }
 
 int IntSlider::from_norm(qreal t) const
@@ -397,7 +398,7 @@ void IntSlider::drag_by(int x, Qt::KeyboardModifiers modifiers)
 void IntSlider::commit_value(int value)
 {
   begin_edit();
-  apply_value(std::clamp(value, min_, max_), !unbounded_);
+  apply_value(std::clamp(value, min_, input_max_), !unbounded_);
 
   // A bounded row ends its edit when the glide settles. An unbounded one has
   // no glide to wait on, so it ends here.

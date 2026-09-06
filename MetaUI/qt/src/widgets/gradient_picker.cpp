@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPushButton>
 #include <QResizeEvent>
 #include <QScrollArea>
@@ -360,6 +361,17 @@ public:
     if (buttons_.empty()) return;
 
     const int cols = compute_cols(avail_w);
+    const int tile_width = std::max(swatch_w_, (avail_w - 4 - (cols - 1) * spacing_) / cols);
+    for (auto *button : buttons_)
+    {
+      button->setFixedWidth(tile_width);
+      const auto source = button->property("swatch_image").value<QPixmap>();
+      if (!source.isNull()) {
+        const QSize icon_size(tile_width - 6, swatch_h_ - 6);
+        button->setIcon(QIcon(source.scaled(icon_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+        button->setIconSize(icon_size);
+      }
+    }
     if (cols == current_cols_)
     {
       const int h = heightForWidth(avail_w);
@@ -455,7 +467,7 @@ GradientPicker::GradientPicker(std::vector<Stop>         &stops,
 
   auto *main_layout = new QVBoxLayout(this);
   main_layout->setContentsMargins(0, 0, 0, 0);
-  main_layout->setSpacing(4);
+  main_layout->setSpacing(10);
 
   // Gradient bar pinned at the top (fixed height, never scrolls)
   bar_widget_ = new GradientBarWidget(stops_, this);
@@ -472,8 +484,10 @@ GradientPicker::GradientPicker(std::vector<Stop>         &stops,
   scroll_area_->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   scroll_area_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-  preset_grid_ = new PresetGridWidget(SWATCH_W, SWATCH_H, 4, scroll_area_);
+  preset_grid_ = new PresetGridWidget(SWATCH_W, SWATCH_H, 6, scroll_area_);
   scroll_area_->setWidget(preset_grid_);
+  preset_grid_->setAutoFillBackground(false);
+  scroll_area_->viewport()->setAutoFillBackground(false);
 
   if (scroll_area_->viewport())
     scroll_area_->viewport()->installEventFilter(this);
@@ -506,7 +520,7 @@ GradientPicker::GradientPicker(std::vector<Stop>         &stops,
 QWidget *GradientPicker::build_toolbar()
 {
   auto *bar = new QWidget(this);
-  auto *layout = new QHBoxLayout(bar);
+  auto *layout = new QVBoxLayout(bar);
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(4);
 
@@ -522,7 +536,7 @@ QWidget *GradientPicker::build_toolbar()
     return button;
   };
 
-  save_button_ = make_button(tr("Save..."),
+  save_button_ = make_button(tr("Save preset…"),
                              tr("Save the current gradient to your library"));
   import_button_ = make_button(tr("Import..."),
                                tr("Import gradients from JSON files"));
@@ -559,12 +573,27 @@ QWidget *GradientPicker::build_toolbar()
                 static_cast<GradientSort>(index));
           });
 
-  layout->addWidget(save_button_);
-  layout->addWidget(import_button_);
-  layout->addWidget(export_button_);
-  layout->addStretch(1);
-  layout->addWidget(new QLabel(tr("Sort"), bar));
-  layout->addWidget(sort_combo_);
+  auto *actions = new QHBoxLayout;
+  actions->setSpacing(6);
+  actions->addWidget(save_button_);
+  actions->addStretch();
+  auto *files = make_button(tr("Files ▾"), tr("Import or export gradients"));
+  auto *menu = new QMenu(files);
+  menu->addAction(tr("Import…"), import_button_, &QToolButton::click);
+  auto *export_action = menu->addAction(tr("Export library…"), export_button_, &QToolButton::click);
+  connect(menu, &QMenu::aboutToShow, this, [this, export_action] { export_action->setEnabled(export_button_->isEnabled()); });
+  files->setMenu(menu);
+  files->setPopupMode(QToolButton::InstantPopup);
+  import_button_->hide();
+  export_button_->hide();
+  actions->addWidget(files);
+  layout->addLayout(actions);
+  auto *sorting = new QHBoxLayout;
+  sorting->addWidget(new QLabel(tr("Presets"), bar));
+  sorting->addStretch();
+  sort_combo_->setFixedWidth(120);
+  sorting->addWidget(sort_combo_);
+  layout->addLayout(sorting);
 
   return bar;
 }
@@ -582,6 +611,12 @@ void GradientPicker::set_presets(const std::vector<Preset> &presets)
 void GradientPicker::update_bar()
 {
   if (bar_widget_) bar_widget_->update();
+  for (auto *button : findChildren<QPushButton *>())
+  {
+    const auto index = button->property("preset_index");
+    if (index.isValid() && index.toInt() < int(entries_.size()))
+      button->setChecked(entries_[index.toInt()].preset.stops == stops_);
+  }
 }
 
 void GradientPicker::schedule_rebuild()
@@ -675,8 +710,12 @@ void GradientPicker::rebuild_entries()
 QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const
 {
   QPixmap  pix(SWATCH_W, SWATCH_H);
+  pix.fill(Qt::transparent);
   QPainter pp(&pix);
   pp.setRenderHint(QPainter::Antialiasing);
+  QPainterPath outline;
+  outline.addRoundedRect(QRectF(pix.rect()), 4, 4);
+  pp.setClipPath(outline);
 
   QLinearGradient grad(0, 0, pix.width(), 0);
   for (const auto &s : entry.preset.stops)
@@ -684,11 +723,17 @@ QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const
   pp.fillRect(pix.rect(), grad);
 
   // Name overlay
+  const bool generated_name = entry.preset.name.size() == 6 &&
+      std::all_of(entry.preset.name.begin(), entry.preset.name.end(),
+                  [](unsigned char c) { return std::isxdigit(c); });
+  if (!generated_name) {
+  pp.fillRect(QRect(0, pix.height() - 13, pix.width(), 13), QColor(0, 0, 0, 150));
   pp.setPen(Qt::white);
   pp.setFont(QFont(pp.font().family(), 7));
   pp.drawText(pix.rect().adjusted(2, 0, -2, 0),
               Qt::AlignBottom | Qt::AlignHCenter,
-              QString::fromStdString(entry.preset.name));
+                QString::fromStdString(entry.preset.name));
+  }
 
   // Favourite star (top-left) and library marker (top-right)
   if (favorite) draw_star(pp, QPointF(8, 8), 5.5);
@@ -742,7 +787,9 @@ void GradientPicker::rebuild_preset_grid()
     auto *btn = new QPushButton(preset_grid_);
     btn->setFixedSize(SWATCH_W, SWATCH_H);
     btn->setFlat(true);
-    btn->setIcon(QIcon(make_swatch(entry, favorite)));
+    const auto swatch = make_swatch(entry, favorite);
+    btn->setProperty("swatch_image", swatch);
+    btn->setIcon(QIcon(swatch));
     btn->setIconSize(QSize(SWATCH_W, SWATCH_H));
     btn->setToolTip(
         QString("%1\n%2, %3 %4")
@@ -751,6 +798,9 @@ void GradientPicker::rebuild_preset_grid()
             .arg(tr("stops")));
     btn->setCursor(Qt::PointingHandCursor);
     btn->setProperty("preset_name", name);
+    btn->setProperty("preset_index", int(i));
+    btn->setCheckable(true);
+    btn->setChecked(entry.preset.stops == stops_);
     btn->setProperty("preset_user", entry.user);
     btn->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -789,6 +839,7 @@ void GradientPicker::apply_stops(const std::vector<Stop> &stops)
   }
   Q_EMIT value_changed();
   Q_EMIT edit_ended();
+  update_bar();
 }
 
 std::vector<std::string> GradientPicker::host_names() const
@@ -997,14 +1048,14 @@ bool GradientPicker::eventFilter(QObject *watched, QEvent *event)
 
 QSize GradientPicker::sizeHint() const
 {
-  const int top_h = GradientBarWidget::TOTAL_H + 4 + TOOLBAR_H;
-  const int preset_h = entries_.empty() ? 0 : (SWATCH_H + 4) * 3 + 8;
+  const int top_h = GradientBarWidget::TOTAL_H + 28 + 2 * TOOLBAR_H;
+  const int preset_h = entries_.empty() ? 0 : (SWATCH_H + 6) * 3 + 8;
   return {300, top_h + (entries_.empty() ? 0 : 4 + preset_h)};
 }
 
 QSize GradientPicker::minimumSizeHint() const
 {
-  const int top_h = GradientBarWidget::TOTAL_H + 4 + TOOLBAR_H;
+  const int top_h = GradientBarWidget::TOTAL_H + 28 + 2 * TOOLBAR_H;
   const int preset_h = entries_.empty() ? 0 : SWATCH_H + 8;
   return {160, top_h + (entries_.empty() ? 0 : 4 + preset_h)};
 }
