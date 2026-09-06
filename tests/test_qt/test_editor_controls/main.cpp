@@ -50,8 +50,12 @@ int main(int argc,char **argv) {
  {
    meta::Attribute<float> scalar("scalar",512.f);
    describe(scalar,"Slider","Scalar");
+   // The rail ends at 64, the parameter accepts far more. Declared through
+   // ui.drag_max now: this used to be inferred from a maximum of exactly 64,
+   // which caught unrelated parameters whose 64 is a hard cap.
    scalar.metadata().add(meta::keys::constraints::min,0.f);
-   scalar.metadata().add(meta::keys::constraints::max,64.f);
+   scalar.metadata().add(meta::keys::constraints::max,4096.f);
+   scalar.metadata().add(meta::keys::ui::drag_max,64.f);
    industrial::ParamSlider slider(scalar,ctx);
    check(slider.get()==512.f,"initial float above drag range was lost");
    slider.set(1024.f);
@@ -67,7 +71,8 @@ int main(int argc,char **argv) {
    meta::Attribute<int> integer("integer",512);
    describe(integer,"Slider","Integer");
    integer.metadata().add(meta::keys::constraints::min,0);
-   integer.metadata().add(meta::keys::constraints::max,64);
+   integer.metadata().add(meta::keys::constraints::max,4096);
+   integer.metadata().add(meta::keys::ui::drag_max,64);
    industrial::IntSlider ints(integer,ctx);
    check(ints.get()==512,"initial integer above drag range was lost");
    ints.set(1024); check(ints.get()==1024,"integer refresh capped at drag limit");

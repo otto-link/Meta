@@ -55,7 +55,20 @@ IntSlider::IntSlider(Attribute<int>   &attr,
     max_ = std::numeric_limits<int>::max();
   }
 
-  input_max_ = max_ == 64 ? std::numeric_limits<int>::max() : max_;
+  // The rail may deliberately stop short of what the parameter accepts. Where
+  // it does, dragging is held to the rail while typing goes to the real
+  // maximum. Declared per attribute rather than inferred: this used to trigger
+  // on max == 64 exactly, which caught unrelated parameters whose 64 is a hard
+  // cap, Islands and n_vertices among them, and let a user type any number
+  // into them.
+  input_max_ = max_;
+  if (const int declared = meta::common::try_get<int>(attr,
+                                                      meta::keys::ui::drag_max,
+                                                      0);
+      declared > min_ && declared < max_)
+  {
+    max_ = declared; // the rail ends here; input_max_ keeps the real limit
+  }
   value_ = std::clamp(attr.value(), min_, input_max_);
   norm_ = unbounded_ ? kRestNorm : to_norm(value_);
 

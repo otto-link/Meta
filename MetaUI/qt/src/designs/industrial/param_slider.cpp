@@ -63,12 +63,27 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
     max_ = std::numeric_limits<float>::max();
   }
 
-  // A log mapping needs a strictly positive lower bound; fall back to linear
-  // rather than producing NaNs across the whole rail. An unbounded range has
-  // no span to lay a mapping over in the first place.
-  if (log_scale_ && (unbounded_ || min_ <= kLogFloor)) log_scale_ = false;
+  // Only an unbounded range defeats a log mapping outright, because there is
+  // no span to lay one over. A minimum of zero does not: the domain is simply
+  // clamped up to kLogFloor, which is what stock's SliderFloat has always
+  // done. Bailing to linear here instead meant every log attribute starting at
+  // zero silently drew as linear, which is nearly all of them.
+  if (log_scale_ && unbounded_) log_scale_ = false;
 
-  input_max_ = max_ == 64 ? std::numeric_limits<float>::max() : max_;
+  // The rail may deliberately stop short of what the parameter accepts. Where
+  // it does, dragging is held to the rail while typing goes to the real
+  // maximum. Declared per attribute rather than inferred: this used to trigger
+  // on max == 64 exactly, which caught unrelated parameters whose 64 is a hard
+  // cap, Islands and n_vertices among them, and let a user type any number
+  // into them.
+  input_max_ = max_;
+  if (const float declared = meta::common::try_get<float>(attr,
+                                                          meta::keys::ui::drag_max,
+                                                          0.f);
+      declared > min_ && declared < max_)
+  {
+    max_ = declared; // the rail ends here; input_max_ keeps the real limit
+  }
   value_ = std::clamp(attr.value(), min_, input_max_);
   norm_ = unbounded_ ? kRestNorm : to_norm(value_);
 
@@ -193,9 +208,16 @@ qreal ParamSlider::to_norm(float value) const
 
   if (log_scale_)
   {
-    const qreal lo = std::log(qreal(min_));
-    const qreal hi = std::log(qreal(max_));
+    // Every endpoint is floored, not just the value. log(0) is negative
+    // infinity, and a minimum of zero is the common case rather than the
+    // exotic one, so leaving lo unfloored produced a NaN across the whole rail
+    // and was why this fell back to linear instead.
+    const qreal lo = std::log(std::max(qreal(min_), kLogFloor));
+    const qreal hi = std::log(std::max(qreal(max_), kLogFloor));
     const qreal v = std::log(std::max(qreal(value), kLogFloor));
+
+    if (hi <= lo) return 0.0;
+
     return std::clamp((v - lo) / (hi - lo), 0.0, 1.0);
   }
 
@@ -208,8 +230,14 @@ float ParamSlider::from_norm(qreal t) const
 
   if (log_scale_)
   {
-    const qreal lo = std::log(qreal(min_));
-    const qreal hi = std::log(qreal(max_));
+    const qreal lo = std::log(std::max(qreal(min_), kLogFloor));
+    const qreal hi = std::log(std::max(qreal(max_), kLogFloor));
+
+    // Snap the bottom of the rail back to the real minimum. The floor is a
+    // device for making the mapping well defined, and without this a rail
+    // declared from zero would bottom out at 1e-6 instead of at zero.
+    if (t <= 0.0) return min_;
+
     return float(std::exp(lo + t * (hi - lo)));
   }
 

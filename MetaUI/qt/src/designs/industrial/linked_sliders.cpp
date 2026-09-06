@@ -57,6 +57,17 @@ LinkedSliders::LinkedSliders(Attribute<glm::vec2> &attr,
                      meta::common::max<float>(attr));
     metadata.try_add(std::string(meta::keys::ui::label), std::string(i ? "Y" : "X"));
     metadata.try_add(std::string(meta::keys::ui::format), std::string("{:.2f}"));
+
+    // Forward the two hints that change how an axis maps and clamps. Without
+    // them a linked pair silently behaves differently from the single value
+    // row next to it, which is the failure this control exists to avoid.
+    if (const auto *p = attr.metadata().try_value<float>(
+            meta::keys::ui::drag_max))
+      metadata.try_add(std::string(meta::keys::ui::drag_max), *p);
+
+    if (const auto *p = attr.metadata().try_value<bool>(
+            meta::keys::ui::log_scale))
+      metadata.try_add(std::string(meta::keys::ui::log_scale), *p);
     RowContext axis_ctx = ctx;
     axis_ctx.theme = &axes_theme_;
     if (ctx.default_value)
