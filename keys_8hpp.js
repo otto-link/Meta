@@ -6,6 +6,7 @@ var keys_8hpp =
     [ "category", "keys_8hpp.html#af0ac6f352b76ce82ed944bf38611fd28", null ],
     [ "closed", "keys_8hpp.html#a742596fce7cefc8fe16bbb4db637749d", null ],
     [ "data_provider", "keys_8hpp.html#a22e55e1dfdc12a85ff78bb397765df73", null ],
+    [ "drag_max", "keys_8hpp.html#ac5900269126610e990455364219bab07", null ],
     [ "enum_items", "keys_8hpp.html#a524c1fb2d07430c8ceebf1389618b069", null ],
     [ "file_filter", "keys_8hpp.html#a9dec97b900dfbddea4c749b8d0b5de13", null ],
     [ "format", "keys_8hpp.html#a6d16095a5f2307e87fb41e7ff25220c8", null ],

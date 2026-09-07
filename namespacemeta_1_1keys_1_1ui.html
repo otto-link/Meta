@@ -110,6 +110,9 @@ Variables</h2></td></tr>
 <tr class="separator:a742596fce7cefc8fe16bbb4db637749d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22e55e1dfdc12a85ff78bb397765df73" id="r_a22e55e1dfdc12a85ff78bb397765df73"><td class="memItemLeft" align="right" valign="top">constexpr char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemeta_1_1keys_1_1ui.html#a22e55e1dfdc12a85ff78bb397765df73">data_provider</a> [] = &quot;ui.data_provider&quot;</td></tr>
 <tr class="separator:a22e55e1dfdc12a85ff78bb397765df73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5900269126610e990455364219bab07" id="r_ac5900269126610e990455364219bab07"><td class="memItemLeft" align="right" valign="top">constexpr char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemeta_1_1keys_1_1ui.html#ac5900269126610e990455364219bab07">drag_max</a> [] = &quot;ui.drag_max&quot;</td></tr>
+<tr class="memdesc:ac5900269126610e990455364219bab07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Highest value the rail spans, when that is lower than the real max.  <br /></td></tr>
+<tr class="separator:ac5900269126610e990455364219bab07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d16095a5f2307e87fb41e7ff25220c8" id="r_a6d16095a5f2307e87fb41e7ff25220c8"><td class="memItemLeft" align="right" valign="top">constexpr char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemeta_1_1keys_1_1ui.html#a6d16095a5f2307e87fb41e7ff25220c8">format</a> [] = &quot;ui.format&quot;</td></tr>
 <tr class="separator:a6d16095a5f2307e87fb41e7ff25220c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0df564b58f287af0329c510ea64902b5" id="r_a0df564b58f287af0329c510ea64902b5"><td class="memItemLeft" align="right" valign="top">constexpr char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemeta_1_1keys_1_1ui.html#a0df564b58f287af0329c510ea64902b5">label</a> [] = &quot;ui.label&quot;</td></tr>
@@ -205,6 +208,32 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac5900269126610e990455364219bab07" name="ac5900269126610e990455364219bab07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5900269126610e990455364219bab07">&#9670;&#160;</a></span>drag_max</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr char meta::keys::ui::drag_max[] = &quot;ui.drag_max&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Highest value the rail spans, when that is lower than the real max. </p>
+<p>A rail has to end somewhere comfortable to drag across, but the parameter behind it may legitimately accept far more. Spatial Frequency is the case that prompted this: 0 to 64 is the useful range to aim at, yet a user who knows they want 512 should be able to type it.</p>
+<p>Absent, the rail spans to <a class="el" href="namespacemeta_1_1keys_1_1constraints.html#a95348dc98f507f5e81b9546b5dee24d9">constraints::max</a> and typing is bounded by the same value, which is the behaviour every attribute had before this key existed. </p>
 
 </div>
 </div>

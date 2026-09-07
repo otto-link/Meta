@@ -9,6 +9,8 @@ constexpr char \mbox{\hyperlink{namespacemeta_1_1keys_1_1ui_a742596fce7cefc8fe16
 \item 
 constexpr char \mbox{\hyperlink{namespacemeta_1_1keys_1_1ui_a22e55e1dfdc12a85ff78bb397765df73}{data\+\_\+provider}} \mbox{[}$\,$\mbox{]} = "{}ui.\+data\+\_\+provider"{}
 \item 
+constexpr char \mbox{\hyperlink{namespacemeta_1_1keys_1_1ui_ac5900269126610e990455364219bab07}{drag\+\_\+max}} \mbox{[}$\,$\mbox{]} = "{}ui.\+drag\+\_\+max"{}
+\begin{DoxyCompactList}\small\item\em Highest value the rail spans, when that is lower than the real max. \end{DoxyCompactList}\item 
 constexpr char \mbox{\hyperlink{namespacemeta_1_1keys_1_1ui_a6d16095a5f2307e87fb41e7ff25220c8}{format}} \mbox{[}$\,$\mbox{]} = "{}ui.\+format"{}
 \item 
 constexpr char \mbox{\hyperlink{namespacemeta_1_1keys_1_1ui_a0df564b58f287af0329c510ea64902b5}{label}} \mbox{[}$\,$\mbox{]} = "{}ui.\+label"{}
@@ -60,7 +62,19 @@ constexpr char \mbox{\hyperlink{namespacemeta_1_1keys_1_1ui_a812b4db5ee2ebed5dc2
 \doxysubsubsection{\texorpdfstring{data\_provider}{data\_provider}}
 {\footnotesize\ttfamily constexpr char meta\+::keys\+::ui\+::data\+\_\+provider\mbox{[}$\,$\mbox{]} = "{}ui.\+data\+\_\+provider"{}\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}}
 
-\Hypertarget{namespacemeta_1_1keys_1_1ui_a6d16095a5f2307e87fb41e7ff25220c8}\label{namespacemeta_1_1keys_1_1ui_a6d16095a5f2307e87fb41e7ff25220c8} 
+\Hypertarget{namespacemeta_1_1keys_1_1ui_ac5900269126610e990455364219bab07}\label{namespacemeta_1_1keys_1_1ui_ac5900269126610e990455364219bab07} 
+\index{meta::keys::ui@{meta::keys::ui}!drag\_max@{drag\_max}}
+\index{drag\_max@{drag\_max}!meta::keys::ui@{meta::keys::ui}}
+\doxysubsubsection{\texorpdfstring{drag\_max}{drag\_max}}
+{\footnotesize\ttfamily constexpr char meta\+::keys\+::ui\+::drag\+\_\+max\mbox{[}$\,$\mbox{]} = "{}ui.\+drag\+\_\+max"{}\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [constexpr]}}
+
+
+
+Highest value the rail spans, when that is lower than the real max. 
+
+A rail has to end somewhere comfortable to drag across, but the parameter behind it may legitimately accept far more. Spatial Frequency is the case that prompted this\+: 0 to 64 is the useful range to aim at, yet a user who knows they want 512 should be able to type it.
+
+Absent, the rail spans to \doxylink{namespacemeta_1_1keys_1_1constraints_a95348dc98f507f5e81b9546b5dee24d9}{constraints\+::max} and typing is bounded by the same value, which is the behaviour every attribute had before this key existed. \Hypertarget{namespacemeta_1_1keys_1_1ui_a6d16095a5f2307e87fb41e7ff25220c8}\label{namespacemeta_1_1keys_1_1ui_a6d16095a5f2307e87fb41e7ff25220c8} 
 \index{meta::keys::ui@{meta::keys::ui}!format@{format}}
 \index{format@{format}!meta::keys::ui@{meta::keys::ui}}
 \doxysubsubsection{\texorpdfstring{format}{format}}

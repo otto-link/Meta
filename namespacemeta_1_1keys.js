@@ -18,6 +18,7 @@ var namespacemeta_1_1keys =
       [ "category", "namespacemeta_1_1keys_1_1ui.html#af0ac6f352b76ce82ed944bf38611fd28", null ],
       [ "closed", "namespacemeta_1_1keys_1_1ui.html#a742596fce7cefc8fe16bbb4db637749d", null ],
       [ "data_provider", "namespacemeta_1_1keys_1_1ui.html#a22e55e1dfdc12a85ff78bb397765df73", null ],
+      [ "drag_max", "namespacemeta_1_1keys_1_1ui.html#ac5900269126610e990455364219bab07", null ],
       [ "format", "namespacemeta_1_1keys_1_1ui.html#a6d16095a5f2307e87fb41e7ff25220c8", null ],
       [ "height", "namespacemeta_1_1keys_1_1ui.html#a812b4db5ee2ebed5dc2d8f9f1746399e", null ],
       [ "label", "namespacemeta_1_1keys_1_1ui.html#a0df564b58f287af0329c510ea64902b5", null ],
