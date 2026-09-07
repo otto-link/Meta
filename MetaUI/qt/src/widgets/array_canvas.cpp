@@ -41,10 +41,7 @@ ArrayCanvas::ArrayCanvas(const std::string &label,
   update_geometry();
 }
 
-QSize ArrayCanvas::sizeHint() const
-{
-  return QSize(320, 320);
-}
+QSize ArrayCanvas::sizeHint() const { return QSize(320, 320); }
 
 void ArrayCanvas::set_field_data(const std::vector<float> &data)
 {
@@ -157,7 +154,6 @@ void ArrayCanvas::draw_at(const QPoint &pos, Qt::MouseButtons buttons)
       }
     }
   }
-
 }
 
 QColor ArrayCanvas::colormap(float v) const
@@ -185,16 +181,16 @@ void ArrayCanvas::update_geometry()
 
 void ArrayCanvas::resizeEvent(QResizeEvent *event)
 {
-  if (height() != width())
-    setFixedHeight(width());
+  if (height() != width()) setFixedHeight(width());
   update_geometry();
   QWidget::resizeEvent(event);
 }
 
 QPoint ArrayCanvas::field_position(const QPoint &pos) const
 {
-  return QPoint(int(double(pos.x() - rect_img_.x()) * width_ / rect_img_.width()),
-                int(double(pos.y() - rect_img_.y()) * height_ / rect_img_.height()));
+  return QPoint(
+      int(double(pos.x() - rect_img_.x()) * width_ / rect_img_.width()),
+      int(double(pos.y() - rect_img_.y()) * height_ / rect_img_.height()));
 }
 
 bool ArrayCanvas::event(QEvent *event)
@@ -306,8 +302,10 @@ void ArrayCanvas::mouseMoveEvent(QMouseEvent *event)
   {
     const QPoint pos = field_position(event->position().toPoint());
     const QPoint delta = pos - pos_previous_;
-    const int steps = std::max(1, int(std::ceil(std::hypot(delta.x(), delta.y()) /
-                                               std::max(1., brush_radius_ / 3.))));
+    const int    steps = std::max(
+        1,
+        int(std::ceil(std::hypot(delta.x(), delta.y()) /
+                      std::max(1., brush_radius_ / 3.))));
     for (int i = 1; i <= steps; ++i)
       draw_at(pos_previous_ + QPoint(qRound(double(delta.x()) * i / steps),
                                      qRound(double(delta.y()) * i / steps)),
@@ -405,8 +403,8 @@ void ArrayCanvas::paintEvent(QPaintEvent *)
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
     painter.drawEllipse(QPointF(mouse_pos),
-                         double(brush_radius_) * rect_img_.width() / width_,
-                         double(brush_radius_) * rect_img_.height() / height_);
+                        double(brush_radius_) * rect_img_.width() / width_,
+                        double(brush_radius_) * rect_img_.height() / height_);
 
     // Info overlay
     QString txt;

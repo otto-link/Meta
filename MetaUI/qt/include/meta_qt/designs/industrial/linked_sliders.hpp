@@ -15,7 +15,9 @@ class LinkedSliders : public Control<glm::vec2>
 {
   Q_OBJECT
 public:
-  LinkedSliders(Attribute<glm::vec2> &, const RowContext &, QWidget * = nullptr);
+  LinkedSliders(Attribute<glm::vec2> &,
+                const RowContext &,
+                QWidget * = nullptr);
   static bool can_render(const Attribute<glm::vec2> &) { return true; }
   glm::vec2   get() const override { return value_; }
   void        set(const glm::vec2 &) override;

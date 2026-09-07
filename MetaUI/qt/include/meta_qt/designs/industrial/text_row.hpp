@@ -32,7 +32,9 @@ class TextRow : public Control<std::string>
   Q_OBJECT
 
 public:
-  TextRow(Attribute<std::string> &attr, const RowContext &ctx, QWidget *parent = nullptr);
+  TextRow(Attribute<std::string> &attr,
+          const RowContext       &ctx,
+          QWidget                *parent = nullptr);
 
   /// Any string attribute. There is no metadata this row cannot honour.
   static bool can_render(const Attribute<std::string> &attr);

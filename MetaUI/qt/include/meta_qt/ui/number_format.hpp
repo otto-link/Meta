@@ -11,14 +11,13 @@ namespace meta::qt
 inline QString display_float(float value, int decimals = 2)
 {
   const double magnitude = std::abs(double(value));
-  if (!std::isfinite(value))
-    return QString::number(value);
+  if (!std::isfinite(value)) return QString::number(value);
   decimals = std::clamp(decimals, 0, 8);
   if (magnitude == 0 || magnitude >= std::pow(10., -decimals))
     return QString::number(value == 0 ? 0 : value, 'f', decimals);
-  if (magnitude < 1e-10)
-    return QString::number(value, 'g', 6);
-  const int precision = std::min(12, int(std::ceil(-std::log10(magnitude))) + 5);
+  if (magnitude < 1e-10) return QString::number(value, 'g', 6);
+  const int precision = std::min(12,
+                                 int(std::ceil(-std::log10(magnitude))) + 5);
   QString   text = QString::number(value, 'f', precision);
   while (text.endsWith('0') && text.size() - text.indexOf('.') - 1 > decimals)
     text.chop(1);

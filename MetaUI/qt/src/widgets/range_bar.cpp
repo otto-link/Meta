@@ -3,14 +3,14 @@
    this software. */
 #include <algorithm>
 
+#include "meta_qt/ui/number_format.hpp"
+#include "meta_qt/ui/theme.hpp"
 #include <QFontDatabase>
+#include <QLinearGradient>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPalette>
-#include <QLinearGradient>
-#include "meta_qt/ui/number_format.hpp"
-#include "meta_qt/ui/theme.hpp"
 
 #include "meta_qt/widgets/range_bar.hpp"
 
@@ -181,7 +181,8 @@ void RangeBar::paintEvent(QPaintEvent *)
   if (hx > lx)
   {
     QRect filled(lx, tr.top(), hx - lx, tr.height());
-    p.setBrush(industrial_ ? theme_.rail_fill("", !isEnabled()) : palette().color(QPalette::Highlight).darker(110));
+    p.setBrush(industrial_ ? theme_.rail_fill("", !isEnabled())
+                           : palette().color(QPalette::Highlight).darker(110));
     p.drawRect(filled);
   }
 
@@ -277,8 +278,11 @@ void RangeBar::paintEvent(QPaintEvent *)
   {
     if (industrial_)
     {
-      const auto &m = theme_.metrics;
-      const QRectF thumb(x - m.thumb_width / 2., tr.center().y() - m.thumb_height / 2., m.thumb_width, m.thumb_height);
+      const auto     &m = theme_.metrics;
+      const QRectF    thumb(x - m.thumb_width / 2.,
+                         tr.center().y() - m.thumb_height / 2.,
+                         m.thumb_width,
+                         m.thumb_height);
       QLinearGradient metal(thumb.topLeft(), thumb.bottomLeft());
       metal.setColorAt(0, theme_.thumb_top);
       metal.setColorAt(1, theme_.thumb_bottom);
@@ -319,10 +323,9 @@ void RangeBar::paintEvent(QPaintEvent *)
              lo_txt);
 
   // High label — right-aligned below the high handle
-  p.drawText(
-      QRect(tr.center().x(), tr.bottom() + 5, tr.width() / 2, 20),
-      Qt::AlignRight | Qt::AlignTop,
-      hi_txt);
+  p.drawText(QRect(tr.center().x(), tr.bottom() + 5, tr.width() / 2, 20),
+             Qt::AlignRight | Qt::AlignTop,
+             hi_txt);
 }
 
 void RangeBar::set_value(glm::vec2 v)

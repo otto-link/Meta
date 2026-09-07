@@ -77,9 +77,10 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
   // cap, Islands and n_vertices among them, and let a user type any number
   // into them.
   input_max_ = max_;
-  if (const float declared = meta::common::try_get<float>(attr,
-                                                          meta::keys::ui::drag_max,
-                                                          0.f);
+  if (const float declared = meta::common::try_get<float>(
+          attr,
+          meta::keys::ui::drag_max,
+          0.f);
       declared > min_ && declared < max_)
   {
     max_ = declared; // the rail ends here; input_max_ keeps the real limit
@@ -131,7 +132,10 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
             notify_value_changed();
             end_edit();
           });
-  { const QSignalBlocker blocker(glide_); glide_->jump(norm_); }
+  {
+    const QSignalBlocker blocker(glide_);
+    glide_->jump(norm_);
+  }
 
   field_ = new QLineEdit(this);
   field_->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -508,7 +512,8 @@ void ParamSlider::commit_value(float value)
   if (!unbounded_)
   {
     // Typed numbers are authoritative, even where normalising a wide range
-    // cannot represent all their digits. Position the rail, then seat the value.
+    // cannot represent all their digits. Position the rail, then seat the
+    // value.
     glide_->jump(to_norm(clamped));
   }
 

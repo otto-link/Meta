@@ -5,9 +5,9 @@
 
 #include <vector>
 
+#include "meta_qt/ui/theme.hpp"
 #include <QWidget>
 #include <glm/glm.hpp>
-#include "meta_qt/ui/theme.hpp"
 
 namespace meta::qt
 {
@@ -34,7 +34,12 @@ public:
            QWidget   *parent = nullptr);
 
   void set_value(glm::vec2 v);
-  void set_theme(const Theme &theme) { theme_ = theme; industrial_ = true; update(); }
+  void set_theme(const Theme &theme)
+  {
+    theme_ = theme;
+    industrial_ = true;
+    update();
+  }
   void set_histogram(const std::vector<float> &x, const std::vector<float> &y);
 
 Q_SIGNALS:
@@ -50,7 +55,7 @@ protected:
 
 private:
   Theme theme_;
-  bool industrial_ = false;
+  bool  industrial_ = false;
   enum class Handle
   {
     None,

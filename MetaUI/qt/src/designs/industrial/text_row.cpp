@@ -14,12 +14,16 @@
 namespace meta::qt::industrial
 {
 
-TextRow::TextRow(Attribute<std::string> &attr, const RowContext &ctx, QWidget *parent)
+TextRow::TextRow(Attribute<std::string> &attr,
+                 const RowContext       &ctx,
+                 QWidget                *parent)
     : Control<std::string>(ctx, parent)
 {
   label_ = meta::common::label(attr);
   value_ = attr.value();
-  read_only_ = meta::common::try_get<bool>(attr, meta::keys::ui::read_only, false) ||
+  read_only_ = meta::common::try_get<bool>(attr,
+                                           meta::keys::ui::read_only,
+                                           false) ||
                meta::common::widget_type(attr) == "ReadOnlyText";
 
   setFixedHeight(theme().metrics.row_height);
@@ -44,8 +48,7 @@ TextRow::TextRow(Attribute<std::string> &attr, const RowContext &ctx, QWidget *p
           [this]()
           {
             const std::string typed = field_->text().toStdString();
-            if (typed == value_)
-              return;
+            if (typed == value_) return;
 
             begin_edit();
             value_ = typed;
@@ -53,7 +56,10 @@ TextRow::TextRow(Attribute<std::string> &attr, const RowContext &ctx, QWidget *p
             end_edit();
           });
 
-  connect(field_, &QLineEdit::textEdited, this, [this]() { restyle_field(true); });
+  connect(field_,
+          &QLineEdit::textEdited,
+          this,
+          [this]() { restyle_field(true); });
 }
 
 bool TextRow::can_render(const Attribute<std::string> &) { return true; }
@@ -67,7 +73,8 @@ void TextRow::set(const std::string &value)
 
 QSize TextRow::sizeHint() const
 {
-  return QSize(theme().metrics.label_min_width + 160, theme().metrics.row_height);
+  return QSize(theme().metrics.label_min_width + 160,
+               theme().metrics.row_height);
 }
 
 // --- geometry
@@ -106,10 +113,11 @@ void TextRow::paintEvent(QPaintEvent *)
   QFont label_font = row_label_font();
   painter.setFont(label_font);
   painter.setPen(theme().state_ink(is_modified(), is_locked() || read_only_));
-  painter.drawText(
-      label_rect(),
-      Qt::AlignLeft | Qt::AlignVCenter,
-      elide_label(QString::fromStdString(label_), label_font, label_rect().width()));
+  painter.drawText(label_rect(),
+                   Qt::AlignLeft | Qt::AlignVCenter,
+                   elide_label(QString::fromStdString(label_),
+                               label_font,
+                               label_rect().width()));
 }
 
 void TextRow::resizeEvent(QResizeEvent *event)
@@ -132,8 +140,7 @@ bool TextRow::eventFilter(QObject *watched, QEvent *event)
       (event->type() == QEvent::FocusIn || event->type() == QEvent::FocusOut))
   {
     const bool editing = event->type() == QEvent::FocusIn;
-    if (!editing)
-      refresh_field();
+    if (!editing) refresh_field();
     restyle_field(editing);
   }
 
@@ -144,8 +151,7 @@ bool TextRow::eventFilter(QObject *watched, QEvent *event)
 
 void TextRow::refresh_field()
 {
-  if (!field_ || field_->hasFocus())
-    return; // never overwrite mid-typing
+  if (!field_ || field_->hasFocus()) return; // never overwrite mid-typing
 
   const QSignalBlocker blocker(field_);
   field_->setText(QString::fromStdString(value_));
@@ -153,8 +159,7 @@ void TextRow::refresh_field()
 
 void TextRow::restyle_field(bool editing)
 {
-  if (!field_)
-    return;
+  if (!field_) return;
 
   const bool locked = is_locked() || read_only_;
 

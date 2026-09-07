@@ -361,14 +361,19 @@ public:
     if (buttons_.empty()) return;
 
     const int cols = compute_cols(avail_w);
-    const int tile_width = std::max(swatch_w_, (avail_w - 4 - (cols - 1) * spacing_) / cols);
+    const int tile_width = std::max(swatch_w_,
+                                    (avail_w - 4 - (cols - 1) * spacing_) /
+                                        cols);
     for (auto *button : buttons_)
     {
       button->setFixedWidth(tile_width);
       const auto source = button->property("swatch_image").value<QPixmap>();
-      if (!source.isNull()) {
+      if (!source.isNull())
+      {
         const QSize icon_size(tile_width - 6, swatch_h_ - 6);
-        button->setIcon(QIcon(source.scaled(icon_size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+        button->setIcon(QIcon(source.scaled(icon_size,
+                                            Qt::IgnoreAspectRatio,
+                                            Qt::SmoothTransformation)));
         button->setIconSize(icon_size);
       }
     }
@@ -580,8 +585,14 @@ QWidget *GradientPicker::build_toolbar()
   auto *files = make_button(tr("Files ▾"), tr("Import or export gradients"));
   auto *menu = new QMenu(files);
   menu->addAction(tr("Import…"), import_button_, &QToolButton::click);
-  auto *export_action = menu->addAction(tr("Export library…"), export_button_, &QToolButton::click);
-  connect(menu, &QMenu::aboutToShow, this, [this, export_action] { export_action->setEnabled(export_button_->isEnabled()); });
+  auto *export_action = menu->addAction(tr("Export library…"),
+                                        export_button_,
+                                        &QToolButton::click);
+  connect(menu,
+          &QMenu::aboutToShow,
+          this,
+          [this, export_action]
+          { export_action->setEnabled(export_button_->isEnabled()); });
   files->setMenu(menu);
   files->setPopupMode(QToolButton::InstantPopup);
   import_button_->hide();
@@ -709,7 +720,7 @@ void GradientPicker::rebuild_entries()
 
 QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const
 {
-  QPixmap  pix(SWATCH_W, SWATCH_H);
+  QPixmap pix(SWATCH_W, SWATCH_H);
   pix.fill(Qt::transparent);
   QPainter pp(&pix);
   pp.setRenderHint(QPainter::Antialiasing);
@@ -724,14 +735,18 @@ QPixmap GradientPicker::make_swatch(const Entry &entry, bool favorite) const
 
   // Name overlay
   const bool generated_name = entry.preset.name.size() == 6 &&
-      std::all_of(entry.preset.name.begin(), entry.preset.name.end(),
-                  [](unsigned char c) { return std::isxdigit(c); });
-  if (!generated_name) {
-  pp.fillRect(QRect(0, pix.height() - 13, pix.width(), 13), QColor(0, 0, 0, 150));
-  pp.setPen(Qt::white);
-  pp.setFont(QFont(pp.font().family(), 7));
-  pp.drawText(pix.rect().adjusted(2, 0, -2, 0),
-              Qt::AlignBottom | Qt::AlignHCenter,
+                              std::all_of(entry.preset.name.begin(),
+                                          entry.preset.name.end(),
+                                          [](unsigned char c)
+                                          { return std::isxdigit(c); });
+  if (!generated_name)
+  {
+    pp.fillRect(QRect(0, pix.height() - 13, pix.width(), 13),
+                QColor(0, 0, 0, 150));
+    pp.setPen(Qt::white);
+    pp.setFont(QFont(pp.font().family(), 7));
+    pp.drawText(pix.rect().adjusted(2, 0, -2, 0),
+                Qt::AlignBottom | Qt::AlignHCenter,
                 QString::fromStdString(entry.preset.name));
   }
 

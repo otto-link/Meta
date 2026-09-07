@@ -5,11 +5,11 @@
 #include <algorithm>
 #include <random>
 
+#include "meta_qt/ui/number_format.hpp"
 #include <QFile>
 #include <QFontDatabase>
 #include <QImage>
 #include <QKeyEvent>
-#include "meta_qt/ui/number_format.hpp"
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
@@ -24,8 +24,7 @@ namespace meta::qt
 
 void PointsCanvas::resizeEvent(QResizeEvent *event)
 {
-  if (height() != width())
-    setFixedHeight(width());
+  if (height() != width()) setFixedHeight(width());
   QWidget::resizeEvent(event);
 }
 
@@ -41,11 +40,13 @@ void PointsCanvas::keyPressEvent(QKeyEvent *event)
   {
     if (order_input_.size() < 9) order_input_ += event->text();
   }
-  else if (event->key() == Qt::Key_Backspace) order_input_.chop(1);
-  else if (event->key() == Qt::Key_Escape) order_input_.clear();
+  else if (event->key() == Qt::Key_Backspace)
+    order_input_.chop(1);
+  else if (event->key() == Qt::Key_Escape)
+    order_input_.clear();
   else if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
   {
-    bool valid = false;
+    bool      valid = false;
     const int destination = order_input_.toInt(&valid) - 1;
     if (valid && destination >= 0 && destination < int(points_.size()))
     {
@@ -58,7 +59,11 @@ void PointsCanvas::keyPressEvent(QKeyEvent *event)
       Q_EMIT drag_ended();
     }
   }
-  else { QWidget::keyPressEvent(event); return; }
+  else
+  {
+    QWidget::keyPressEvent(event);
+    return;
+  }
   event->accept();
   update();
 }
@@ -88,7 +93,8 @@ PointsCanvas::PointsCanvas(std::vector<glm::vec3> &points,
   setSizePolicy(policy);
   setMouseTracking(true);
   setFocusPolicy(Qt::StrongFocus);
-  setToolTip(tr("Hover a point and scroll to change its height. For paths, type its new position and press Enter. Escape cancels."));
+  setToolTip(tr("Hover a point and scroll to change its height. For paths, "
+                "type its new position and press Enter. Escape cancels."));
   setCursor(Qt::CrossCursor);
 }
 
@@ -398,22 +404,27 @@ void PointsCanvas::paintEvent(QPaintEvent *)
     {
       p.setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
       p.setPen(palette().color(QPalette::Text));
-      const QString info = order_input_.isEmpty()
-          ? tr("Point %1 · Height %2").arg(i + 1).arg(display_float(pt.z))
-          : tr("Move to %1 · Enter to apply").arg(order_input_);
-      p.fillRect(r.adjusted(0, r.height() - 30, 0, 0), palette().color(QPalette::Base));
-      p.drawText(r.adjusted(6, 0, -6, -10), Qt::AlignLeft | Qt::AlignBottom, info);
+      const QString info =
+          order_input_.isEmpty()
+              ? tr("Point %1 · Height %2").arg(i + 1).arg(display_float(pt.z))
+              : tr("Move to %1 · Enter to apply").arg(order_input_);
+      p.fillRect(r.adjusted(0, r.height() - 30, 0, 0),
+                 palette().color(QPalette::Base));
+      p.drawText(r.adjusted(6, 0, -6, -10),
+                 Qt::AlignLeft | Qt::AlignBottom,
+                 info);
     }
   }
 
   // Point count
   p.setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
   p.setPen(palette().color(QPalette::PlaceholderText));
-  if (hovered_idx_ < 0 && drag_idx_ < 0) p.drawText(r.adjusted(4, 0, 0, -3),
-             Qt::AlignLeft | Qt::AlignBottom,
-             QString("%1 pt%2")
-                 .arg(points_.size())
-                 .arg(points_.size() != 1 ? "s" : ""));
+  if (hovered_idx_ < 0 && drag_idx_ < 0)
+    p.drawText(r.adjusted(4, 0, 0, -3),
+               Qt::AlignLeft | Qt::AlignBottom,
+               QString("%1 pt%2")
+                   .arg(points_.size())
+                   .arg(points_.size() != 1 ? "s" : ""));
 
   // Legend: colour ramp strip bottom-right
   {
@@ -546,7 +557,9 @@ void PointsCanvas::wheelEvent(QWheelEvent *e)
 QColor PointsCanvas::z_to_color(float z) const
 {
   if (property("industrialEditor").toBool())
-    return palette().color(QPalette::Highlight).lighter(70 + int(60 * std::clamp(z, 0.f, 1.f)));
+    return palette()
+        .color(QPalette::Highlight)
+        .lighter(70 + int(60 * std::clamp(z, 0.f, 1.f)));
   // Simple blue(0) → cyan → green → yellow → red(1) heatmap.
   z = std::clamp(z, 0.f, 1.f);
   float r, g, b;

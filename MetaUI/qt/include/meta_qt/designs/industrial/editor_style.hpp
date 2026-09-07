@@ -33,35 +33,43 @@ inline void style_editor(QWidget *host, const Theme &theme)
           "#IndustrialEditor QLabel { color: %1; background: transparent; }"
           "#IndustrialEditor QPushButton, #IndustrialEditor QToolButton, "
           "#IndustrialEditor QComboBox {"
-          " color: %1; background: %2; border: 1px solid %3; border-radius: 5px; "
+          " color: %1; background: %2; border: 1px solid %3; border-radius: "
+          "5px; "
           "padding: 3px 7px; }"
-          "#IndustrialEditor QPushButton:hover, #IndustrialEditor QToolButton:hover { "
+          "#IndustrialEditor QPushButton:hover, #IndustrialEditor "
+          "QToolButton:hover { "
           "border-color: %4; }"
           "#IndustrialEditor QPushButton:checked { background: %4; color: %1; }"
           "#IndustrialEditor QPushButton:disabled, #IndustrialEditor "
-          "QToolButton:disabled { color: %5; background: transparent; border-color: %3; }"
-          "#IndustrialEditor QScrollArea { border: none; background: transparent; }"
-          "#IndustrialEditor QScrollBar:vertical { width: 8px; background: transparent; }"
+          "QToolButton:disabled { color: %5; background: transparent; "
+          "border-color: %3; }"
+          "#IndustrialEditor QScrollArea { border: none; background: "
+          "transparent; }"
+          "#IndustrialEditor QScrollBar:vertical { width: 8px; background: "
+          "transparent; }"
           "#IndustrialEditor QScrollBar::handle:vertical { background: %3; "
           "border-radius: 3px; min-height: 24px; }"
           "#IndustrialEditor QScrollBar::add-line:vertical, #IndustrialEditor "
           "QScrollBar::sub-line:vertical { height: 0px; }"
           "#IndustrialEditor QScrollBar::add-page:vertical, #IndustrialEditor "
           "QScrollBar::sub-page:vertical { background: transparent; }"
-          "#IndustrialEditor QComboBox::drop-down { border: none; width: 20px; }"
+          "#IndustrialEditor QComboBox::drop-down { border: none; width: 20px; "
+          "}"
           "#IndustrialEditor QToolButton::menu-indicator { image: none; }"
-          "#IndustrialEditor QPushButton[preset_name] { padding: 2px; border: 2px solid "
+          "#IndustrialEditor QPushButton[preset_name] { padding: 2px; border: "
+          "2px solid "
           "transparent; border-radius: 5px; background: transparent; }"
-          "#IndustrialEditor QPushButton[preset_name]:hover { border-color: %5; }"
-          "#IndustrialEditor QPushButton[preset_name]:checked { border-color: %4; "
+          "#IndustrialEditor QPushButton[preset_name]:hover { border-color: "
+          "%5; }"
+          "#IndustrialEditor QPushButton[preset_name]:checked { border-color: "
+          "%4; "
           "background: transparent; }")
           .arg(theme.ink_primary.name(),
                theme.field.name(),
                theme.field_border.name(),
                theme.accent.name(),
                theme.ink_dim.name()));
-  if (host->layout())
-    host->layout()->setSpacing(8);
+  if (host->layout()) host->layout()->setSpacing(8);
   for (auto *child : host->findChildren<QWidget *>())
   {
     child->setProperty("industrialEditor", true);
@@ -79,8 +87,7 @@ inline void style_editor(QWidget *host, const Theme &theme)
   }
   for (auto *button : host->findChildren<QAbstractButton *>())
   {
-    if (button->property("preset_name").isValid())
-      continue;
+    if (button->property("preset_name").isValid()) continue;
     button->setFont(ui_font(12));
     button->setFixedHeight(28);
     button->setCursor(Qt::PointingHandCursor);

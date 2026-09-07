@@ -49,7 +49,10 @@ void flush()
 }
 
 /// The value field a slider owns, so a typed commit can be exercised.
-QLineEdit *field_of(QWidget *slider) { return slider->findChild<QLineEdit *>(); }
+QLineEdit *field_of(QWidget *slider)
+{
+  return slider->findChild<QLineEdit *>();
+}
 
 /// Press, drag and release at `x`, which is how a rail is actually driven.
 void click_rail(QWidget *slider, int x)
@@ -122,7 +125,8 @@ int main(int argc, char **argv)
     const float linear_value = linear_slider.get();
     const float log_value = log_slider.get();
 
-    std::cout << "same press: linear=" << linear_value << " log=" << log_value << '\n';
+    std::cout << "same press: linear=" << linear_value << " log=" << log_value
+              << '\n';
 
     check(linear_value > 0.f, "the linear rail responded to a press");
     check(log_value < linear_value,
@@ -166,7 +170,8 @@ int main(int argc, char **argv)
       Q_EMIT field->editingFinished();
       flush();
 
-      check(slider.get() > 64.f, "a typed value above the rail maximum is accepted");
+      check(slider.get() > 64.f,
+            "a typed value above the rail maximum is accepted");
       check(std::abs(slider.get() - 512.f) < 1e-2f,
             "a typed value is held to the real maximum, not to the rail");
     }
@@ -198,7 +203,8 @@ int main(int argc, char **argv)
       Q_EMIT field->editingFinished();
       flush();
 
-      check(slider.get() <= 64.f, "a hard maximum of 64 still clamps a typed value");
+      check(slider.get() <= 64.f,
+            "a hard maximum of 64 still clamps a typed value");
     }
   }
 

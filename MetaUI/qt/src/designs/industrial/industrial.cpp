@@ -90,39 +90,63 @@ void register_design()
   // construction yields a complete panel rather than a handful of rows. Drop
   // this line and the unported widget types simply render nothing.
   stock::register_design();
-  const RowFactory editor = [](AbstractAttribute &attr, const RowContext &ctx,
-                               QWidget *parent) -> MetaWidget *
+  const RowFactory editor = [](AbstractAttribute &attr,
+                               const RowContext  &ctx,
+                               QWidget           *parent) -> MetaWidget *
   {
-    auto *widget = DesignRegistry::instance().render(&attr, stock::kDesignName, ctx, parent);
+    auto *widget = DesignRegistry::instance().render(&attr,
+                                                     stock::kDesignName,
+                                                     ctx,
+                                                     parent);
     if (!widget) return nullptr;
 #ifdef META_ENABLE_ARRAY_TYPES
     if (auto *canvas = widget->findChild<ArrayCanvas *>())
     {
       auto *layout = qobject_cast<QVBoxLayout *>(widget->layout());
-      layout->insertWidget(0, new QLabel(QString::fromStdString(meta::common::label(static_cast<Attribute<meta::Array> &>(attr))), widget));
-      auto *hint = new QLabel(QObject::tr("Drag to paint · Right-drag to erase · Scroll to resize"), widget);
+      layout->insertWidget(
+          0,
+          new QLabel(QString::fromStdString(meta::common::label(
+                         static_cast<Attribute<meta::Array> &>(attr))),
+                     widget));
+      auto *hint = new QLabel(
+          QObject::tr("Drag to paint · Right-drag to erase · Scroll to resize"),
+          widget);
       hint->setWordWrap(true);
       layout->addWidget(hint);
       canvas->setProperty("industrialEditor", true);
     }
 #endif
-    style_editor(widget, ctx.theme ? *ctx.theme : DesignRegistry::instance().theme(kDesignName));
-    for (auto *range : widget->findChildren<RangeBar *>()) {
-      range->set_theme(ctx.theme ? *ctx.theme : DesignRegistry::instance().theme(kDesignName));
+    style_editor(widget,
+                 ctx.theme ? *ctx.theme
+                           : DesignRegistry::instance().theme(kDesignName));
+    for (auto *range : widget->findChildren<RangeBar *>())
+    {
+      range->set_theme(ctx.theme
+                           ? *ctx.theme
+                           : DesignRegistry::instance().theme(kDesignName));
       range->setFixedHeight(60);
     }
     return widget;
   };
 #ifdef META_ENABLE_GLM_TYPES
   registry.add(kDesignName, typeid(glm::vec2), "RangeBar", editor);
-  registry.add(kDesignName, typeid(std::vector<glm::vec3>), "PathEditor", editor);
-  registry.add(kDesignName, typeid(std::vector<glm::vec3>), "PointsEditor", editor);
+  registry.add(kDesignName,
+               typeid(std::vector<glm::vec3>),
+               "PathEditor",
+               editor);
+  registry.add(kDesignName,
+               typeid(std::vector<glm::vec3>),
+               "PointsEditor",
+               editor);
 #endif
 #ifdef META_ENABLE_ARRAY_TYPES
   registry.add(kDesignName, typeid(meta::Array), kAnyWidgetType, editor);
 #endif
 #ifdef META_ENABLE_COLOR_GRADIENT_TYPES
-  registry.add(kDesignName, typeid(meta::ColorGradient), kAnyWidgetType, editor);
+  registry.add(kDesignName,
+               typeid(meta::ColorGradient),
+               kAnyWidgetType,
+               editor);
 #endif
   registry.set_fallback(kDesignName, stock::kDesignName);
 }

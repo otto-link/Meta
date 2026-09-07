@@ -22,7 +22,7 @@ public:
 
   QSize sizeHint() const override;
   QSize minimumSizeHint() const override { return QSize(120, 120); }
-  int heightForWidth(int width) const override { return width; }
+  int   heightForWidth(int width) const override { return width; }
 
   void                      set_field_data(const std::vector<float> &data);
   const std::vector<float> &get_field_data() const;
