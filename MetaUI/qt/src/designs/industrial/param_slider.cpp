@@ -2,6 +2,8 @@
    Public License. The full license is in the file LICENSE, distributed with
    this software. */
 #include "meta_qt/designs/industrial/param_slider.hpp"
+#include <format>
+
 #include "meta_qt/ui/number_format.hpp"
 
 #include <algorithm>
@@ -49,7 +51,8 @@ ParamSlider::ParamSlider(Attribute<float> &attr,
   log_scale_ = meta::common::try_get<bool>(attr,
                                            meta::keys::ui::log_scale,
                                            false);
-  decimals_ = meta::common::try_get_format_decimals(meta::common::format(attr));
+  format_ = meta::common::format(attr);
+  decimals_ = meta::common::try_get_format_decimals(format_);
 
   unbounded_ = !has_usable_range(min_, max_);
 
@@ -526,7 +529,29 @@ void ParamSlider::commit_value(float value)
 
 QString ParamSlider::format_value(float value) const
 {
-  return display_float(value);
+  // Honour the presentation type the attribute declared. A rate spanning five
+  // decades declares "{:.2e}" precisely so its readout stays three characters
+  // of mantissa and an exponent; rendering it fixed gives 0.00000100, which
+  // does not fit the value field and reads as a truncated number rather than
+  // a small one.
+  //
+  // Only e and g are routed here. A fixed spec goes to display_float, which
+  // widens the precision rather than letting a small non-zero value round away
+  // to 0.00, and that is the behaviour a fixed readout wants.
+  if (has_exponent_format(format_))
+  {
+    try
+    {
+      return QString::fromStdString(
+          std::vformat(format_, std::make_format_args(value)));
+    }
+    catch (const std::format_error &)
+    {
+      // A malformed spec is a host bug, not a reason to render nothing.
+    }
+  }
+
+  return display_float(value, decimals_);
 }
 
 void ParamSlider::refresh_field()
