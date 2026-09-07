@@ -5,8 +5,26 @@
 #include <QString>
 #include <algorithm>
 #include <cmath>
+#include <string>
 namespace meta::qt
 {
+/** @brief True when a std::format spec asks for scientific or general form.
+ *
+ * Looks only at the presentation type, the last character before the closing
+ * brace, so "{:.2e}" and "{:10.3E}" both match while "{:.2f}" does not. A
+ * spec that names one of these is asking for an exponent, and the readout has
+ * to give it one rather than substituting a fixed rendering of its own.
+ */
+inline bool has_exponent_format(const std::string &spec)
+{
+  const auto close = spec.find_last_of('}');
+  if (close == std::string::npos || close == 0)
+    return false;
+
+  const char type = spec[close - 1];
+  return type == 'e' || type == 'E' || type == 'g' || type == 'G';
+}
+
 // Ordinary values stay compact; small nonzero values must never read as zero.
 inline QString display_float(float value, int decimals = 2)
 {
